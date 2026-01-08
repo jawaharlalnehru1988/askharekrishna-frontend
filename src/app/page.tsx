@@ -39,18 +39,7 @@ export default function Home() {
       description: "Lectures by His Divine Grace A.C. Bhaktivedanta Swami.",
       backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBqagQBWf03w4QT0Y1w3AG0j_30Ydxn9QjiUuZ55plevNKGswiaLCmWRN4JoCV6YOzUDHAxK7uioOop3fFGouh0DKsKiByK-pDA21hxpxrpPnIBsCNR4YeSbtXDslhM4-U4ANdGvIr2NSWEl3NTHiVCBJfxjd7rXPsbXc9uwvMsZQPhJnkitU4JBhJrbilmyOLBc_FRZ5XZSNkMHbso-xgyCvglAZTZ-sZ4zvevBAoet8SIHzg-bgSPe0qLCYYIHqbqtbSZl6k6vBBC",
       icon: "record_voice_over",
-      // Note: "Prabhupada Teachings" doesn't have a direct match in categories.ts list which has "prabhupada" in reference.html nav?
-      // Wait, list in categories.ts is: ["ramayanam", "mahabharatam", "puranams", "bhagavad-gita", "kirtans", "faqs"]
-      // "Prabhupada Teachings" is missing from categories.ts list provided by user?
-      // User list: ["ramayanam", "mahabharatam", "puranams", "bhagavad-gita", "kirtans", "faqs"]
-      // Step 72 user request: export const categories = [ "ramayanam", "mahabharatam", "puranams", "bhagavad-gita", "kirtans", "faqs" ];
-      // It seems "Prabhupada Teachings" card (index 3 in page.tsx) doesn't have a corresponding route in the user's provided list!
-      // I will leave it as "#" or map it to something if I can, but strict interpretation says it's not supported yet.
-      // Actually, looking at reference.html nav: Ramayanam, Mahabharatam, Puranams, Prabhupada, Bhagavad Gita, Kirtans.
-      // So "Prabhupada" is likely the intent. But it's NOT in `categories.ts`.
-      // I will set it to "#" or "/prabhupada" but be aware it might 404.
-      // Let's stick to the generated list. The user list does NOT include prabhupada.
-      href: "#"
+      href: "/prabhupada"
     },
     {
       title: "Bhagavad Gita",

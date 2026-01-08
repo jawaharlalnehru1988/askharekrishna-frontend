@@ -6,6 +6,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import MahabharatamPage from '@/components/categories/MahabharatamPage';
 import RamayanamPage from '@/components/categories/RamayanamPage';
+import PuranamsPage from "@/components/categories/PuranamsPage";
+import PrabhupadaPage from "@/components/categories/PrabhupadaPage";
+import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
+import KirtansPage from "@/components/categories/KirtansPage";
+import FAQsPage from "@/components/categories/FAQsPage";
 
 // Check if category exists
 export function generateStaticParams() {
@@ -45,6 +50,39 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         );
     }
 
+    if (category === 'puranams') {
+        return (
+            <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+                <Navbar />
+                <PuranamsPage />
+            </div>
+        );
+    }
+
+    if (category === 'prabhupada') {
+        return (
+            <PrabhupadaPage />
+        );
+    }
+
+    if (category === 'bhagavad-gita') {
+        return (
+            <BagavadGitaPage />
+        );
+    }
+
+    if (category === 'kirtans') {
+        return (
+            <KirtansPage />
+        );
+    }
+
+    if (category === 'faqs') {
+        return (
+            <FAQsPage />
+        );
+    }
+
     // Generic fallback for other categories
     const title = category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ');
     const description = `Explore the transcendental wisdom of ${title}.`;
@@ -65,7 +103,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                             <h1 className="text-3xl md:text-5xl font-bold text-text-main dark:text-white leading-tight mb-4">
                                 {title}
                             </h1>
-                            <p className="text-lg text-text-muted dark:text-gray-300 leading-relaxed max-w-2xl">
+                            <p className="text-lg text-text-muted dark:text-gray-400 leading-relaxed max-w-2xl">
                                 {description}
                             </p>
                         </div>
