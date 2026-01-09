@@ -1,34 +1,135 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
-const QUESTIONS = [
-    {
-        question: "Why do bad things happen to good people?",
-        answer: "According to the law of karma, every action has a reaction. Suffering is often the result of past actions, either in this life or previous ones. However, it is not merely punishment; it serves as an opportunity for spiritual growth, learning, and detachment from the temporary material world.",
-        audio: {
-            title: "Listen to Srila Prabhupada explain Karma",
-            subtitle: "From lecture on Bhagavad-gita 2.13 • 4 min listen"
-        }
+// FAQ Content Data Structure
+const FAQ_CONTENT: Record<string, {
+    category: string;
+    title: string;
+    description: string;
+    icon: string;
+    questions: Array<{
+        question: string;
+        answer: string;
+        audio?: {
+            title: string;
+            subtitle: string;
+        };
+    }>;
+}> = {
+    "atheists": {
+        category: "Faith & Logic",
+        title: "Questions from Atheists",
+        description: "Common inquiries regarding faith, logic, scientific perspectives, and the nature of the soul.",
+        icon: "psychology_alt",
+        questions: [
+            {
+                question: "Why do bad things happen to good people?",
+                answer: "According to the law of karma, every action has a reaction. Suffering is often the result of past actions, either in this life or previous ones. However, it is not merely punishment; it serves as an opportunity for spiritual growth, learning, and detachment from the temporary material world.",
+                audio: {
+                    title: "Listen to Srila Prabhupada explain Karma",
+                    subtitle: "From lecture on Bhagavad-gita 2.13 • 4 min listen"
+                }
+            },
+            {
+                question: "Is there scientific proof of the soul?",
+                answer: "While material science deals with matter, the soul is anti-material or spiritual. Its presence is inferred through consciousness, which cannot be explained solely by chemical reactions. The difference between a living body and a dead body is the presence of the soul. Vedic science offers methods like yoga and meditation to directly perceive the self beyond the body."
+            },
+            {
+                question: "If God exists, why is He invisible?",
+                answer: "God is not invisible; rather, our eyes are not qualified to see Him in His spiritual form. Just as we cannot see microbes without a microscope or radio waves without a receiver, we need spiritual vision (prema-chakshu) developed through devotion to perceive Krishna. However, He is visible through His energies, His deity form (archa-vigraha), and His holy name."
+            },
+            {
+                question: "What is the Vedic perspective on evolution?",
+                answer: "The Vedas accept evolution of consciousness, not just bodies. The soul transmigrates through 8.4 million species of life, evolving from aquatics to plants, animals, and finally humans. The human form is the peak of this evolution because it offers the unique ability to inquire about the Absolute Truth and attain liberation."
+            },
+            {
+                question: "Is religion just a crutch for the weak?",
+                answer: "True spirituality requires immense strength to control the senses, conquer the ego, and act selflessly in a world driven by exploitation. It is an act of courage to seek truth beyond comfortable illusions. While some may use religion for comfort, the path of Bhakti (devotion) is a rigorous science of self-realization practiced by great intellectuals and warriors throughout history."
+            }
+        ]
     },
-    {
-        question: "Is there scientific proof of the soul?",
-        answer: "While material science deals with matter, the soul is anti-material or spiritual. Its presence is inferred through consciousness, which cannot be explained solely by chemical reactions. The difference between a living body and a dead body is the presence of the soul. Vedic science offers methods like yoga and meditation to directly perceive the self beyond the body."
+    "interfaith": {
+        category: "Comparative Religion",
+        title: "Interfaith Questions",
+        description: "Comparisons and commonalities between Krishna consciousness and other major world religions.",
+        icon: "public",
+        questions: [
+            {
+                question: "How is Krishna consciousness different from Christianity?",
+                answer: "Both traditions emphasize love of God, but Krishna consciousness provides detailed knowledge of God's form, qualities, and pastimes. While Christianity focuses on faith and grace, Bhakti yoga offers practical methods for direct realization of the Supreme through chanting, meditation, and devotional service."
+            },
+            {
+                question: "Can I practice Krishna consciousness and still follow my religion?",
+                answer: "Krishna consciousness is not sectarian. The principles of loving God, being compassionate, and living ethically are universal. Many practitioners maintain their cultural and religious identities while incorporating Krishna conscious practices like chanting and vegetarianism into their lives."
+            }
+        ]
     },
-    {
-        question: "If God exists, why is He invisible?",
-        answer: "God is not invisible; rather, our eyes are not qualified to see Him in His spiritual form. Just as we cannot see microbes without a microscope or radio waves without a receiver, we need spiritual vision (prema-chakshu) developed through devotion to perceive Krishna. However, He is visible through His energies, His deity form (archa-vigraha), and His holy name."
+    "young-generations": {
+        category: "Modern Life",
+        title: "Young Generations",
+        description: "Modern dilemmas, student life, career balance, and spirituality for the youth of today.",
+        icon: "school",
+        questions: [
+            {
+                question: "How do I balance career ambitions with spiritual life?",
+                answer: "Krishna consciousness doesn't require renunciation of career goals. Work can be offered as service to Krishna. The key is to maintain spiritual practices (sadhana) daily, associate with devotees, and remember that material success is temporary. Use your talents and position to serve others and spread spiritual knowledge."
+            },
+            {
+                question: "Is it okay to have fun and enjoy life?",
+                answer: "Absolutely! Krishna consciousness is joyful. The difference is in the quality of enjoyment. Material pleasures are temporary and often lead to suffering, while spiritual joy (ananda) is eternal and ever-increasing. Devotees enjoy kirtans, festivals, prasadam (sacred food), and the company of like-minded souls."
+            }
+        ]
     },
-    {
-        question: "What is the Vedic perspective on evolution?",
-        answer: "The Vedas accept evolution of consciousness, not just bodies. The soul transmigrates through 8.4 million species of life, evolving from aquatics to plants, animals, and finally humans. The human form is the peak of this evolution because it offers the unique ability to inquire about the Absolute Truth and attain liberation."
+    "devotees": {
+        category: "Advanced Practice",
+        title: "Following Devotees",
+        description: "Advanced topics on sadhana, temple etiquette, scripture study, and deepening bhakti.",
+        icon: "self_improvement",
+        questions: [
+            {
+                question: "How many rounds should I chant daily?",
+                answer: "Srila Prabhupada recommended a minimum of 16 rounds of the Hare Krishna maha-mantra daily for serious practitioners. Each round consists of 108 repetitions. However, even one round chanted with attention and devotion is valuable. Quality is more important than quantity."
+            },
+            {
+                question: "What is the proper way to offer food to Krishna?",
+                answer: "Prepare vegetarian food with love and cleanliness. Place it before a picture or deity of Krishna, offer prayers, and request Him to accept it. After a few minutes, the food becomes prasadam (mercy) and can be honored. The consciousness while cooking and offering is most important."
+            }
+        ]
     },
-    {
-        question: "Is religion just a crutch for the weak?",
-        answer: "True spirituality requires immense strength to control the senses, conquer the ego, and act selflessly in a world driven by exploitation. It is an act of courage to seek truth beyond comfortable illusions. While some may use religion for comfort, the path of Bhakti (devotion) is a rigorous science of self-realization practiced by great intellectuals and warriors throughout history."
+    "demigod-worship": {
+        category: "Vedic Deities",
+        title: "Demigod Worship",
+        description: "Clarifications on the position of demigods relative to the Supreme Lord Krishna.",
+        icon: "temple_hindu",
+        questions: [
+            {
+                question: "Why shouldn't we worship demigods?",
+                answer: "Demigods are powerful beings who manage universal affairs, but they are not the Supreme. Worshiping them yields temporary material benefits. Krishna, the Supreme Personality of Godhead, is the source of all demigods. Worshiping Him directly gives both material and spiritual benefits, and ultimately liberation."
+            },
+            {
+                question: "Are demigods real or just mythology?",
+                answer: "Demigods are real, highly elevated beings with specific responsibilities in universal management. They are described in detail in Vedic literature. However, they are souls like us, subject to birth and death, whereas Krishna is eternal and supreme."
+            }
+        ]
+    },
+    "app-support": {
+        category: "Technical Help",
+        title: "App Support",
+        description: "Help with subscriptions, audio playback, downloading content, and account settings.",
+        icon: "settings_suggest",
+        questions: [
+            {
+                question: "How do I download lectures for offline listening?",
+                answer: "Navigate to any lecture or audiobook, tap the download icon next to the title. Downloaded content will be available in the 'Downloads' section of your library, accessible even without internet connection."
+            },
+            {
+                question: "Can I adjust playback speed?",
+                answer: "Yes! While playing any audio, tap the playback speed button (usually showing '1x'). You can choose speeds from 0.5x to 2x to suit your preference and comprehension level."
+            }
+        ]
     }
-];
+};
 
 const BOOKS = [
     {
@@ -53,7 +154,17 @@ const BOOKS = [
     }
 ];
 
-export default function FAQDetail() {
+interface FAQDetailProps {
+    topic: string;
+}
+
+export default function FAQDetail({ topic }: FAQDetailProps) {
+    const content = FAQ_CONTENT[topic];
+
+    if (!content) {
+        return <div>Topic not found</div>;
+    }
+
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-white min-h-screen flex flex-col antialiased">
             {/* Header */}
@@ -71,10 +182,10 @@ export default function FAQDetail() {
                         </div>
                         {/* Desktop Nav Links */}
                         <nav className="hidden md:flex items-center gap-8">
-                            <Link href="#" className="text-[#1b170d] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors">Home</Link>
+                            <Link href="/" className="text-[#1b170d] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors">Home</Link>
                             <Link href="#" className="text-[#1b170d] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors">Audiobooks</Link>
                             <Link href="#" className="text-[#1b170d] dark:text-gray-200 text-sm font-medium hover:text-primary transition-colors">Lectures</Link>
-                            <Link href="#" className="text-primary text-sm font-semibold">FAQ</Link>
+                            <Link href="/faqs" className="text-primary text-sm font-semibold">FAQ</Link>
                         </nav>
                         {/* Search & Profile */}
                         <div className="flex items-center gap-4 flex-1 md:flex-none justify-end">
@@ -110,7 +221,7 @@ export default function FAQDetail() {
                     <nav aria-label="Breadcrumb" className="flex mb-8">
                         <ol className="inline-flex items-center space-x-2 md:space-x-3">
                             <li className="inline-flex items-center">
-                                <Link href="#" className="inline-flex items-center text-sm font-medium text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white">
+                                <Link href="/" className="inline-flex items-center text-sm font-medium text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white">
                                     <span className="material-symbols-outlined !text-[18px] mr-2">home</span>
                                     Home
                                 </Link>
@@ -118,13 +229,13 @@ export default function FAQDetail() {
                             <li>
                                 <div className="flex items-center">
                                     <span className="material-symbols-outlined !text-[16px] text-gray-400 mx-1">chevron_right</span>
-                                    <Link href="#" className="text-sm font-medium text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white">FAQ</Link>
+                                    <Link href="/faqs" className="text-sm font-medium text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white">FAQ</Link>
                                 </div>
                             </li>
                             <li aria-current="page">
                                 <div className="flex items-center">
                                     <span className="material-symbols-outlined !text-[16px] text-gray-400 mx-1">chevron_right</span>
-                                    <span className="text-sm font-medium text-text-main dark:text-gray-200">Questions from Atheists</span>
+                                    <span className="text-sm font-medium text-text-main dark:text-gray-200">{content.title}</span>
                                 </div>
                             </li>
                         </ol>
@@ -134,19 +245,19 @@ export default function FAQDetail() {
                     <div className="mb-10 text-center md:text-left">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                             <div>
-                                <span className="text-primary font-medium tracking-wide uppercase text-xs mb-2 block">Faith &amp; Logic</span>
-                                <h1 className="text-3xl md:text-4xl font-bold text-text-main dark:text-white mb-3">Questions from Atheists</h1>
-                                <p className="text-text-subtle dark:text-gray-400 text-lg max-w-2xl">Common inquiries regarding faith, logic, scientific perspectives, and the nature of the soul.</p>
+                                <span className="text-primary font-medium tracking-wide uppercase text-xs mb-2 block">{content.category}</span>
+                                <h1 className="text-3xl md:text-4xl font-bold text-text-main dark:text-white mb-3">{content.title}</h1>
+                                <p className="text-text-subtle dark:text-gray-400 text-lg max-w-2xl">{content.description}</p>
                             </div>
                             <div className="hidden md:flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary">
-                                <span className="material-symbols-outlined !text-[32px]">psychology_alt</span>
+                                <span className="material-symbols-outlined !text-[32px]">{content.icon}</span>
                             </div>
                         </div>
                     </div>
 
                     {/* FAQ Accordion List */}
                     <div className="flex flex-col gap-4">
-                        {QUESTIONS.map((item, index) => (
+                        {content.questions.map((item, index) => (
                             <details key={index} className="group bg-white dark:bg-[#2a2418] rounded-xl border border-[#e7dfcf] dark:border-[#3a3428] shadow-sm hover:shadow-md transition-all duration-300" open={index === 0}>
                                 <summary className="flex cursor-pointer items-center justify-between gap-4 p-5 sm:p-6 select-none list-none">
                                     <div className="flex items-center gap-4">
@@ -224,9 +335,9 @@ export default function FAQDetail() {
                                 <span className="material-symbols-outlined !text-[20px]">mail</span>
                                 Ask a Devotee
                             </button>
-                            <button className="px-6 py-3 rounded-lg bg-white dark:bg-[#332d21] border border-[#e7dfcf] dark:border-[#3a3428] text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-[#3e3729] font-medium transition-colors">
+                            <Link href="/faqs" className="px-6 py-3 rounded-lg bg-white dark:bg-[#332d21] border border-[#e7dfcf] dark:border-[#3a3428] text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-[#3e3729] font-medium transition-colors">
                                 View all Topics
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

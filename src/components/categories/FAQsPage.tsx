@@ -11,7 +11,8 @@ const FAQ_CATEGORIES = [
         icon: "psychology_alt",
         colorClass: "text-primary",
         bgClass: "bg-orange-50 dark:bg-orange-900/20",
-        href: "#"
+        slug: "atheists",
+        href: "/faqs/atheists"
     },
     {
         title: "Interfaith Questions",
@@ -20,7 +21,8 @@ const FAQ_CATEGORIES = [
         icon: "public",
         colorClass: "text-blue-600 dark:text-blue-400",
         bgClass: "bg-blue-50 dark:bg-blue-900/20",
-        href: "#"
+        slug: "interfaith",
+        href: "/faqs/interfaith"
     },
     {
         title: "Young Generations",
@@ -29,7 +31,8 @@ const FAQ_CATEGORIES = [
         icon: "school",
         colorClass: "text-green-600 dark:text-green-400",
         bgClass: "bg-green-50 dark:bg-green-900/20",
-        href: "#"
+        slug: "young-generations",
+        href: "/faqs/young-generations"
     },
     {
         title: "Following Devotees",
@@ -38,7 +41,8 @@ const FAQ_CATEGORIES = [
         icon: "self_improvement",
         colorClass: "text-purple-600 dark:text-purple-400",
         bgClass: "bg-purple-50 dark:bg-purple-900/20",
-        href: "#"
+        slug: "devotees",
+        href: "/faqs/devotees"
     },
     {
         title: "Demigod Worship",
@@ -47,7 +51,8 @@ const FAQ_CATEGORIES = [
         icon: "temple_hindu",
         colorClass: "text-red-600 dark:text-red-400",
         bgClass: "bg-red-50 dark:bg-red-900/20",
-        href: "#"
+        slug: "demigod-worship",
+        href: "/faqs/demigod-worship"
     },
     {
         title: "App Support",
@@ -56,7 +61,8 @@ const FAQ_CATEGORIES = [
         icon: "settings_suggest",
         colorClass: "text-gray-600 dark:text-gray-300",
         bgClass: "bg-gray-100 dark:bg-gray-800",
-        href: "#"
+        slug: "app-support",
+        href: "/faqs/app-support"
     }
 ];
 
