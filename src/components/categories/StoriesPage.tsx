@@ -10,6 +10,7 @@ import {
     ArrowRight,
     Church
 } from 'lucide-react';
+import { Footer } from "@/components/layout/Footer";
 
 const DevotionalStories = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -154,6 +155,7 @@ const DevotionalStories = () => {
                     </div>
                 </section>
             </main>
+            <Footer />
         </div>
     );
 };

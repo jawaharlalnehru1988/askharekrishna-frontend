@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { TOPICS, type Topic, type AudioItem } from "@/lib/bhagavad-gita-data";
+import { Footer } from "@/components/layout/Footer";
 
 const defaultItems: AudioItem[] = [
     {
@@ -243,6 +244,7 @@ export default function BagavadGitaPage() {
                     </button>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

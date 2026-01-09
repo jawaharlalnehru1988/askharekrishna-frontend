@@ -11,6 +11,7 @@ import PrabhupadaPage from "@/components/categories/PrabhupadaPage";
 import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
 import KirtansPage from "@/components/categories/KirtansPage";
 import FAQsPage from "@/components/categories/FAQsPage";
+import StoriesPage from "@/components/categories/StoriesPage";
 
 // Check if category exists
 export function generateStaticParams() {
@@ -80,6 +81,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     if (category === 'faqs') {
         return (
             <FAQsPage />
+        );
+    }
+
+    if (category === 'stories') {
+        return (
+            <StoriesPage />
         );
     }
 

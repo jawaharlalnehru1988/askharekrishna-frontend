@@ -19,21 +19,13 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-            <div className="relative group mega-menu-trigger h-20 flex items-center">
-              <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors flex items-center gap-1 cursor-pointer">
-                Ramayanam <span className="material-symbols-outlined text-lg">expand_more</span>
-              </Link>
-              <div className="mega-menu absolute top-full left-0 w-48 bg-white dark:bg-[#2a2418] shadow-xl rounded-b-xl border border-neutral-100 dark:border-neutral-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transform -translate-y-2 group-hover:translate-y-0 transition-all duration-200">
-                <Link href="#" className="block px-4 py-2 text-sm text-text-main dark:text-gray-200 hover:bg-background-light dark:hover:bg-neutral-800 rounded-lg">Bala Kanda</Link>
-                <Link href="#" className="block px-4 py-2 text-sm text-text-main dark:text-gray-200 hover:bg-background-light dark:hover:bg-neutral-800 rounded-lg">Ayodhya Kanda</Link>
-                <Link href="#" className="block px-4 py-2 text-sm text-text-main dark:text-gray-200 hover:bg-background-light dark:hover:bg-neutral-800 rounded-lg">Aranya Kanda</Link>
-              </div>
-            </div>
-            <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Mahabharatam</Link>
-            <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Puranams</Link>
-            <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Prabhupada</Link>
-            <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Bhagavad Gita</Link>
-            <Link href="#" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Kirtans</Link>
+            <Link href="/ramayanam" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Ramayanam</Link>
+            <Link href="/mahabharatam" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Mahabharatam</Link>
+            <Link href="/puranams" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Puranams</Link>
+            <Link href="/prabhupada" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Prabhupada</Link>
+            <Link href="/bhagavad-gita" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Bhagavad Gita</Link>
+            <Link href="/stories" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Stories</Link>
+            <Link href="/kirtans" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">Kirtans</Link>
           </nav>
 
           {/* Auth Actions */}

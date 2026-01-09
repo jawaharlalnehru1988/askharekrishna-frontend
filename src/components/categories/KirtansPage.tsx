@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Footer } from "@/components/layout/Footer";
 import { useState } from "react";
 
 const KIRTAN_COLLECTIONS = [
@@ -178,48 +179,7 @@ export default function KirtansPage() {
                 </div>
             </div>
 
-            {/* Footer */}
-            <footer className="w-full bg-white dark:bg-[#1a150c] border-t border-[#f3efe7] dark:border-neutral-800 py-12">
-                <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                    <div className="flex flex-col md:flex-row justify-between gap-10">
-                        <div className="flex flex-col gap-4 max-w-sm">
-                            <div className="flex items-center gap-3 text-text-main dark:text-white">
-                                <div className="size-6 text-primary">
-                                    <span className="material-symbols-outlined text-2xl">temple_hindu</span>
-                                </div>
-                                <h2 className="text-lg font-bold">askharekrishna.com</h2>
-                            </div>
-                            <p className="text-text-muted text-sm leading-relaxed">
-                                Connecting hearts to the divine through the power of transcendental sound. A project dedicated to preserving and sharing Vedic wisdom.
-                            </p>
-                        </div>
-                        <div className="flex gap-16 flex-wrap">
-                            <div className="flex flex-col gap-3">
-                                <h4 className="font-bold text-text-main dark:text-white text-sm uppercase tracking-wider">Content</h4>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Audio Books</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Lectures</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Kirtans</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Playlists</Link>
-                            </div>
-                            <div className="flex flex-col gap-3">
-                                <h4 className="font-bold text-text-main dark:text-white text-sm uppercase tracking-wider">Support</h4>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Contact Us</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Donate</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">FAQ</Link>
-                                <Link className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Privacy Policy</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-12 pt-8 border-t border-gray-100 dark:border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-muted">
-                        <p>© 2024 Ask Hare Krishna. All rights reserved.</p>
-                        <div className="flex gap-4">
-                            <Link className="hover:text-primary transition-colors" href="#">Instagram</Link>
-                            <Link className="hover:text-primary transition-colors" href="#">Twitter</Link>
-                            <Link className="hover:text-primary transition-colors" href="#">Facebook</Link>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

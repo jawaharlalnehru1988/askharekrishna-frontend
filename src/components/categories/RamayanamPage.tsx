@@ -68,8 +68,7 @@ const KANDAS = [
 
 export default function RamayanamPage() {
     return (
-        <div className="w-full bg-background-light dark:bg-background-dark">
-
+        <>
             {/* Breadcrumb + Hero */}
             <section className="pt-8 pb-6">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8 space-y-6">
@@ -177,6 +176,6 @@ export default function RamayanamPage() {
                     </button>
                 </div>
             </section>
-        </div>
+        </>
     );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Footer } from "@/components/layout/Footer";
 import { useState } from "react";
 
 const PURANAS = [
@@ -219,6 +220,8 @@ export default function PuranamsPage() {
                     </div>
                 </div>
             </main>
+
+            <Footer />
 
             {/* Sticky Audio Player Footer */}
             <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#f3efe7] dark:border-[#3a3020] bg-surface-light dark:bg-surface-dark shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">

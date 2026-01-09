@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Footer } from "@/components/layout/Footer";
 
 const TEACHINGS = [
     {
@@ -183,25 +184,7 @@ export default function PrabhupadaPage() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark mt-auto">
-                <div className="max-w-[1440px] mx-auto px-6 lg:px-10 py-12">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-                        <div className="flex items-center gap-3">
-                            <div className="text-primary opacity-80">
-                                <span className="material-symbols-outlined text-3xl">temple_hindu</span>
-                            </div>
-                            <span className="text-text-subtle dark:text-gray-400 text-sm">© 2023 Hare Krishna Audio. All rights reserved.</span>
-                        </div>
-                        <div className="flex flex-wrap justify-center gap-8">
-                            <Link className="text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors text-sm font-medium" href="#">About</Link>
-                            <Link className="text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors text-sm font-medium" href="#">Contact</Link>
-                            <Link className="text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors text-sm font-medium" href="#">Donations</Link>
-                            <Link className="text-text-subtle hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors text-sm font-medium" href="#">Privacy Policy</Link>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Footer } from "@/components/layout/Footer";
 
 // FAQ Content Data Structure
 const FAQ_CONTENT: Record<string, {
@@ -343,22 +344,7 @@ export default function FAQDetail({ topic }: FAQDetailProps) {
                 </div>
             </main>
 
-            {/* Simple Footer */}
-            <footer className="bg-white dark:bg-[#1a150c] border-t border-[#f3efe7] dark:border-[#2a2418] py-12 mt-auto">
-                <div className="max-w-[960px] mx-auto px-6 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-6 text-primary">
-                        <span className="material-symbols-outlined">spa</span>
-                        <span className="font-bold text-text-main dark:text-white text-lg">Hare Krishna Audio</span>
-                    </div>
-                    <div className="flex flex-wrap justify-center gap-8 mb-8">
-                        <Link href="#" className="text-text-subtle dark:text-gray-400 hover:text-primary text-sm font-medium">About Us</Link>
-                        <Link href="#" className="text-text-subtle dark:text-gray-400 hover:text-primary text-sm font-medium">Donations</Link>
-                        <Link href="#" className="text-text-subtle dark:text-gray-400 hover:text-primary text-sm font-medium">Temples Near You</Link>
-                        <Link href="#" className="text-text-subtle dark:text-gray-400 hover:text-primary text-sm font-medium">Contact</Link>
-                    </div>
-                    <p className="text-xs text-gray-400">© 2024 Hare Krishna Audio. All rights reserved.</p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

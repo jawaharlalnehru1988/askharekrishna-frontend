@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Footer } from "@/components/layout/Footer";
 
 const FAQ_CATEGORIES = [
     {
@@ -188,20 +189,7 @@ export default function FAQsPage() {
                 </section>
             </main>
 
-            {/* Footer */}
-            <footer className="bg-background-light dark:bg-background-dark border-t border-[#f3efe7] dark:border-gray-800 py-10 px-4">
-                <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-2 text-text-muted">
-                        <span className="material-symbols-outlined text-primary">local_library</span>
-                        <span className="text-sm font-medium">© 2024 Devotional Audio. All rights reserved.</span>
-                    </div>
-                    <div className="flex gap-6">
-                        <Link className="text-text-muted hover:text-primary transition-colors text-sm" href="#">Privacy Policy</Link>
-                        <Link className="text-text-muted hover:text-primary transition-colors text-sm" href="#">Terms of Service</Link>
-                        <Link className="text-text-muted hover:text-primary transition-colors text-sm" href="#">Community Guidelines</Link>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }
