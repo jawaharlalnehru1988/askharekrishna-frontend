@@ -72,6 +72,119 @@ export default function Home() {
     }
   ];
 
+  interface Gallery {
+    title: string
+    description: string
+    backgroundImage: string
+    icon: string
+    href: string
+  }
+
+  const galleries: Gallery[] = [
+    {
+      title: "Lord Krishna",
+      description: "The Supreme Personality of Godhead.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "auto_stories",
+      href: "/puranams"
+    },
+    {
+      title: "Lord Chaitanya",
+      description: "The Golden Avatar of divine love.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "book_2",
+      href: "/stories"
+    },
+    {
+      title: "Srimati Radharani",
+      description: "The eternal consort of Lord Krishna.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srimati-radharani"
+    },
+    {
+      title: "Lord Radhakrishna",
+      description: "The divine couple named Radha and Krishna.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srimati-radharani"
+    },
+    {
+      title: "Lord Vishnu",
+      description: "The expansion form of Lord Krishna.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srimati-radharani"
+    },
+    {
+      title: "Srimad Bhagavatam",
+      description: "The most important Purana of Lord Krishna.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srimad-bhagavatam"
+    },
+    {
+      title: "Srimad Bhagavat Gita",
+      description: "The most important Purana of Lord Krishna.",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srimad-bhagavatam"
+    },
+    {
+      title: "Srila Prabhupada",
+      description: "The great messenger of Lord Radha Krishna",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/srila-prabhupada"
+    }
+  ];
+
+  interface Documents {
+    title: string
+    description: string
+    backgroundImage: string
+    icon: string
+    href: string
+  }
+  const pdfDocuments: Documents[] = [
+    {
+      title: "Research Papers",
+      description: "This is in the article format",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/research"
+    },
+    {
+      title: "The Sastras(scriptures)",
+      description: "This is collection of rarely available vedic scriptures",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/research"
+    },
+    {
+      title: "The Guide Books",
+      description: "This is in the PDF book format",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/research"
+    },
+    {
+      title: "The Song Books",
+      description: "This is in the PDF book format",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/research"
+    },
+    {
+      title: "The Story Books",
+      description: "This is in the PDF book format",
+      backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+      icon: "live_help",
+      href: "/research"
+    },
+
+  ]
+
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
@@ -130,6 +243,105 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
             {categories.map((category) => (
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+              >
+                <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url('${category.backgroundImage}')` }}
+                  ></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <span className="material-symbols-outlined text-3xl mb-1 text-primary">
+                      {category.icon}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-text-main dark:text-white text-lg font-bold group-hover:text-primary transition-colors">
+                    {category.title}
+                  </h3>
+                  <p className="text-text-muted dark:text-gray-400 text-sm mt-1 line-clamp-2">
+                    {category.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+
+          </div>
+        </div>
+      </div>
+      {/* Categories Header */}
+      <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
+          <div>
+            <h2 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold leading-tight tracking-tight">Image Galleries</h2>
+            <p className="text-text-muted dark:text-gray-400 mt-2">Explore our collection of transcendental images.</p>
+          </div>
+          <Link href="#" className="hidden sm:flex text-primary hover:text-yellow-600 font-bold text-sm items-center gap-1">
+            View All <span className="material-symbols-outlined text-base">arrow_forward</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Categories Grid */}
+      <div className="w-full bg-background-light dark:bg-background-dark pb-20">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            {galleries.map((category) => (
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+              >
+                <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ backgroundImage: `url('${category.backgroundImage}')` }}
+                  ></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <span className="material-symbols-outlined text-3xl mb-1 text-primary">
+                      {category.icon}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-text-main dark:text-white text-lg font-bold group-hover:text-primary transition-colors">
+                    {category.title}
+                  </h3>
+                  <p className="text-text-muted dark:text-gray-400 text-sm mt-1 line-clamp-2">
+                    {category.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+
+          </div>
+        </div>
+      </div>
+      <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
+          <div>
+            <h2 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold leading-tight tracking-tight">PDF Downloads</h2>
+            <p className="text-text-muted dark:text-gray-400 mt-2">Explore our collection of transcendental PDFs.</p>
+          </div>
+          <Link href="#" className="hidden sm:flex text-primary hover:text-yellow-600 font-bold text-sm items-center gap-1">
+            View All <span className="material-symbols-outlined text-base">arrow_forward</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Categories Grid */}
+      <div className="w-full bg-background-light dark:bg-background-dark pb-20">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            {pdfDocuments.map((category) => (
               <Link
                 key={category.title}
                 href={category.href}

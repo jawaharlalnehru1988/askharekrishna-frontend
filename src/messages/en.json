@@ -1,0 +1,54 @@
+{
+    "common": {
+        "login": "Log In",
+        "search": "Search",
+        "comingSoon": "Coming Soon",
+        "playAll": "Play All",
+        "listenNow": "Listen Now",
+        "home": "Home"
+    },
+    "navbar": {
+        "ramayanam": "Ramayanam",
+        "mahabharatam": "Mahabharatam",
+        "puranams": "Puranams",
+        "prabhupada": "Prabhupada",
+        "bhagavadGita": "Bhagavad Gita",
+        "stories": "Stories",
+        "kirtans": "Kirtans"
+    },
+    "footer": {
+        "about": "Connecting hearts to the divine through the power of transcendental sound. A project dedicated to preserving and sharing Vedic wisdom.",
+        "content": "Content",
+        "support": "Support",
+        "faq": "FAQ",
+        "contactUs": "Contact Us",
+        "donate": "Donate",
+        "privacyPolicy": "Privacy Policy",
+        "copyright": "© {year} Ask Hare Krishna. All rights reserved."
+    },
+    "home": {
+        "audioCategories": "Audio Categories",
+        "audioDesc": "Explore our collection of transcendental literature.",
+        "imageGalleries": "Image Galleries",
+        "imageDesc": "Explore our sacred gallery of transcendental images.",
+        "viewAll": "View All",
+        "galleries": {
+            "lordKrishna": "Lord Krishna",
+            "lordKrishnaDesc": "The Supreme Personality of Godhead.",
+            "radharani": "Srimathi Radharani",
+            "radharaniDesc": "The Queen of Vrindavan.",
+            "lordChaitanya": "Lord Chaitanya",
+            "lordChaitanyaDesc": "The Golden Avatar of divine love.",
+            "srimadBhagavatam": "Srimad Bhagavatam",
+            "srimadBhagavatamDesc": "The spotless Purana.",
+            "bhagavadGita": "Srimad Bhagavad gita",
+            "bhagavadGitaDesc": "The song of the Lord.",
+            "srilaPrabhupada": "Srila Prabhupada",
+            "srilaPrabhupadaDesc": "Founder-Acharya of ISKCON.",
+            "puranas": "Puranas",
+            "puranasDesc": "Ancient Vedic histories.",
+            "miscellaneous": "Miscellaneous",
+            "miscellaneousDesc": "Various spiritual moments."
+        }
+    }
+}
