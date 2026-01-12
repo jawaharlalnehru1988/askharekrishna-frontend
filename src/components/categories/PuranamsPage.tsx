@@ -3,84 +3,85 @@
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
 import { useState } from "react";
+import { getDictionary } from "@/lib/dictionaries";
 
-const PURANAS = [
-    {
-        id: "srimad-bhagavatam",
-        title: "Srimad Bhagavatam",
-        verses: "18,000 Verses",
-        category: "Maha Purana",
-        categoryColor: "text-primary bg-primary/10 ring-primary/20",
-        description: "The pristine glory of the Lord. The amala purana, spotless and pure.",
-        duration: "12h 45m",
-        imageColor: "bg-[#fff8e6] dark:bg-[#2e2616]",
-        icon: "menu_book",
-        iconColor: "text-primary/40",
-    },
-    {
-        id: "garuda-puranam",
-        title: "Garuda Puranam",
-        verses: "19,000 Verses",
-        category: "Vaishnava",
-        categoryColor: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 ring-blue-700/10 dark:ring-blue-300/20",
-        description: "Conversations between Lord Vishnu and Garuda on the afterlife.",
-        duration: "12h 45m",
-        imageColor: "bg-[#eefcfc] dark:bg-[#162929]",
-        icon: "flight",
-        iconColor: "text-[#5c9ea0]/40",
-    },
-    {
-        id: "vishnu-puranam",
-        title: "Vishnu Puranam",
-        verses: "23,000 Verses",
-        category: "Sattvic",
-        categoryColor: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/30 ring-purple-700/10 dark:ring-purple-300/20",
-        description: "Detailed accounts of the ten avatars of Lord Vishnu.",
-        duration: "18h 20m",
-        imageColor: "bg-[#fceeff] dark:bg-[#2d162e]",
-        icon: "spa",
-        iconColor: "text-[#a05c9e]/40",
-    },
-    {
-        id: "padma-puranam",
-        title: "Padma Puranam",
-        verses: "55,000 Verses",
-        category: "Ancient",
-        categoryColor: "text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 ring-red-700/10 dark:ring-red-300/20",
-        description: "The second largest Purana, detailing cosmology and devotion.",
-        duration: "24h 10m",
-        imageColor: "bg-[#fff2f2] dark:bg-[#2e1a1a]",
-        icon: "local_florist",
-        iconColor: "text-[#a05c5c]/40",
-    },
-    {
-        id: "brahma-vaivarta",
-        title: "Brahma Vaivarta",
-        verses: null,
-        category: "Creation",
-        categoryColor: "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/30 ring-sky-700/10 dark:ring-sky-300/20",
-        description: "Describes the creation of the universe and Krishna's pastimes.",
-        duration: "16h 35m",
-        imageColor: "bg-[#f0f9ff] dark:bg-[#1a262e]",
-        icon: "water_drop",
-        iconColor: "text-[#5c8ca0]/40",
-    },
-    {
-        id: "bhavishya-puranam",
-        title: "Bhavishya Puranam",
-        verses: null,
-        category: "Prophecy",
-        categoryColor: "text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/30 ring-yellow-700/10 dark:ring-yellow-300/20",
-        description: "Contains prophecies regarding the future of the world.",
-        duration: "9h 15m",
-        imageColor: "bg-[#fffdf0] dark:bg-[#2e2b1a]",
-        icon: "visibility",
-        iconColor: "text-[#a0955c]/40",
-    },
+export default function PuranamsPage({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
+    const { navbar: n, common: c, home: h, puranams: p } = dictionary;
 
-];
-
-export default function PuranamsPage() {
+    const PURANAS = [
+        {
+            id: "srimad-bhagavatam",
+            title: p.items["srimad-bhagavatam"].title,
+            verses: p.items["srimad-bhagavatam"].verses,
+            category: p.items["srimad-bhagavatam"].category,
+            categoryColor: "text-primary bg-primary/10 ring-primary/20",
+            description: p.items["srimad-bhagavatam"].description,
+            duration: "12h 45m",
+            imageColor: "bg-[#fff8e6] dark:bg-[#2e2616]",
+            icon: "menu_book",
+            iconColor: "text-primary/40",
+        },
+        {
+            id: "garuda-puranam",
+            title: p.items["garuda-puranam"].title,
+            verses: p.items["garuda-puranam"].verses,
+            category: p.items["garuda-puranam"].category,
+            categoryColor: "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 ring-blue-700/10 dark:ring-blue-300/20",
+            description: p.items["garuda-puranam"].description,
+            duration: "12h 45m",
+            imageColor: "bg-[#eefcfc] dark:bg-[#162929]",
+            icon: "flight",
+            iconColor: "text-[#5c9ea0]/40",
+        },
+        {
+            id: "vishnu-puranam",
+            title: p.items["vishnu-puranam"].title,
+            verses: p.items["vishnu-puranam"].verses,
+            category: p.items["vishnu-puranam"].category,
+            categoryColor: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/30 ring-purple-700/10 dark:ring-purple-300/20",
+            description: p.items["vishnu-puranam"].description,
+            duration: "18h 20m",
+            imageColor: "bg-[#fceeff] dark:bg-[#2d162e]",
+            icon: "spa",
+            iconColor: "text-[#a05c9e]/40",
+        },
+        {
+            id: "padma-puranam",
+            title: p.items["padma-puranam"].title,
+            verses: p.items["padma-puranam"].verses,
+            category: p.items["padma-puranam"].category,
+            categoryColor: "text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 ring-red-700/10 dark:ring-red-300/20",
+            description: p.items["padma-puranam"].description,
+            duration: "24h 10m",
+            imageColor: "bg-[#fff2f2] dark:bg-[#2e1a1a]",
+            icon: "local_florist",
+            iconColor: "text-[#a05c5c]/40",
+        },
+        {
+            id: "brahma-vaivarta",
+            title: p.items["brahma-vaivarta"].title,
+            verses: null,
+            category: p.items["brahma-vaivarta"].category,
+            categoryColor: "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/30 ring-sky-700/10 dark:ring-sky-300/20",
+            description: p.items["brahma-vaivarta"].description,
+            duration: "16h 35m",
+            imageColor: "bg-[#f0f9ff] dark:bg-[#1a262e]",
+            icon: "water_drop",
+            iconColor: "text-[#5c8ca0]/40",
+        },
+        {
+            id: "bhavishya-puranam",
+            title: p.items["bhavishya-puranam"].title,
+            verses: null,
+            category: p.items["bhavishya-puranam"].category,
+            categoryColor: "text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/30 ring-yellow-700/10 dark:ring-yellow-300/20",
+            description: p.items["bhavishya-puranam"].description,
+            duration: "9h 15m",
+            imageColor: "bg-[#fffdf0] dark:bg-[#2e2b1a]",
+            icon: "visibility",
+            iconColor: "text-[#a0955c]/40",
+        },
+    ];
     // We can add state for the audio player later, for now we render the UI as static-ish like the reference
     return (
         <div className="flex flex-col min-h-screen">
@@ -90,19 +91,19 @@ export default function PuranamsPage() {
                     {/* Breadcrumbs */}
                     <div className="flex items-center gap-2 pb-6 text-sm">
                         <Link href="/" className="text-text-sub-light dark:text-text-sub-dark hover:underline">
-                            Home
+                            {c.home}
                         </Link>
                         <span className="text-text-sub-light dark:text-text-sub-dark">/</span>
-                        <span className="font-medium text-primary">Puranams</span>
+                        <span className="font-medium text-primary">{n.puranams}</span>
                     </div>
 
                     {/* Page Heading */}
                     <div className="mb-10">
                         <h1 className="text-4xl md:text-5xl font-black tracking-tight text-text-main-light dark:text-text-main-dark mb-3">
-                            Sacred Puranams
+                            {p.title}
                         </h1>
                         <p className="text-lg text-text-sub-light dark:text-text-sub-dark max-w-2xl">
-                            Timeless wisdom for the modern soul. Dive into the ancient histories of the universe and reconnect with the divine.
+                            {p.description}
                         </p>
                     </div>
 
@@ -116,7 +117,7 @@ export default function PuranamsPage() {
                                 </span>
                                 <input
                                     className="w-full rounded-xl border-none bg-surface-light dark:bg-surface-dark py-3 pl-12 pr-4 text-text-main-light dark:text-text-main-dark shadow-sm ring-1 ring-inset ring-gray-200 dark:ring-[#3a3020] placeholder:text-text-sub-light dark:placeholder:text-[#6b5d40] focus:ring-2 focus:ring-primary focus:outline-none transition-all"
-                                    placeholder="Search for a Purana (e.g., Srimad Bhagavatam)..."
+                                    placeholder={`${p.searchPlaceholder}...`}
                                     type="text"
                                 />
                             </label>
@@ -125,16 +126,16 @@ export default function PuranamsPage() {
                         {/* Filter Chips */}
                         <div className="flex flex-wrap gap-2">
                             <button className="rounded-xl bg-primary text-white px-5 py-2 text-sm font-medium shadow-sm hover:opacity-90 transition-opacity">
-                                All
+                                {p.all}
                             </button>
                             <button className="rounded-xl bg-surface-light dark:bg-surface-dark text-text-main-light dark:text-text-main-dark ring-1 ring-inset ring-gray-200 dark:ring-[#3a3020] px-5 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#352b1b] transition-colors">
-                                Popular
+                                {p.popular}
                             </button>
                             <button className="rounded-xl bg-surface-light dark:bg-surface-dark text-text-main-light dark:text-text-main-dark ring-1 ring-inset ring-gray-200 dark:ring-[#3a3020] px-5 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#352b1b] transition-colors">
-                                Recent
+                                {p.recent}
                             </button>
                             <button className="rounded-xl bg-surface-light dark:bg-surface-dark text-text-main-light dark:text-text-main-dark ring-1 ring-inset ring-gray-200 dark:ring-[#3a3020] px-5 py-2 text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#352b1b] transition-colors">
-                                Favorites
+                                {p.favorites}
                             </button>
                         </div>
                     </div>
@@ -192,7 +193,7 @@ export default function PuranamsPage() {
                                                 </div>
                                                 <button className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-primary/90 transition-colors">
                                                     <span className="material-symbols-outlined text-[20px]">play_arrow</span>
-                                                    Listen
+                                                    {p.listenNow}
                                                 </button>
                                             </>
                                         ) : (
@@ -214,7 +215,7 @@ export default function PuranamsPage() {
                     {/* Pagination/Load More */}
                     <div className="mt-16 flex justify-center">
                         <button className="flex items-center gap-2 rounded-xl border border-[#e5e0d5] dark:border-[#3a3020] bg-surface-light dark:bg-surface-dark px-6 py-3 text-sm font-medium text-text-main-light dark:text-text-main-dark hover:bg-gray-50 dark:hover:bg-[#352b1b] transition-colors shadow-sm">
-                            Load More Puranams
+                            {p.loadMore}
                             <span className="material-symbols-outlined text-sm">expand_more</span>
                         </button>
                     </div>
@@ -234,10 +235,10 @@ export default function PuranamsPage() {
                         />
                         <div className="hidden sm:block">
                             <p className="text-sm font-semibold text-text-main-light dark:text-text-main-dark truncate">
-                                Canto 1, Chapter 1
+                                {p.player.trackInfo.replace("{canto}", "1").replace("{chapter}", "1")}
                             </p>
                             <p className="text-xs text-text-sub-light dark:text-text-sub-dark truncate">
-                                Srimad Bhagavatam
+                                {p.items["srimad-bhagavatam"].title}
                             </p>
                         </div>
                     </div>

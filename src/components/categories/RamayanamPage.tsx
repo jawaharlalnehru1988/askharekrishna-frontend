@@ -1,72 +1,68 @@
 import Link from "next/link";
+import { getDictionary } from "@/lib/dictionaries";
 
-const KANDAS = [
-    {
-        id: "01",
-        title: "Bala Kanda",
-        subtitle: "Childhood & Beginnings",
-        icon: "child_care",
-        sargas: 77,
-        description:
-            "The birth of Lord Rama, his education under Sage Vashistha, and his divine marriage to Sita Devi.",
-    },
-    {
-        id: "02",
-        title: "Ayodhya Kanda",
-        subtitle: "Life in Ayodhya & Exile",
-        icon: "castle",
-        sargas: 119,
-        description:
-            "Kaikeyi’s boons, Rama’s exile, and Bharata placing Rama’s sandals on the throne.",
-    },
-    {
-        id: "03",
-        title: "Aranya Kanda",
-        subtitle: "Forest Life",
-        icon: "forest",
-        sargas: 75,
-        description:
-            "Life in the forest, Surpanakha episode, golden deer, and Sita’s abduction.",
-    },
-    {
-        id: "04",
-        title: "Kishkindha Kanda",
-        subtitle: "Alliance with Sugriva",
-        icon: "handshake",
-        sargas: 67,
-        description:
-            "Meeting Hanuman, Sugriva’s coronation, and the search for Sita Devi.",
-    },
-    {
-        id: "05",
-        title: "Sundara Kanda",
-        subtitle: "Hanuman’s Journey",
-        icon: "flight_takeoff",
-        sargas: 68,
-        description:
-            "Hanuman’s leap to Lanka, discovery of Sita, and burning of Lanka.",
-    },
-    {
-        id: "06",
-        title: "Yuddha Kanda",
-        subtitle: "War with Ravana",
-        icon: "swords",
-        sargas: 128,
-        description:
-            "The great war, defeat of Ravana, and return to Ayodhya.",
-    },
-    {
-        id: "07",
-        title: "Uttara Kanda",
-        subtitle: "Post-war Life",
-        icon: "auto_stories",
-        sargas: 111,
-        description:
-            "Rama Rajya, Lava & Kusha, and divine departure.",
-    },
-];
+export default function RamayanamPage({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
+    const { ramayanam: r, common: c } = dictionary;
 
-export default function RamayanamPage() {
+    const KANDAS = [
+        {
+            id: "01",
+            title: r.kandas.bala.title,
+            subtitle: r.kandas.bala.subtitle,
+            icon: "child_care",
+            sargas: 77,
+            description: r.kandas.bala.description,
+        },
+        {
+            id: "02",
+            title: r.kandas.ayodhya.title,
+            subtitle: r.kandas.ayodhya.subtitle,
+            icon: "castle",
+            sargas: 119,
+            description: r.kandas.ayodhya.description,
+        },
+        {
+            id: "03",
+            title: r.kandas.aranya.title,
+            subtitle: r.kandas.aranya.subtitle,
+            icon: "forest",
+            sargas: 75,
+            description: r.kandas.aranya.description,
+        },
+        {
+            id: "04",
+            title: r.kandas.kishkindha.title,
+            subtitle: r.kandas.kishkindha.subtitle,
+            icon: "handshake",
+            sargas: 67,
+            description: r.kandas.kishkindha.description,
+        },
+        {
+            id: "05",
+            title: r.kandas.sundara.title,
+            subtitle: r.kandas.sundara.subtitle,
+            icon: "flight_takeoff",
+            sargas: 68,
+            description: r.kandas.sundara.description,
+        },
+        {
+            id: "06",
+            title: r.kandas.yuddha.title,
+            subtitle: r.kandas.yuddha.subtitle,
+            icon: "swords",
+            sargas: 128,
+            description: r.kandas.yuddha.description,
+        },
+        {
+            id: "07",
+            title: r.kandas.uttara.title,
+            subtitle: r.kandas.uttara.subtitle,
+            icon: "auto_stories",
+            sargas: 111,
+            description: r.kandas.uttara.description,
+        },
+    ];
+
     return (
         <>
             {/* Breadcrumb + Hero */}
@@ -78,12 +74,12 @@ export default function RamayanamPage() {
                         <ol className="flex items-center space-x-2">
                             <li>
                                 <Link href="/" className="hover:text-primary transition-colors">
-                                    Home
+                                    {c.home}
                                 </Link>
                             </li>
                             <li className="text-gray-300">/</li>
                             <li className="text-text-main dark:text-white font-medium">
-                                Ramayanam
+                                {r.title}
                             </li>
                         </ol>
                     </nav>
@@ -92,18 +88,16 @@ export default function RamayanamPage() {
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div className="max-w-3xl">
                             <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4">
-                                Sri Ramayanam
+                                {r.title}
                             </h1>
                             <p className="text-lg text-text-muted dark:text-gray-300 max-w-2xl">
-                                Dive into the eternal epic of duty, devotion, and righteousness.
-                                Listen to the sacred Kandas that chronicle the divine journey of
-                                Lord Rama, Sita Devi, Lakshmana, and Hanuman.
+                                {r.description}
                             </p>
                         </div>
 
                         <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold">
                             <span className="material-symbols-outlined">headphones</span>
-                            7 Kandas available
+                            {r.availableKandas.replace("{count}", "7")}
                         </div>
                     </div>
                 </div>
@@ -144,10 +138,10 @@ export default function RamayanamPage() {
 
                             <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-neutral-800 flex justify-between items-center">
                                 <span className="text-xs font-semibold text-text-muted uppercase">
-                                    {kanda.sargas} Sargas
+                                    {r.sargas.replace("{count}", kanda.sargas.toString())}
                                 </span>
                                 <button className="flex items-center gap-2 text-primary font-bold text-sm hover:translate-x-1 transition-transform">
-                                    Listen Now
+                                    {r.listenNow}
                                     <span className="material-symbols-outlined text-base">
                                         play_circle
                                     </span>
@@ -166,13 +160,13 @@ export default function RamayanamPage() {
                         diamond
                     </span>
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                        Immerse Yourself in Rama-lila
+                        {r.ctaTitle}
                     </h2>
                     <p className="text-text-muted max-w-2xl mx-auto mb-8">
-                        “Hearing Sri Rama’s pastimes purifies the heart and awakens love for God.”
+                        {r.ctaQuote}
                     </p>
                     <button className="h-12 px-8 rounded-xl bg-primary hover:bg-yellow-500 font-bold shadow-lg shadow-primary/25">
-                        Start with Bala Kanda
+                        {r.ctaButton}
                     </button>
                 </div>
             </section>

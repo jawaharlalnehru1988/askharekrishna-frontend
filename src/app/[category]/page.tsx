@@ -12,6 +12,8 @@ import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
 import KirtansPage from "@/components/categories/KirtansPage";
 import FAQsPage from "@/components/categories/FAQsPage";
 import StoriesPage from "@/components/categories/StoriesPage";
+import { headers } from 'next/headers';
+import { getDictionary, Locale } from '@/lib/dictionaries';
 
 // Check if category exists
 export function generateStaticParams() {
@@ -22,6 +24,10 @@ export function generateStaticParams() {
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
     const { category } = await params;
+
+    const headersList = await headers();
+    const locale = (headersList.get('x-locale') as Locale) || 'en';
+    const dictionary = await getDictionary(locale);
 
     if (!categories.includes(category)) {
         notFound();
@@ -38,7 +44,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     if (category === 'mahabharatam') {
         return (
             <Layout>
-                <MahabharatamPage />
+                <MahabharatamPage dictionary={dictionary} />
             </Layout>
         );
     }
@@ -46,47 +52,56 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     if (category === 'ramayanam') {
         return (
             <Layout>
-                <RamayanamPage />
+                <RamayanamPage dictionary={dictionary} />
             </Layout>
         );
     }
 
     if (category === 'puranams') {
         return (
-            <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
-                <Navbar />
-                <PuranamsPage />
-            </div>
+            <Layout>
+                <PuranamsPage dictionary={dictionary} />
+            </Layout>
         );
     }
 
     if (category === 'prabhupada') {
         return (
-            <PrabhupadaPage />
+            <Layout>
+                <PrabhupadaPage dictionary={dictionary} />
+            </Layout>
         );
     }
 
     if (category === 'bhagavad-gita') {
         return (
-            <BagavadGitaPage />
+            <Layout>
+                <BagavadGitaPage dictionary={dictionary} />
+            </Layout>
         );
     }
 
     if (category === 'kirtans') {
         return (
-            <KirtansPage />
+            <Layout>
+                <KirtansPage dictionary={dictionary} />
+            </Layout>
         );
     }
 
     if (category === 'faqs') {
         return (
-            <FAQsPage />
+            <Layout>
+                <FAQsPage dictionary={dictionary} />
+            </Layout>
         );
     }
 
     if (category === 'stories') {
         return (
-            <StoriesPage />
+            <Layout>
+                <StoriesPage dictionary={dictionary} />
+            </Layout>
         );
     }
 

@@ -90,5 +90,415 @@
             "faqs": "FAQs",
             "faqsDesc": "Answers to common spiritual questions."
         }
+    },
+    "ramayanam": {
+        "title": "Sri Ramayanam",
+        "description": "Dive into the eternal epic of duty, devotion, and righteousness. Listen to the sacred Kandas that chronicle the divine journey of Lord Rama, Sita Devi, Lakshmana, and Hanuman.",
+        "availableKandas": "{count} Kandas available",
+        "listenNow": "Listen Now",
+        "sargas": "{count} Sargas",
+        "ctaTitle": "Immerse Yourself in Rama-lila",
+        "ctaQuote": "“Hearing Sri Rama’s pastimes purifies the heart and awakens love for God.”",
+        "ctaButton": "Start with Bala Kanda",
+        "kandas": {
+            "bala": {
+                "title": "Bala Kanda",
+                "subtitle": "Childhood & Beginnings",
+                "description": "The birth of Lord Rama, his education under Sage Vashistha, and his divine marriage to Sita Devi."
+            },
+            "ayodhya": {
+                "title": "Ayodhya Kanda",
+                "subtitle": "Life in Ayodhya & Exile",
+                "description": "Kaikeyi’s boons, Rama’s exile, and Bharata placing Rama’s sandals on the throne."
+            },
+            "aranya": {
+                "title": "Aranya Kanda",
+                "subtitle": "Forest Life",
+                "description": "Life in the forest, Surpanakha episode, golden deer, and Sita’s abduction."
+            },
+            "kishkindha": {
+                "title": "Kishkindha Kanda",
+                "subtitle": "Alliance with Sugriva",
+                "description": "Meeting Hanuman, Sugriva’s coronation, and the search for Sita Devi."
+            },
+            "sundara": {
+                "title": "Sundara Kanda",
+                "subtitle": "Hanuman’s Journey",
+                "description": "Hanuman’s leap to Lanka, discovery of Sita, and burning of Lanka."
+            },
+            "yuddha": {
+                "title": "Yuddha Kanda",
+                "subtitle": "War with Ravana",
+                "description": "The great war, defeat of Ravana, and return to Ayodhya."
+            },
+            "uttara": {
+                "title": "Uttara Kanda",
+                "subtitle": "Post-war Life",
+                "description": "Rama Rajya, Lava & Kusha, and divine departure."
+            }
+        }
+    },
+    "mahabharatam": {
+        "title": "Sri Mahabharatam",
+        "description": "Dive into the timeless wisdom, divine pastimes, and the great war of Kurukshetra. Explore the 18 Parvas that define Dharma.",
+        "exploreParvas": "Explore the 18 Parvas",
+        "introText": "The Mahabharata is organized into eighteen books, known as Parvas. Each book unfolds a crucial phase of the great epic, from the origins of the Kuru dynasty to the final ascent to heaven. Select a Parva below to begin your journey.",
+        "listenNow": "Listen Now",
+        "startListening": "Start Listening",
+        "addToLibrary": "Add to Library",
+        "epic": "Epic",
+        "parvasCount": "18 Books",
+        "bookLabel": "Book {id}",
+        "featured": "Featured",
+        "parvas": {
+            "p01": {
+                "title": "Adi Parva",
+                "subtitle": "Book of the Beginning",
+                "description": "The origins of the Kuru lineage, the birth of the Pandavas and Kauravas, and the growing animosity between the cousins leading to the burning of the lac house."
+            },
+            "p02": {
+                "title": "Sabha Parva",
+                "subtitle": "Book of the Assembly Hall",
+                "description": "The establishment of Indraprastha, the fateful game of dice, and the exile of the Pandavas into the forest for thirteen years."
+            },
+            "p03": {
+                "title": "Vana Parva",
+                "subtitle": "Book of the Forest",
+                "description": "Also known as Aranya Parva. The twelve years of exile in the forest, featuring many sub-stories including Nala and Damayanti, and Savitri and Satyavan."
+            },
+            "p04": {
+                "title": "Virata Parva",
+                "subtitle": "Book of Virata",
+                "description": "The thirteenth year of exile spent in disguise at the court of King Virata. The Pandavas successfully remain undetected."
+            },
+            "p05": {
+                "title": "Udyoga Parva",
+                "subtitle": "Book of Effort",
+                "description": "The period of preparation for war. Peace negotiations fail despite Lord Krishna's mission to the Kaurava court."
+            },
+            "p06": {
+                "title": "Bhishma Parva",
+                "subtitle": "Book of Bhishma",
+                "description": "The first ten days of the great war. Contains the divine **Bhagavad Gita** spoken by Lord Krishna to Arjuna. Bhishma falls on a bed of arrows."
+            },
+            "p07": {
+                "title": "Drona Parva",
+                "subtitle": "Book of Drona",
+                "description": "Dronacharya commands the Kaurava army. This parva details the brutal war, the death of Abhimanyu, and the fall of Drona."
+            },
+            "p08": {
+                "title": "Karna Parva",
+                "subtitle": "Book of Karna",
+                "description": "Karna leads the Kaurava army for two days. The intense rivalry between Karna and Arjuna concludes with Karna's death."
+            },
+            "p09": {
+                "title": "Shalya Parva",
+                "subtitle": "Book of Shalya",
+                "description": "The final day of the war. Shalya commands and falls. Duryodhana is defeated by Bhima in a mace duel."
+            },
+            "p10": {
+                "title": "Sauptika Parva",
+                "subtitle": "Book of Sleeping Warriors",
+                "description": "Ashwatthama, Kripa, and Kritavarma attack the sleeping Pandava army at night, killing the sons of the Pandavas."
+            },
+            "p11": {
+                "title": "Stri Parva",
+                "subtitle": "Book of the Women",
+                "description": "The women of the Kuru and Pandava households lament the death of their husbands, sons, and kinsmen on the battlefield."
+            },
+            "p12": {
+                "title": "Shanti Parva",
+                "subtitle": "Book of Peace",
+                "description": "The longest book. Bhishma, lying on his arrow bed, instructs Yudhishthira on the duties of a king, philosophy, and liberation (Moksha)."
+            },
+            "p13": {
+                "title": "Anushasana Parva",
+                "subtitle": "Book of Instructions",
+                "description": "Final instructions from Bhishma. Contains the **Vishnu Sahasranama** (Thousand Names of Vishnu). Bhishma leaves his mortal body."
+            },
+            "p14": {
+                "title": "Ashvamedhika Parva",
+                "subtitle": "Book of the Horse Sacrifice",
+                "description": "Yudhishthira performs the Ashvamedha Yajna (Horse Sacrifice) to establish supremacy and atone for the war's sins."
+            },
+            "p15": {
+                "title": "Ashramavasika Parva",
+                "subtitle": "Book of the Hermitage",
+                "description": "Dhritarashtra, Gandhari, and Kunti leave the palace for the forest (Vanaprastha ashram) and eventually perish in a forest fire."
+            },
+            "p16": {
+                "title": "Mausala Parva",
+                "subtitle": "Book of the Clubs",
+                "description": "The fratricidal destruction of the Yadava clan through iron clubs. Lord Krishna ends his incarnation and returns to his abode."
+            },
+            "p17": {
+                "title": "Mahaprasthanika Parva",
+                "subtitle": "Book of the Great Journey",
+                "description": "The Pandavas renounce their kingdom and begin their final journey towards the Himalayas. Only Yudhishthira reaches the summit with a dog."
+            },
+            "p18": {
+                "title": "Svargarohana Parva",
+                "subtitle": "Book of the Ascent to Heaven",
+                "description": "Yudhishthira enters heaven. He sees the Kauravas there and his brothers in hell (an illusion/test). Finally, all attain their spiritual abodes."
+            }
+        }
+    },
+    "puranams": {
+        "title": "Sacred Puranams",
+        "description": "Timeless wisdom for the modern soul. Dive into the ancient histories of the universe and reconnect with the divine.",
+        "searchPlaceholder": "Search for a Purana (e.g., Srimad Bhagavatam)...",
+        "loadMore": "Load More Puranams",
+        "listenNow": "Listen Now",
+        "all": "All",
+        "popular": "Popular",
+        "recent": "Recent",
+        "favorites": "Favorites",
+        "player": {
+            "trackInfo": "Canto {canto}, Chapter {chapter}"
+        },
+        "items": {
+            "srimad-bhagavatam": {
+                "title": "Srimad Bhagavatam",
+                "verses": "18,000 Verses",
+                "category": "Maha Purana",
+                "description": "The pristine glory of the Lord. The amala purana, spotless and pure."
+            },
+            "garuda-puranam": {
+                "title": "Garuda Puranam",
+                "verses": "19,000 Verses",
+                "category": "Vaishnava",
+                "description": "Conversations between Lord Vishnu and Garuda on the afterlife."
+            },
+            "vishnu-puranam": {
+                "title": "Vishnu Puranam",
+                "verses": "23,000 Verses",
+                "category": "Sattvic",
+                "description": "Detailed accounts of the ten avatars of Lord Vishnu."
+            },
+            "padma-puranam": {
+                "title": "Padma Puranam",
+                "verses": "55,000 Verses",
+                "category": "Ancient",
+                "description": "The second largest Purana, detailing cosmology and devotion."
+            },
+            "brahma-vaivarta": {
+                "title": "Brahma Vaivarta",
+                "category": "Creation",
+                "description": "Describes the creation of the universe and Krishna's pastimes."
+            },
+            "bhavishya-puranam": {
+                "title": "Bhavishya Puranam",
+                "category": "Prophecy",
+                "description": "Contains prophecies regarding the future of the world."
+            }
+        }
+    },
+    "prabhupada": {
+        "title": "Prabhupada Teachings",
+        "description": "Dive into the timeless wisdom from the founder-acharya. Explore lectures, conversations, and personal instructions that have transformed millions of lives.",
+        "hero": {
+            "startListening": "Start Listening",
+            "saveToLibrary": "Save to Library"
+        },
+        "searchPlaceholder": "Search lectures, books...",
+        "breadcrumbAudio": "Audio",
+        "teachings": {
+            "bhagavatam": {
+                "title": "Bhagavatam Lectures",
+                "description": "Daily classes on the Srimad Bhagavatam given around the world.",
+                "count": "250+ Tracks"
+            },
+            "morningWalks": {
+                "title": "Morning Walks",
+                "description": "Informal philosophical discussions during early morning walks.",
+                "count": "45 Recordings"
+            },
+            "conversations": {
+                "title": "Conversations",
+                "description": "Room conversations with disciples, guests, and scholars.",
+                "count": "120 Dialogues"
+            },
+            "bhajans": {
+                "title": "Bhajans & Kirtans",
+                "description": "Devotional songs and ecstatic chanting recorded live.",
+                "count": "80 Tracks"
+            },
+            "arrivalAddresses": {
+                "title": "Arrival Addresses",
+                "description": "Speeches given upon arriving at various airports and temples.",
+                "count": "15 Tracks"
+            },
+            "letters": {
+                "title": "Letters",
+                "description": "Readings of correspondence offering personal guidance.",
+                "count": "500+ Readings"
+            },
+            "philosophy": {
+                "title": "Philosophy",
+                "description": "Deep dives into Vedic philosophy and metaphysics.",
+                "count": "60 Discussions"
+            },
+            "festivalLectures": {
+                "title": "Festival Lectures",
+                "description": "Special classes given during major Vaishnava festivals.",
+                "count": "30 Tracks"
+            }
+        }
+    },
+    "bhagavadGita": {
+        "title": "Srimad Bhagavad Gita",
+        "subtitle": "The Song of God",
+        "description": "Immerse yourself in the transcendental knowledge spoken by Lord Krishna to Arjuna on the battlefield of Kurukshetra.",
+        "hero": {
+            "sacredText": "Sacred Text",
+            "startListening": "Start Listening",
+            "learnMore": "Learn More"
+        },
+        "browseTopics": "Browse Topics",
+        "viewAll": "View All",
+        "listenNow": "Listen Now",
+        "player": {
+            "trackTitle": "Chapter 2: Contents of the Gita Summarized",
+            "book": "Bhagavad Gita As It Is",
+            "albumArtAlt": "Album Art"
+        },
+        "topics": {
+            "slokaRecitation": {
+                "title": "Sloka Recitation",
+                "description": "Pure Sanskrit recitation of all 700 verses in a meditative meter."
+            },
+            "slokaWithMeaning": {
+                "title": "Sloka with Meaning",
+                "description": "Verse by verse recitation followed by clear English translations."
+            },
+            "importantSlokas": {
+                "title": "Important Slokas",
+                "description": "Curated collection of the most vital verses for daily meditation."
+            },
+            "qAndA": {
+                "title": "Questions & Answers",
+                "description": "Clarifying doubts and deeper concepts of the Gita."
+            },
+            "mahatmya": {
+                "title": "Bhagavad Gita Mahatmya",
+                "description": "The Glories of the Gita from the Padma Purana."
+            },
+            "summaries": {
+                "title": "Chapter Summaries",
+                "description": "Quick overview of each chapter's core message."
+            }
+        }
+    },
+    "kirtans": {
+        "title": "Transcendental Vibrations",
+        "description": "Cleanse the dust from the mirror of the mind with our curated collection of soul-stirring kirtans and mantras.",
+        "collectionsTitle": "Kirtan Collections",
+        "collectionsDesc": "Select a category to start listening to the holy names.",
+        "listenNow": "Listen Now",
+        "stats": {
+            "tracks": "1000+ Tracks",
+            "curated": "Curated Daily"
+        },
+        "collections": {
+            "prabhupada": {
+                "title": "Prabhupada Kirtan",
+                "description": "Original recordings of Srila Prabhupada leading kirtans around the world. Pure potency."
+            },
+            "raga": {
+                "title": "Raga Based Kirtan",
+                "description": "Classical renditions of the Mahamantra set to traditional Indian Ragas for deep meditation."
+            },
+            "vaishnava": {
+                "title": "Vaishnava Songs",
+                "description": "Prayers and bhajans written by the previous Acharyas like Bhaktivinoda Thakura."
+            },
+            "devotees": {
+                "title": "Devotees Kirtan",
+                "description": "Ecstatic kirtans led by modern day senior devotees and kirtaniyas worldwide."
+            },
+            "other": {
+                "title": "Other Kirtans",
+                "description": "A diverse collection of various melodies and styles from around the globe."
+            },
+            "stotras": {
+                "title": "Stotras",
+                "description": "Sanskrit prayers, shlokas, and invocations for auspiciousness and peace."
+            }
+        }
+    },
+    "faqs": {
+        "helpCenter": "Help Center",
+        "title": "How can we help you?",
+        "description": "Find clarity and deepen your spiritual practice with answers to common inquiries from our community.",
+        "searchPlaceholder": "Search for questions, topics, or keywords...",
+        "search": "Search",
+        "browseByTopic": "Browse by Topic",
+        "browseByTopicDesc": "Select a category to explore related questions.",
+        "viewArticles": "View {count} Articles",
+        "stillHaveQuestions": {
+            "title": "Still have questions?",
+            "description": "Can't find the answer you're looking for? Our dedicated support team is here to help you on your spiritual journey.",
+            "contactSupport": "Contact Support"
+        },
+        "categories": {
+            "atheists": {
+                "title": "Questions from Atheists",
+                "description": "Logical inquiries about the existence of God, the soul, and the nature of reality from a skeptic's view."
+            },
+            "interfaith": {
+                "title": "Interfaith Questions",
+                "description": "Comparisons and commonalities between Krishna consciousness and other major world religions."
+            },
+            "youngGenerations": {
+                "title": "Young Generations",
+                "description": "Modern dilemmas, student life, career balance, and spirituality for the youth of today."
+            },
+            "devotees": {
+                "title": "Following Devotees",
+                "description": "Advanced topics on sadhana, temple etiquette, scripture study, and deepening bhakti."
+            },
+            "demigodWorship": {
+                "title": "Demigod Worship",
+                "description": "Clarifications on the position of demigods relative to the Supreme Lord Krishna."
+            },
+            "appSupport": {
+                "title": "App Support",
+                "description": "Help with subscriptions, audio playback, downloading content, and account settings."
+            }
+        }
+    },
+    "stories": {
+        "hero": {
+            "pastimes": "Transcendental Pastimes",
+            "title": "Devotional Stories",
+            "description": "Immerse yourself in the timeless narrations of the Supreme Lord and His devotees. Each story is a step towards spiritual awakening."
+        },
+        "listenNow": "Listen Now",
+        "items": {
+            "bhagavatam": {
+                "title": "Stories from Bhagavatam",
+                "description": "The spotlessly pure Purana, describing the glorious pastimes and avatars of the Supreme Lord."
+            },
+            "ramayanam": {
+                "title": "Stories from Ramayanam",
+                "description": "The epic journey of Lord Rama, illustrating the path of righteousness and devotion."
+            },
+            "mahabharatam": {
+                "title": "Stories from Mahabharatam",
+                "description": "Timeless histories of the Pandavas and the profound wisdom of the Bhagavad Gita."
+            },
+            "puranas": {
+                "title": "Stories from Puranas",
+                "description": "Ancient records of divine avatars, universal creation, and the lives of great saints."
+            },
+            "prabhupada": {
+                "title": "Stories from Prabhupada",
+                "description": "Miraculous and inspiring stories from the life and mission of the Founder-Acharya."
+            },
+            "bhagavadGita": {
+                "title": "Stories from Bhagavad Gita",
+                "description": "Illustrative stories explaining the philosophical depths of Lord Krishna's message."
+            }
+        }
     }
 }
