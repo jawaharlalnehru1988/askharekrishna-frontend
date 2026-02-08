@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, use } from 'react';
+import React, { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { AudioList } from '@/components/audio/AudioList';
-import { getAudioItemsByListId, getTopicByListId, type AudioItem } from '@/lib/bhagavad-gita-data';
+import { AudioPlayer, type AudioTrack } from '@/components/audio/AudioPlayer';
+import { getTopicByListId, type AudioItem } from '@/lib/bhagavad-gita-data';
+import { fetchAudiosByListId, formatDuration, type AudioItemAPI } from '@/lib/api';
 
 interface PageProps {
     params: Promise<{
@@ -11,15 +13,70 @@ interface PageProps {
     }>;
 }
 
+// Convert API AudioItem to local AudioItem format
+function convertAPIToAudioItem(apiItem: AudioItemAPI): AudioItem {
+    return {
+        id: apiItem.id,
+        audioListId: apiItem.audioListId,
+        title: apiItem.title,
+        description: apiItem.description,
+        language: apiItem.language,
+        duration: formatDuration(apiItem.duration), // Convert "10.15" to "10:15"
+        audioUrl: apiItem.audioUrl,
+        isPlaying: apiItem.isPlaying
+    };
+}
+
+// Convert AudioItem to AudioTrack format
+function convertToAudioTrack(item: AudioItem, topic: any): AudioTrack {
+    return {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        duration: item.duration,
+        audioUrl: item.audioUrl,
+        coverImage: topic.image,
+        artist: 'Hare Krishna',
+        chapter: item.id,
+        category: topic.title
+    };
+}
+
 export default function AudioListPage({ params }: PageProps) {
     // Unwrap the params Promise using React.use()
-    const { audioListId: audioListIdStr } = use(params);
-    const audioListId = parseInt(audioListIdStr, 10);
+    const { audioListId } = use(params); // No need to parseInt, it's already a string
     const topic = getTopicByListId(audioListId);
-    const audioItems = getAudioItemsByListId(audioListId);
-    const [currentPlayingId, setCurrentPlayingId] = useState<number | undefined>();
 
-    // Handle case where topic or audio items don't exist
+    const [audioItems, setAudioItems] = useState<AudioItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const [currentPlayingId, setCurrentPlayingId] = useState<number | undefined>();
+    const [showPlayer, setShowPlayer] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTrack, setCurrentTrack] = useState<AudioTrack | null>(null);
+
+    // Fetch audio items from API
+    useEffect(() => {
+        async function loadAudios() {
+            try {
+                setIsLoading(true);
+                setError(null);
+                const apiAudios = await fetchAudiosByListId(audioListId);
+                const convertedAudios = apiAudios.map(convertAPIToAudioItem);
+                setAudioItems(convertedAudios);
+            } catch (err) {
+                console.error('Failed to load audios:', err);
+                setError('Failed to load audio items. Please try again later.');
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        loadAudios();
+    }, [audioListId]);
+
+    // Handle case where topic doesn't exist
     if (!topic) {
         return (
             <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
@@ -34,11 +91,83 @@ export default function AudioListPage({ params }: PageProps) {
         );
     }
 
+    // Handle loading state
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-text-muted">Loading audio items...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Handle error state
+    if (error) {
+        return (
+            <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-text-main dark:text-white mb-4">Error</h1>
+                    <p className="text-text-muted mb-6">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="text-primary hover:text-primary-dark font-bold"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // Convert all audio items to tracks for the player
+    const playlist: AudioTrack[] = audioItems.map(item => convertToAudioTrack(item, topic));
+
     const handleItemClick = (item: AudioItem) => {
         console.log('Playing:', item.title);
+        const track = convertToAudioTrack(item, topic);
+        setCurrentTrack(track);
         setCurrentPlayingId(item.id);
-        // TODO: Add actual audio playback logic here
+        setShowPlayer(true);
+        setIsPlaying(true);
     };
+
+    const handleTrackChange = (track: AudioTrack) => {
+        setCurrentTrack(track);
+        setCurrentPlayingId(track.id);
+        setIsPlaying(true);
+    };
+
+    const handlePlayPause = () => {
+        setIsPlaying(!isPlaying);
+    };
+
+    const handleBack = () => {
+        setShowPlayer(false);
+        setIsPlaying(false);
+    };
+
+    // If player is active, show the AudioPlayer component
+    if (showPlayer && currentTrack) {
+        return (
+            <AudioPlayer
+                currentTrack={currentTrack}
+                playlist={playlist}
+                onTrackChange={handleTrackChange}
+                onPlayPause={handlePlayPause}
+                isPlaying={isPlaying}
+                title="Bhagavad Gita"
+                backHref="/bhagavad-gita"
+                onBack={handleBack}
+                playlistTitle="Chapters"
+                playlistTabs={[
+                    { id: 'upnext', label: 'Up Next' },
+                    { id: 'chapters', label: 'All Chapters' }
+                ]}
+            />
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main dark:text-white font-display">
@@ -90,7 +219,10 @@ export default function AudioListPage({ params }: PageProps) {
                         </div>
                     </div>
                     <div className="flex gap-3">
-                        <button className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95">
+                        <button
+                            onClick={() => audioItems.length > 0 && handleItemClick(audioItems[0])}
+                            className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
+                        >
                             <span className="material-symbols-outlined icon-filled">play_arrow</span>
                             Play All
                         </button>

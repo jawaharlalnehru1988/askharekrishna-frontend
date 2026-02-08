@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
 export interface AudioTrack {
@@ -33,6 +33,20 @@ interface AudioPlayerProps {
     onTabChange?: (tabId: string) => void;
 }
 
+// Helper function to format time in MM:SS or HH:MM:SS
+function formatTime(seconds: number): string {
+    if (isNaN(seconds) || seconds === 0) return '0:00';
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}
+
 export function AudioPlayer({
     currentTrack,
     playlist,
@@ -52,13 +66,95 @@ export function AudioPlayer({
     activeTab: externalActiveTab,
     onTabChange
 }: AudioPlayerProps) {
+    const audioRef = useRef<HTMLAudioElement>(null);
     const [internalActiveTab, setInternalActiveTab] = useState<'upnext' | 'chapters' | 'related'>('upnext');
     const activeTab = externalActiveTab || internalActiveTab;
 
     const [volume, setVolume] = useState(60);
     const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
-    const [currentTime, setCurrentTime] = useState('12:45');
-    const [progress, setProgress] = useState(35);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [progress, setProgress] = useState(0);
+    const [isBuffering, setIsBuffering] = useState(false);
+
+    // Update audio source when track changes
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.src = currentTrack.audioUrl;
+            audioRef.current.load();
+            if (isPlaying) {
+                audioRef.current.play().catch(err => console.error('Error playing audio:', err));
+            }
+        }
+    }, [currentTrack.audioUrl]);
+
+    // Handle play/pause
+    useEffect(() => {
+        if (audioRef.current) {
+            if (isPlaying) {
+                audioRef.current.play().catch(err => console.error('Error playing audio:', err));
+            } else {
+                audioRef.current.pause();
+            }
+        }
+    }, [isPlaying]);
+
+    // Update playback speed
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.playbackRate = playbackSpeed;
+        }
+    }, [playbackSpeed]);
+
+    // Update volume
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume / 100;
+        }
+    }, [volume]);
+
+    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
+
+    // Set up audio event listeners
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const handleTimeUpdate = () => {
+            setCurrentTime(audio.currentTime);
+            setProgress((audio.currentTime / audio.duration) * 100 || 0);
+        };
+
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+        };
+
+        const handleEnded = () => {
+            // Auto-play next track
+            if (currentIndex < playlist.length - 1 && onTrackChange) {
+                onTrackChange(playlist[currentIndex + 1]);
+            } else {
+                onPlayPause?.();
+            }
+        };
+
+        const handleWaiting = () => setIsBuffering(true);
+        const handleCanPlay = () => setIsBuffering(false);
+
+        audio.addEventListener('timeupdate', handleTimeUpdate);
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+        audio.addEventListener('ended', handleEnded);
+        audio.addEventListener('waiting', handleWaiting);
+        audio.addEventListener('canplay', handleCanPlay);
+
+        return () => {
+            audio.removeEventListener('timeupdate', handleTimeUpdate);
+            audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            audio.removeEventListener('ended', handleEnded);
+            audio.removeEventListener('waiting', handleWaiting);
+            audio.removeEventListener('canplay', handleCanPlay);
+        };
+    }, [currentIndex, playlist, onTrackChange, onPlayPause]);
 
     const handleTabChange = (tabId: any) => {
         if (onTabChange) {
@@ -67,8 +163,6 @@ export function AudioPlayer({
             setInternalActiveTab(tabId);
         }
     };
-
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id);
 
     const handlePrevious = () => {
         if (currentIndex > 0 && onTrackChange) {
@@ -79,6 +173,34 @@ export function AudioPlayer({
     const handleNext = () => {
         if (currentIndex < playlist.length - 1 && onTrackChange) {
             onTrackChange(playlist[currentIndex + 1]);
+        }
+    };
+
+    const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!audioRef.current) return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = x / rect.width;
+        const newTime = percentage * audioRef.current.duration;
+        audioRef.current.currentTime = newTime;
+    };
+
+    const handleVolumeChange = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        setVolume(percentage);
+    };
+
+    const handleSkipBackward = () => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+        }
+    };
+
+    const handleSkipForward = () => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + 30);
         }
     };
 
@@ -165,11 +287,11 @@ export function AudioPlayer({
                                 {/* Progress Bar Section */}
                                 <div className="flex flex-col gap-2 mb-8 group/progress">
                                     <div className="flex justify-between items-end text-xs font-medium text-text-muted-light dark:text-text-muted-dark mb-1">
-                                        <span>{currentTime}</span>
-                                        <span>{currentTrack.duration}</span>
+                                        <span>{formatTime(currentTime)}</span>
+                                        <span>{formatTime(duration)}</span>
                                     </div>
                                     {/* Visual Progress Bar */}
-                                    <div className="relative h-2 bg-[#e7dfcf] dark:bg-[#4a4030] rounded-full cursor-pointer overflow-hidden">
+                                    <div onClick={handleSeek} className="relative h-2 bg-[#e7dfcf] dark:bg-[#4a4030] rounded-full cursor-pointer overflow-hidden">
                                         <div className="absolute top-0 left-0 h-full bg-primary rounded-full" style={{ width: `${progress}%` }}></div>
                                         <div className="absolute top-0 left-0 h-full bg-white/20 opacity-0 group-hover/progress:opacity-100 transition-opacity" style={{ width: `${progress}%` }}></div>
                                     </div>
@@ -182,7 +304,7 @@ export function AudioPlayer({
                                         <span className="material-symbols-outlined text-2xl">shuffle</span>
                                     </button>
                                     {/* Skip Back 10s */}
-                                    <button aria-label="Rewind 10 seconds" className="text-text-main-light dark:text-text-main-dark hover:text-primary transition-colors p-2">
+                                    <button onClick={handleSkipBackward} aria-label="Rewind 10 seconds" className="text-text-main-light dark:text-text-main-dark hover:text-primary transition-colors p-2">
                                         <span className="material-symbols-outlined text-3xl">replay_10</span>
                                     </button>
                                     {/* Previous Chapter */}
@@ -200,7 +322,7 @@ export function AudioPlayer({
                                         <span className="material-symbols-outlined text-4xl">skip_next</span>
                                     </button>
                                     {/* Skip Forward 30s */}
-                                    <button aria-label="Fast forward 30 seconds" className="text-text-main-light dark:text-text-main-dark hover:text-primary transition-colors p-2">
+                                    <button onClick={handleSkipForward} aria-label="Fast forward 30 seconds" className="text-text-main-light dark:text-text-main-dark hover:text-primary transition-colors p-2">
                                         <span className="material-symbols-outlined text-3xl">forward_30</span>
                                     </button>
                                     {/* Repeat */}
@@ -216,7 +338,7 @@ export function AudioPlayer({
                                         <button className="text-text-muted-light dark:text-text-muted-dark group-hover/volume:text-primary transition-colors">
                                             <span className="material-symbols-outlined">volume_up</span>
                                         </button>
-                                        <div className="h-1 bg-[#e7dfcf] dark:bg-[#4a4030] rounded-full flex-1 cursor-pointer relative">
+                                        <div onClick={handleVolumeChange} className="h-1 bg-[#e7dfcf] dark:bg-[#4a4030] rounded-full flex-1 cursor-pointer relative">
                                             <div className="absolute h-full bg-text-muted-light dark:bg-text-muted-dark group-hover/volume:bg-primary transition-colors rounded-full" style={{ width: `${volume}%` }}></div>
                                         </div>
                                     </div>
@@ -249,8 +371,8 @@ export function AudioPlayer({
                                             key={tab.id}
                                             onClick={() => handleTabChange(tab.id)}
                                             className={`text-sm font-bold pb-4 -mb-[25px] transition-colors whitespace-nowrap ${activeTab === tab.id
-                                                    ? 'text-primary border-b-2 border-primary'
-                                                    : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-main-light dark:hover:text-text-main-dark'
+                                                ? 'text-primary border-b-2 border-primary'
+                                                : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-main-light dark:hover:text-text-main-dark'
                                                 }`}
                                         >
                                             {tab.label}
@@ -270,15 +392,15 @@ export function AudioPlayer({
                                             key={track.id}
                                             onClick={() => onTrackChange?.(track)}
                                             className={`group flex items-center gap-4 p-3 rounded-xl transition-colors cursor-pointer ${isCurrentTrack
-                                                    ? 'bg-primary/10 dark:bg-primary/5 border border-primary/20'
-                                                    : isPastTrack
-                                                        ? 'opacity-60 hover:opacity-100 hover:bg-background-light dark:hover:bg-background-dark/50'
-                                                        : 'hover:bg-background-light dark:hover:bg-background-dark/50'
+                                                ? 'bg-primary/10 dark:bg-primary/5 border border-primary/20'
+                                                : isPastTrack
+                                                    ? 'opacity-60 hover:opacity-100 hover:bg-background-light dark:hover:bg-background-dark/50'
+                                                    : 'hover:bg-background-light dark:hover:bg-background-dark/50'
                                                 }`}
                                         >
                                             <div className={`size-10 rounded-lg flex items-center justify-center ${isCurrentTrack
-                                                    ? 'bg-primary text-white shadow-md'
-                                                    : 'bg-[#e7dfcf] dark:bg-[#3a3222] text-text-muted-light group-hover:text-text-main-light dark:group-hover:text-text-main-dark'
+                                                ? 'bg-primary text-white shadow-md'
+                                                : 'bg-[#e7dfcf] dark:bg-[#3a3222] text-text-muted-light group-hover:text-text-main-light dark:group-hover:text-text-main-dark'
                                                 }`}>
                                                 {isCurrentTrack ? (
                                                     <div className="flex items-end gap-[2px] h-4">
@@ -304,7 +426,7 @@ export function AudioPlayer({
                                                     <span className="material-symbols-outlined text-green-600 text-lg" title="Completed">check_circle</span>
                                                 )}
                                                 {isCurrentTrack && (
-                                                    <span className="text-xs font-mono text-primary font-medium">{currentTime}</span>
+                                                    <span className="text-xs font-mono text-primary font-medium">{formatTime(currentTime)}</span>
                                                 )}
                                                 {!isCurrentTrack && !isPastTrack && (
                                                     <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full">
@@ -320,6 +442,9 @@ export function AudioPlayer({
                     </div>
                 </div>
             </main>
+
+            {/* Hidden Audio Element */}
+            <audio ref={audioRef} preload="metadata" />
         </div>
     );
 }

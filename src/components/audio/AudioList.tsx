@@ -9,7 +9,7 @@ export interface AudioItem {
     language: string;
     duration: string;
     audioUrl: string;
-    audioListId: number;
+    audioListId: string; // Changed to string to match API format
     isPlaying?: boolean;
 }
 
