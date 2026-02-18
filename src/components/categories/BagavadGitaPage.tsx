@@ -9,12 +9,12 @@ export default function BagavadGitaPage({ dictionary }: { dictionary: Awaited<Re
     const { common: c, bhagavadGita: bg } = dictionary;
 
     const localizedTopics = TOPICS.map(topic => {
-        const topicKey = topic.audioListId === 1 ? 'slokaRecitation' :
-            topic.audioListId === 2 ? 'slokaWithMeaning' :
-                topic.audioListId === 3 ? 'importantSlokas' :
-                    topic.audioListId === 4 ? 'qAndA' :
-                        topic.audioListId === 5 ? 'mahatmya' :
-                            topic.audioListId === 6 ? 'summaries' : '';
+        const topicKey = topic.audioListId === 'bgc' ? 'slokaRecitation' :
+            topic.audioListId === 'bgm' ? 'slokaWithMeaning' :
+                topic.audioListId === 'bgi' ? 'importantSlokas' :
+                    topic.audioListId === 'bgq' ? 'qAndA' :
+                        topic.audioListId === 'bgma' ? 'mahatmya' :
+                            topic.audioListId === 'bgs' ? 'summaries' : '';
 
         const t = bg.topics[topicKey as keyof typeof bg.topics];
         return {
