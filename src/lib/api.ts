@@ -20,8 +20,8 @@ export async function fetchWithLanguage(endpoint: string, locale: Locale, option
 
 // Audio API Types
 // API Endpoints:
-// - List/Create: https://api.askharekrishna.com/api/v1/audio-bg/
-// - Detail/Update/Delete: https://api.askharekrishna.com/api/v1/audio-bg/{id}/
+// - List/Create: https://api.askharekrishna.com/api/api/v1/audio-bg/
+// - Detail/Update/Delete: https://api.askharekrishna.com/api/api/v1/audio-bg/{id}/
 // - Seed: https://api.askharekrishna.com/audio-bg
 export interface AudioItemAPI {
     id: number;

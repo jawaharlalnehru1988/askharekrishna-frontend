@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const AUDIO_API_BASE_URL = 'https://api.askharekrishna.com/api/v1';
+const AUDIO_API_BASE_URL = 'https://api.askharekrishna.com/api/api/v1';
 
 export async function GET(request: Request) {
     try {
