@@ -83,7 +83,11 @@ export function AudioPlayer({
             audioRef.current.src = currentTrack.audioUrl;
             audioRef.current.load();
             if (isPlaying) {
-                audioRef.current.play().catch(err => console.error('Error playing audio:', err));
+                audioRef.current.play().catch(err => {
+                    if (err.name !== 'AbortError') {
+                        console.error('Error playing audio:', err);
+                    }
+                });
             }
         }
     }, [currentTrack.audioUrl]);
@@ -92,7 +96,11 @@ export function AudioPlayer({
     useEffect(() => {
         if (audioRef.current) {
             if (isPlaying) {
-                audioRef.current.play().catch(err => console.error('Error playing audio:', err));
+                audioRef.current.play().catch(err => {
+                    if (err.name !== 'AbortError') {
+                        console.error('Error playing audio:', err);
+                    }
+                });
             } else {
                 audioRef.current.pause();
             }
@@ -209,6 +217,17 @@ export function AudioPlayer({
         const currentSpeedIndex = speeds.indexOf(playbackSpeed);
         const nextSpeed = speeds[(currentSpeedIndex + 1) % speeds.length];
         setPlaybackSpeed(nextSpeed);
+    };
+
+    const handleDownload = () => {
+        if (currentTrack?.audioUrl) {
+            const link = document.createElement('a');
+            link.href = currentTrack.audioUrl;
+            link.download = `${currentTrack.title || 'audio'}.mp3`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     };
 
     return (
@@ -331,7 +350,7 @@ export function AudioPlayer({
                                     </button>
                                 </div>
 
-                                {/* Secondary Controls (Volume, Speed, Like) */}
+                                {/* Secondary Controls (Volume, Speed, Like, Download) */}
                                 <div className="flex items-center justify-between border-t border-[#f3efe7] dark:border-[#3a3222] pt-6">
                                     {/* Volume */}
                                     <div className="flex items-center gap-3 w-1/3 group/volume">
@@ -348,6 +367,9 @@ export function AudioPlayer({
                                     </button>
                                     {/* Actions */}
                                     <div className="flex items-center gap-4">
+                                        <button onClick={handleDownload} className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors flex flex-col items-center gap-1" title="Download">
+                                            <span className="material-symbols-outlined">download</span>
+                                        </button>
                                         <button className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors flex flex-col items-center gap-1" title="Add to Favorites">
                                             <span className="material-symbols-outlined">favorite</span>
                                         </button>
@@ -357,6 +379,16 @@ export function AudioPlayer({
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Description Section */}
+                            {currentTrack.description && (
+                                <div className="bg-card-light dark:bg-card-dark rounded-3xl p-6 shadow-sm border border-[#f3efe7] dark:border-[#3a3222] w-full">
+                                    <h3 className="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-2">Description</h3>
+                                    <p className="text-text-muted-light dark:text-text-muted-dark leading-relaxed">
+                                        {currentTrack.description}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -364,15 +396,15 @@ export function AudioPlayer({
                     <div className="lg:col-span-5 flex flex-col h-full overflow-hidden mt-8 lg:mt-0">
                         <div className="bg-card-light dark:bg-card-dark rounded-3xl shadow-sm border border-[#f3efe7] dark:border-[#3a3222] flex flex-col h-full max-h-[800px]">
                             {/* Playlist Header */}
-                            <div className="p-6 border-b border-[#f3efe7] dark:border-[#3a3222] flex items-center justify-between bg-background-light/50 dark:bg-background-dark/30 rounded-t-3xl">
-                                <div className="flex gap-6 overflow-x-auto no-scrollbar">
+                            <div className="p-4 border-b border-[#f3efe7] dark:border-[#3a3222] flex items-center justify-between bg-background-light/50 dark:bg-background-dark/30 rounded-t-3xl">
+                                <div className="flex gap-4 overflow-x-auto no-scrollbar">
                                     {playlistTabs.map((tab) => (
                                         <button
                                             key={tab.id}
                                             onClick={() => handleTabChange(tab.id)}
-                                            className={`text-sm font-bold pb-4 -mb-[25px] transition-colors whitespace-nowrap ${activeTab === tab.id
-                                                ? 'text-primary border-b-2 border-primary'
-                                                : 'text-text-muted-light dark:text-text-muted-dark hover:text-text-main-light dark:hover:text-text-main-dark'
+                                            className={`text-sm font-bold px-4 py-2 rounded-full transition-colors whitespace-nowrap ${activeTab === tab.id
+                                                ? 'bg-primary text-white'
+                                                : 'text-text-muted-light dark:text-text-muted-dark hover:bg-black/5 dark:hover:bg-white/5'
                                                 }`}
                                         >
                                             {tab.label}
