@@ -112,27 +112,27 @@ export default async function OtherWebsites() {
                                 </div>
 
                                 <div className="relative z-10 flex-grow">
-                                    <div className="flex justify-between items-start mb-10">
-                                        <div className={`w-16 h-16 rounded-2xl ${site.colors.bg.replace('/10', '/20')} ${site.colors.text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-current/30 duration-500 ring-4 ring-white dark:ring-slate-800`}>
+                                    <div className="flex justify-between items-start gap-4 mb-10">
+                                        <div className={`w-16 h-16 shrink-0 rounded-2xl ${site.colors.bg.replace('/10', '/20')} ${site.colors.text} flex items-center justify-center transition-all group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-current/30 duration-500 ring-4 ring-white dark:ring-slate-800`}>
                                             <span className="material-symbols-outlined text-4xl">{site.icon}</span>
                                         </div>
-                                        <div className={`${site.colors.text} ${site.colors.bg.replace('/10', '/20')} backdrop-blur-md px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-current/10 shadow-sm`}>
+                                        <div className="bg-slate-900 dark:bg-black text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 shadow-sm max-w-[180px] text-center">
                                             {site.tag}
                                         </div>
                                     </div>
 
-                                    <h3 className={`text-2xl font-black mb-4 transition-colors duration-300 ${site.colors.text}`}>
+                                    <h3 className="text-2xl font-black mb-4 transition-colors duration-300 text-slate-900 dark:text-white">
                                         {site.name}
                                     </h3>
-                                    {/* Readable dark color for description */}
-                                    <p className="leading-relaxed mb-8 font-semibold opacity-90 text-lg text-slate-700 dark:text-slate-300">
+                                    {/* Black color for description for better readability */}
+                                    <p className="leading-relaxed mb-8 font-semibold text-lg text-black dark:text-slate-100">
                                         {site.description}
                                     </p>
                                 </div>
 
-                                <div className={`mt-auto flex items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-primary to-amber-500 shadow-md transition-all duration-500 group-hover:from-amber-500 group-hover:to-primary group-hover:shadow-xl group-hover:scale-[1.02]`}>
+                                <div className={`mt-auto flex items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 shadow-md transition-all duration-500 group-hover:from-black group-hover:to-slate-900 group-hover:shadow-xl group-hover:scale-[1.02]`}>
                                     <span className="text-sm font-black text-white">Explore Service</span>
-                                    <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:rotate-45 group-hover:bg-white group-hover:text-primary text-white">
+                                    <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:rotate-45 group-hover:bg-white group-hover:text-black text-white">
                                         <span className="material-symbols-outlined text-sm font-bold">arrow_outward</span>
                                     </div>
                                 </div>
