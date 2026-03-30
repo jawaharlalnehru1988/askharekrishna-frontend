@@ -162,15 +162,7 @@ export function Navbar() {
           {/* Auth Actions */}
           <div className="flex items-center gap-3 shrink-0">
             <LanguageSwitcher />
-            <button className="hidden md:flex p-2 text-text-main dark:text-white hover:text-primary transition-colors">
-              <span className="material-symbols-outlined">search</span>
-            </button>
-            <Button className="flex items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-yellow-500 text-[#1b170d] text-sm font-bold tracking-wide transition-colors shadow-sm whitespace-nowrap">
-              <span className="truncate">{c.login}</span>
-            </Button>
-            <button className="lg:hidden p-2 text-text-main dark:text-white">
-              <span className="material-symbols-outlined">menu</span>
-            </button>
+
           </div>
         </div>
       </div>
