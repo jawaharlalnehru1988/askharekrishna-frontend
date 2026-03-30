@@ -12,14 +12,18 @@ export function LanguageSwitcher() {
         const protocol = window.location.protocol;
         const port = window.location.port;
 
-        let baseDomain = hostname;
+        // Strip 'www.' if present to avoid 'tamil.www' issues
+        let cleanHostname = hostname;
+        if (hostname.startsWith('www.')) {
+            cleanHostname = hostname.substring(4);
+        }
+
+        let baseDomain = cleanHostname;
 
         // If we are on a subdomain (e.g., tamil.localhost or tamil.askharekrishna.com)
         // we want to extract the base domain
-        if (hostname.includes('.')) {
-            const parts = hostname.split('.');
-            // If it's something like tamil.localhost, the parts are ['tamil', 'localhost']
-            // If it's tamil.askharekrishna.com, the parts are ['tamil', 'askharekrishna', 'com']
+        if (cleanHostname.includes('.')) {
+            const parts = cleanHostname.split('.');
             if (parts.length > 1) {
                 // If the first part is a known locale prefix, remove it
                 if (['tamil', 'ta', 'english', 'en'].includes(parts[0])) {
