@@ -20,7 +20,7 @@ export default async function Home() {
 
       <OtherWebsites />
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

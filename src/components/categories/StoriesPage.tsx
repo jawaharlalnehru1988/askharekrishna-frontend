@@ -19,6 +19,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { useLanguage } from '../providers/LanguageContext';
 import { Navbar } from '../layout/Navbar';
 import { Footer } from '../layout/Footer';
+import { useSearchParams } from 'next/navigation';
 
 interface Story {
     id: number;
@@ -38,6 +39,9 @@ type ViewMode = 'categories' | 'subtopics' | 'article';
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
     const { stories: s } = dictionary;
     const { locale } = useLanguage();
+    const searchParams = useSearchParams();
+    const categoryParam = searchParams.get('category');
+    const storyIdParam = searchParams.get('story');
 
     const [stories, setStories] = useState<Story[]>([]);
     const [loading, setLoading] = useState(true);
@@ -65,6 +69,34 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
         fetchStories();
     }, [locale]);
+
+    useEffect(() => {
+        if (!loading && stories.length > 0) {
+            if (categoryParam) {
+                setSelectedCategory(categoryParam);
+                if (storyIdParam) {
+                    const story = stories.find(s => 
+                        s.id.toString() === storyIdParam || 
+                        s.slug === storyIdParam ||
+                        s.subTopic === storyIdParam
+                    );
+                    if (story) {
+                        setSelectedStory(story);
+                        setViewMode('article');
+                    } else {
+                        setViewMode('subtopics');
+                    }
+                } else {
+                    setViewMode('subtopics');
+                }
+            } else {
+                // If on /stories without params, reset to categories
+                setViewMode('categories');
+                setSelectedCategory(null);
+                setSelectedStory(null);
+            }
+        }
+    }, [categoryParam, storyIdParam, loading, stories]);
 
     const categories = useMemo(() => {
         const uniqueCategories = Array.from(new Set(stories.map(story => story.mainTopic)));
