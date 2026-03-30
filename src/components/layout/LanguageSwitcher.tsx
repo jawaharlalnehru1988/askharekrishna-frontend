@@ -5,8 +5,12 @@ import { useLanguage } from '../providers/LanguageContext';
 
 export function LanguageSwitcher() {
     const { locale } = useLanguage();
+    const [isNavigating, setIsNavigating] = React.useState(false);
 
     const toggleLanguage = () => {
+        if (isNavigating) return;
+        setIsNavigating(true);
+
         const nextLocale = locale === 'en' ? 'ta' : 'en';
         const hostname = window.location.hostname;
         const protocol = window.location.protocol;
@@ -33,7 +37,13 @@ export function LanguageSwitcher() {
         }
 
         const newHostname = nextLocale === 'ta' ? `tamil.${baseDomain}` : baseDomain;
-        const newUrl = `${protocol}//${newHostname}${port ? `:${port}` : ''}${window.location.pathname}${window.location.search}`;
+
+        // Redirect to home page if not already there, to avoid missing translations/articles
+        const isHomePage = window.location.pathname === '/';
+        const destinationPath = '/';
+        const destinationSearch = isHomePage ? window.location.search : '';
+
+        const newUrl = `${protocol}//${newHostname}${port ? `:${port}` : ''}${destinationPath}${destinationSearch}`;
 
         window.location.href = newUrl;
     };
@@ -41,9 +51,16 @@ export function LanguageSwitcher() {
     return (
         <button
             onClick={toggleLanguage}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-light dark:border-border-dark text-xs font-bold hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
+            disabled={isNavigating}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-light dark:border-border-dark text-xs font-bold transition-colors ${
+                isNavigating 
+                ? 'opacity-50 cursor-not-allowed bg-surface-light dark:bg-surface-dark' 
+                : 'hover:bg-surface-light dark:hover:bg-surface-dark'
+            }`}
         >
-            <span className="material-symbols-outlined text-sm">language</span>
+            <span className={`material-symbols-outlined text-sm ${isNavigating ? 'animate-spin' : ''}`}>
+                {isNavigating ? 'progress_activity' : 'language'}
+            </span>
             {locale === 'en' ? 'தமிழ்' : 'English'}
         </button>
     );
