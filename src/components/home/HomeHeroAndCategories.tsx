@@ -35,37 +35,59 @@ const ICON_MAPPER: Record<string, string> = {
 
 export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [stories, setStories] = useState<Story[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [stories, setStories] = React.useState<Story[]>([]);
+    const [debateArticles, setDebateArticles] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
 
-    useEffect(() => {
-        const fetchStories = async () => {
+    React.useEffect(() => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setStories(data);
+                const [storiesRes, debateRes] = await Promise.all([
+                    fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`),
+                    fetch(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`)
+                ]);
+
+                if (storiesRes.ok) {
+                    const storiesData = await storiesRes.json();
+                    setStories(storiesData);
+                }
+
+                if (debateRes.ok) {
+                    const debateData = await debateRes.json();
+                    // The debate API returns an object with a results array
+                    setDebateArticles(debateData.results || []);
                 }
             } catch (err) {
-                console.error('Home stories fetch failed:', err);
+                console.error('Home data fetch failed:', err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchStories();
+        fetchData();
     }, [locale]);
 
-    const categories: Category[] = useMemo(() => {
+    const storyCategories: Category[] = React.useMemo(() => {
         const uniqueTopics = Array.from(new Set(stories.map(s => s.mainTopic)));
         return uniqueTopics.map(topic => ({
             title: topic,
             description: h.categories.storiesDesc || "Explore divine pastimes and teachings",
-            backgroundImage: DEFAULT_CATEGORY_IMAGE, // Can be refined to use specific images if mapping is provided
+            backgroundImage: DEFAULT_CATEGORY_IMAGE,
             icon: ICON_MAPPER[topic] || "book_2",
             href: `/stories?category=${encodeURIComponent(topic)}`
         }));
     }, [stories, h.categories]);
+
+    const debateCategories: Category[] = React.useMemo(() => {
+        const uniqueTopics = Array.from(new Set(debateArticles.map(a => a.mainTopic)));
+        return uniqueTopics.map(topic => ({
+            title: topic,
+            description: h.debateDesc || "Deep dives into Vedic logic and philosophy",
+            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2", // Use a placeholder or mapping
+            icon: "gavel",
+            href: `/faqs?category=${encodeURIComponent(topic)}`
+        }));
+    }, [debateArticles, h.debateDesc]);
 
     return (
         <>
@@ -79,31 +101,24 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                         }}
                     >
                         <div className="relative z-10 flex flex-col items-center gap-6 max-w-3xl animate-fade-in-up">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white text-xs font-medium tracking-wider uppercase mb-2">
-                                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                                {h.hero.liveKirtan}
-                            </div>
+                            {h.hero.liveKirtan && (
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white text-xs font-medium tracking-wider uppercase mb-2">
+                                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                    {h.hero.liveKirtan}
+                                </div>
+                            )}
                             <h1 className="text-white text-4xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight drop-shadow-md">
                                 {h.hero.title}<br /> <span className="text-primary">{h.hero.subtitle}</span>
                             </h1>
                             <p className="max-w-2xl text-lg font-medium leading-relaxed text-gray-100 md:text-xl drop-shadow">
                                 {h.hero.description}
                             </p>
-                            {/* <div className="flex flex-col w-full gap-4 mt-4 sm:flex-row justify-center">
-                                <button className="flex items-center justify-center rounded-xl h-12 md:h-14 px-8 bg-primary hover:bg-yellow-500 text-[#1b170d] text-base font-bold tracking-wide transition-all hover:scale-105 shadow-lg shadow-primary/25 cursor-pointer">
-                                    <span className="material-symbols-outlined mr-2">play_circle</span>
-                                    {h.hero.startListening}
-                                </button>
-                                <button className="flex items-center justify-center rounded-xl h-12 md:h-14 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold tracking-wide transition-all cursor-pointer">
-                                    {h.hero.exploreLibrary}
-                                </button>
-                            </div> */}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Categories Header */}
+            {/* Stories Categories Header */}
             <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
                     <div>
@@ -116,8 +131,8 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                 </div>
             </div>
 
-            {/* Categories Grid */}
-            <div className="w-full bg-background-light dark:bg-background-dark pb-20">
+            {/* Stories Categories Grid */}
+            <div className="w-full bg-background-light dark:bg-background-dark pb-12">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8">
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         {loading ? (
@@ -129,7 +144,7 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                                 </div>
                             ))
                         ) : (
-                            categories.map((category) => (
+                            storyCategories.map((category) => (
                                 <Link
                                     key={category.title}
                                     href={category.href}
@@ -161,6 +176,56 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                     </div>
                 </div>
             </div>
+
+            {/* Debate Categories Header */}
+            {!loading && debateArticles.length > 0 && (
+                <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
+                    <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
+                        <div>
+                            <h2 className="text-2xl font-bold tracking-tight text-text-main dark:text-white md:text-3xl leading-tight">{h.debateTopics}</h2>
+                            <p className="mt-2 text-text-muted dark:text-gray-400 font-medium">{h.debateDesc}</p>
+                        </div>
+                        <Link href="/faqs" className="hidden font-bold transition-colors sm:flex text-primary hover:text-yellow-600 text-sm items-center gap-1">
+                            {h.viewAll} <span className="material-symbols-outlined text-base">arrow_forward</span>
+                        </Link>
+                    </div>
+                </div>
+            )}
+
+            {/* Debate Categories Grid */}
+            {!loading && debateArticles.length > 0 && (
+                <div className="w-full bg-background-light dark:bg-background-dark pb-20">
+                    <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                            {debateCategories.map((category) => (
+                                <Link
+                                    key={category.title}
+                                    href={category.href}
+                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary transition-all duration-300"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                            <span className="material-symbols-outlined text-2xl">{category.icon}</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
+                                                {category.title}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <p className="mt-2 text-sm text-text-muted dark:text-gray-400 line-clamp-2">
+                                        {category.description}
+                                    </p>
+                                    <div className="mt-4 flex items-center text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span>Read Articles</span>
+                                        <span className="material-symbols-outlined text-base ml-1">arrow_forward</span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

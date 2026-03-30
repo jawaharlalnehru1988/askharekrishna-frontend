@@ -92,7 +92,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     if (category === 'faqs') {
         return (
             <Layout>
-                <FAQsPage dictionary={dictionary} />
+                <FAQsPage dictionary={dictionary} locale={locale} />
             </Layout>
         );
     }

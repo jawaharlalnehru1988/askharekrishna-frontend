@@ -32,10 +32,6 @@ export default async function FAQTopicPage({
         notFound();
     }
 
-    // Validate topic
-    if (!validTopics.includes(topic)) {
-        notFound();
-    }
-
+    // Pass the topic (slug) to the detail page, which will handle both static and dynamic lookups
     return <FAQDetail topic={topic} />;
 }

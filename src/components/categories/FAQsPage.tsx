@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getDictionary } from "@/lib/dictionaries";
 const FAQ_CATEGORIES = [
     {
@@ -66,8 +66,55 @@ const FAQ_CATEGORIES = [
     }
 ];
 
-export default function FAQsPage({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) {
+interface Article {
+    id: number;
+    mainTopic: string;
+    subTopic: string;
+    article: string;
+    slug: string;
+    order: number;
+}
+
+export default function FAQsPage({ 
+    dictionary,
+    locale 
+}: { 
+    dictionary: Awaited<ReturnType<typeof getDictionary>>,
+    locale: string 
+}) {
     const { common: c, faqs: f } = dictionary;
+    const [articles, setArticles] = useState<Article[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setArticles(data.results || []);
+                }
+            } catch (err) {
+                console.error('FAQ articles fetch failed:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchArticles();
+    }, [locale]);
+
+    // Group articles by mainTopic
+    const groupedArticles = useMemo(() => {
+        const groups: Record<string, Article[]> = {};
+        articles.forEach(article => {
+            if (!groups[article.mainTopic]) {
+                groups[article.mainTopic] = [];
+            }
+            groups[article.mainTopic].push(article);
+        });
+        return groups;
+    }, [articles]);
 
     const localizedCategories = [
         {
@@ -139,8 +186,50 @@ export default function FAQsPage({ dictionary }: { dictionary: Awaited<ReturnTyp
                     </div>
                 </section>
 
-                {/* FAQ Categories Grid */}
-                <section className="w-full bg-background-light dark:bg-background-dark pb-20">
+                {/* Dynamic FAQ Topics Section */}
+                {!loading && Object.keys(groupedArticles).length > 0 && (
+                    <section className="w-full bg-background-light dark:bg-background-dark pb-12">
+                        <div className="max-w-[1080px] mx-auto px-4 md:px-10">
+                            <div className="flex flex-col mb-8 px-2 border-l-4 border-primary pl-6">
+                                <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">Philosophical & Debate Articles</h3>
+                                <p className="text-text-muted dark:text-gray-400 mt-1">Deep dives into Vedic logic, atheism, and comparative theology.</p>
+                            </div>
+                            
+                            <div className="flex flex-col gap-12">
+                                {Object.entries(groupedArticles).map(([mainTopic, topicArticles]) => (
+                                    <div key={mainTopic} className="flex flex-col gap-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                                                <span className="material-symbols-outlined">menu_book</span>
+                                            </div>
+                                            <h4 className="text-xl font-bold text-text-main dark:text-white">{mainTopic}</h4>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {topicArticles.map((article) => (
+                                                <Link key={article.id} href={`/faqs/${article.slug}`} className="group relative flex flex-col p-6 bg-surface-light dark:bg-surface-dark border border-[#f3efe7] dark:border-gray-800 rounded-2xl hover:shadow-lg hover:border-primary/30 transition-all duration-300">
+                                                    <h5 className="text-lg font-bold text-text-main dark:text-white mb-3 group-hover:text-primary transition-colors">
+                                                        {article.subTopic}
+                                                    </h5>
+                                                    <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+                                                        {article.article}
+                                                    </p>
+                                                    <div className="flex items-center text-xs font-semibold text-primary mt-auto uppercase tracking-wider">
+                                                        <span>Read More</span>
+                                                        <span className="material-symbols-outlined ml-1 text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                                    </div>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Original FAQ Categories Grid (Fallback/Static) */}
+                <section className="w-full bg-background-light dark:bg-background-dark pb-20 mt-12">
                     <div className="max-w-[1080px] mx-auto px-4 md:px-10">
                         <div className="flex flex-col mb-8 px-2">
                             <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">{f.browseByTopic}</h3>
