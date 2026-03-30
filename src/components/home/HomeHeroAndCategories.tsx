@@ -89,7 +89,7 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                             <p className="max-w-2xl text-lg font-medium leading-relaxed text-gray-100 md:text-xl drop-shadow">
                                 {h.hero.description}
                             </p>
-                            <div className="flex flex-col w-full gap-4 mt-4 sm:flex-row justify-center">
+                            {/* <div className="flex flex-col w-full gap-4 mt-4 sm:flex-row justify-center">
                                 <button className="flex items-center justify-center rounded-xl h-12 md:h-14 px-8 bg-primary hover:bg-yellow-500 text-[#1b170d] text-base font-bold tracking-wide transition-all hover:scale-105 shadow-lg shadow-primary/25 cursor-pointer">
                                     <span className="material-symbols-outlined mr-2">play_circle</span>
                                     {h.hero.startListening}
@@ -97,7 +97,7 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                                 <button className="flex items-center justify-center rounded-xl h-12 md:h-14 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold tracking-wide transition-all cursor-pointer">
                                     {h.hero.exploreLibrary}
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

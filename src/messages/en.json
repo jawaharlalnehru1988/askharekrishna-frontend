@@ -3,8 +3,8 @@
         "login": "Log In",
         "search": "Search",
         "comingSoon": "Coming Soon",
-        "playAll": "Play All",
-        "listenNow": "Listen Now",
+        "playAll": "Read All",
+        "listenNow": "Read Now",
         "home": "Home"
     },
     "navbar": {
@@ -29,14 +29,14 @@
     },
     "home": {
         "hero": {
-            "liveKirtan": "Live Kirtan Available",
-            "title": "Listen. Reflect.",
+            "liveKirtan": "Live Articles Available",
+            "title": "Read. Reflect.",
             "subtitle": "Connect with Krishna.",
-            "description": "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
-            "startListening": "Start Listening",
+            "description": "Authentic spiritual article collections and transcendental vibrations for your daily devotional life.",
+            "startListening": "Start Reading",
             "exploreLibrary": "Explore Library"
         },
-        "audioCategories": "Audio Categories",
+        "audioCategories": "Article Categories",
         "audioDesc": "Explore our collection of transcendental literature.",
         "imageGalleries": "Image Galleries",
         "imageDesc": "Explore our collection of transcendental images.",
@@ -94,9 +94,9 @@
     },
     "ramayanam": {
         "title": "Sri Ramayanam",
-        "description": "Dive into the eternal epic of duty, devotion, and righteousness. Listen to the sacred Kandas that chronicle the divine journey of Lord Rama, Sita Devi, Lakshmana, and Hanuman.",
+        "description": "Dive into the eternal epic of duty, devotion, and righteousness. Read the sacred Kandas that chronicle the divine journey of Lord Rama, Sita Devi, Lakshmana, and Hanuman.",
         "availableKandas": "{count} Kandas available",
-        "listenNow": "Listen Now",
+        "listenNow": "Read Now",
         "sargas": "{count} Sargas",
         "ctaTitle": "Immerse Yourself in Rama-lila",
         "ctaQuote": "“Hearing Sri Rama’s pastimes purifies the heart and awakens love for God.”",
@@ -144,8 +144,8 @@
         "description": "Dive into the timeless wisdom, divine pastimes, and the great war of Kurukshetra. Explore the 18 Parvas that define Dharma.",
         "exploreParvas": "Explore the 18 Parvas",
         "introText": "The Mahabharata is organized into eighteen books, known as Parvas. Each book unfolds a crucial phase of the great epic, from the origins of the Kuru dynasty to the final ascent to heaven. Select a Parva below to begin your journey.",
-        "listenNow": "Listen Now",
-        "startListening": "Start Listening",
+        "listenNow": "Read Now",
+        "startListening": "Start Reading",
         "addToLibrary": "Add to Library",
         "epic": "Epic",
         "parvasCount": "18 Books",
@@ -296,9 +296,9 @@
     },
     "prabhupada": {
         "title": "Prabhupada Teachings",
-        "description": "Dive into the timeless wisdom from the founder-acharya. Explore lectures, conversations, and personal instructions that have transformed millions of lives.",
+        "description": "Dive into the timeless wisdom from the founder-acharya. Explore articles, conversations, and personal instructions that have transformed millions of lives.",
         "hero": {
-            "startListening": "Start Listening",
+            "startListening": "Start Reading",
             "saveToLibrary": "Save to Library"
         },
         "searchPlaceholder": "Search lectures, books...",
@@ -352,7 +352,7 @@
         "description": "Immerse yourself in the transcendental knowledge spoken by Lord Krishna to Arjuna on the battlefield of Kurukshetra.",
         "hero": {
             "sacredText": "Sacred Text",
-            "startListening": "Start Listening",
+            "startListening": "Start Reading",
             "learnMore": "Learn More"
         },
         "browseTopics": "Browse Topics",
@@ -474,7 +474,7 @@
             "title": "Devotional Stories",
             "description": "Immerse yourself in the timeless narrations of the Supreme Lord and His devotees. Each story is a step towards spiritual awakening."
         },
-        "listenNow": "Listen Now",
+        "listenNow": "Read Now",
         "items": {
             "bhagavatam": {
                 "title": "Stories from Bhagavatam",
