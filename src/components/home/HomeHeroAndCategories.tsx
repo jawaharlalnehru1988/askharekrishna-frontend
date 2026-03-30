@@ -15,48 +15,48 @@ interface HomeHeroAndCategoriesProps {
 
 export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h }) => {
     const categories: Category[] = [
-        {
-            title: h.categories.prabhupada,
-            description: h.categories.prabhupadaDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBqagQBWf03w4QT0Y1w3AG0j_30Ydxn9QjiUuZ55plevNKGswiaLCmWRN4JoCV6YOzUDHAxK7uioOop3fFGouh0DKsKiByK-pDA21hxpxrpPnIBsCNR4YeSbtXDslhM4-U4ANdGvIr2NSWEl3NTHiVCBJfxjd7rXPsbXc9uwvMsZQPhJnkitU4JBhJrbilmyOLBc_FRZ5XZSNkMHbso-xgyCvglAZTZ-sZ4zvevBAoet8SIHzg-bgSPe0qLCYYIHqbqtbSZl6k6vBBC",
-            icon: "record_voice_over",
-            href: "/prabhupada"
-        },
-        {
-            title: h.categories.bhagavadGita,
-            description: h.categories.bhagavadGitaDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDexfP40TDoAgtsOXQCcrayS_Zf7CrpEh2HdiPY2KbNl0aL6coVMhkQLDuK4EosMWBU8CRWnf-A6VCnf3DeA971-t6mAE_wucJIM4KEOq_Y7C5eBKqGJ5z9nBsXkSS-J_rYrjmzr4t2te_k8URBZ29M-5nRz3Z1JXYa_h376kGBH3pEoeoFnRpHCJ5gQeYwVNeuecDSz2NVrhS25X6ZZC2_uDU6wX-vGgYagLevRoW5mA7bliFIXlPH0zkSDv81Uj7a3FvbFgJ9EdvQ",
-            icon: "menu_book",
-            href: "/bhagavad-gita"
-        },
-        {
-            title: h.categories.kirtans,
-            description: h.categories.kirtansDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuLxzN2FrC7fs6qqMzdJGHNdrip8M7xKg0zbMbdMobw-SG9kF66YXZZxnQGo1iuO_sH7FOVRox1ZS44ek08EOMfU5xZBXlPs3G5Zbm9nta75iloH-mMtA6MNuMsd48dcodsk3vurqdRbAf6HH6CJNPpQkqVTYKILQYNvYx5NuJsJS5Jiyu2NuxQHlChNw9diYM5Gym5McUA0ZciPsAQWdGOihySd7HzkVRPhpWD5SpNo9UUc1uZrDBBfJePDD6bBlGx6uTRaBPAYBA",
-            icon: "music_note",
-            href: "/kirtans"
-        },
-        {
-            title: h.categories.ramayanam,
-            description: h.categories.ramayanamDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBG4uEV64C0LcJb-XH2WvsmJb0Uc4X6zle6L7An012uyfAqEGLiuJs9ufdiNIpdROVSemIlIVaWoaB_QCC8Sy7LrYB58Xxf0Eocpse0ST-3PwiitT9jyhTUwIGWxNMqP_OltpCdhVCaMxeS5JKVGXid01jXSPxHP8CsFcya2vbtszHvIzx9wux7CU9g0om_hFoTGmBXtb3NymJArJFG1OxLxBZmzfD_t6PS8PB4S0CC-CcTOwiGpGN11gW0aoKD6lhqMusshJNCGZDo",
-            icon: "history_edu",
-            href: "/ramayanam"
-        },
-        {
-            title: h.categories.mahabharatam,
-            description: h.categories.mahabharatamDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBeuBgGhjAJ1wr4d92FRI2aiPdgT3mlgP2o0NnGeKpw-GXxx9fO58GR8rgvJsWmGsEqDZcCJXVCyppcxUYKmHgzwOhz6HxLnZEwuTtYDOnVZxEVlBW266xnsEDOg9eDJEKgIhrugMsgQhvgxXUoX3TuRitu8jfMv26WxyECVq4oFRKgFwONyHp8jxtetFVY2d0Lfvdy6Op3usKlSHqg9mKNsmWKKQKLwVmMZf5rzZolHckZDHhPsbycx4IhCI5ts5dQ0V5enO4fBngo",
-            icon: "swords",
-            href: "/mahabharatam"
-        },
-        {
-            title: h.categories.puranams,
-            description: h.categories.puranamsDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX",
-            icon: "auto_stories",
-            href: "/puranams"
-        },
+        // {
+        //     title: h.categories.prabhupada,
+        //     description: h.categories.prabhupadaDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBqagQBWf03w4QT0Y1w3AG0j_30Ydxn9QjiUuZ55plevNKGswiaLCmWRN4JoCV6YOzUDHAxK7uioOop3fFGouh0DKsKiByK-pDA21hxpxrpPnIBsCNR4YeSbtXDslhM4-U4ANdGvIr2NSWEl3NTHiVCBJfxjd7rXPsbXc9uwvMsZQPhJnkitU4JBhJrbilmyOLBc_FRZ5XZSNkMHbso-xgyCvglAZTZ-sZ4zvevBAoet8SIHzg-bgSPe0qLCYYIHqbqtbSZl6k6vBBC",
+        //     icon: "record_voice_over",
+        //     href: "/prabhupada"
+        // },
+        // {
+        //     title: h.categories.bhagavadGita,
+        //     description: h.categories.bhagavadGitaDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDexfP40TDoAgtsOXQCcrayS_Zf7CrpEh2HdiPY2KbNl0aL6coVMhkQLDuK4EosMWBU8CRWnf-A6VCnf3DeA971-t6mAE_wucJIM4KEOq_Y7C5eBKqGJ5z9nBsXkSS-J_rYrjmzr4t2te_k8URBZ29M-5nRz3Z1JXYa_h376kGBH3pEoeoFnRpHCJ5gQeYwVNeuecDSz2NVrhS25X6ZZC2_uDU6wX-vGgYagLevRoW5mA7bliFIXlPH0zkSDv81Uj7a3FvbFgJ9EdvQ",
+        //     icon: "menu_book",
+        //     href: "/bhagavad-gita"
+        // },
+        // {
+        //     title: h.categories.kirtans,
+        //     description: h.categories.kirtansDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDuLxzN2FrC7fs6qqMzdJGHNdrip8M7xKg0zbMbdMobw-SG9kF66YXZZxnQGo1iuO_sH7FOVRox1ZS44ek08EOMfU5xZBXlPs3G5Zbm9nta75iloH-mMtA6MNuMsd48dcodsk3vurqdRbAf6HH6CJNPpQkqVTYKILQYNvYx5NuJsJS5Jiyu2NuxQHlChNw9diYM5Gym5McUA0ZciPsAQWdGOihySd7HzkVRPhpWD5SpNo9UUc1uZrDBBfJePDD6bBlGx6uTRaBPAYBA",
+        //     icon: "music_note",
+        //     href: "/kirtans"
+        // },
+        // {
+        //     title: h.categories.ramayanam,
+        //     description: h.categories.ramayanamDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBG4uEV64C0LcJb-XH2WvsmJb0Uc4X6zle6L7An012uyfAqEGLiuJs9ufdiNIpdROVSemIlIVaWoaB_QCC8Sy7LrYB58Xxf0Eocpse0ST-3PwiitT9jyhTUwIGWxNMqP_OltpCdhVCaMxeS5JKVGXid01jXSPxHP8CsFcya2vbtszHvIzx9wux7CU9g0om_hFoTGmBXtb3NymJArJFG1OxLxBZmzfD_t6PS8PB4S0CC-CcTOwiGpGN11gW0aoKD6lhqMusshJNCGZDo",
+        //     icon: "history_edu",
+        //     href: "/ramayanam"
+        // },
+        // {
+        //     title: h.categories.mahabharatam,
+        //     description: h.categories.mahabharatamDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBeuBgGhjAJ1wr4d92FRI2aiPdgT3mlgP2o0NnGeKpw-GXxx9fO58GR8rgvJsWmGsEqDZcCJXVCyppcxUYKmHgzwOhz6HxLnZEwuTtYDOnVZxEVlBW266xnsEDOg9eDJEKgIhrugMsgQhvgxXUoX3TuRitu8jfMv26WxyECVq4oFRKgFwONyHp8jxtetFVY2d0Lfvdy6Op3usKlSHqg9mKNsmWKKQKLwVmMZf5rzZolHckZDHhPsbycx4IhCI5ts5dQ0V5enO4fBngo",
+        //     icon: "swords",
+        //     href: "/mahabharatam"
+        // },
+        // {
+        //     title: h.categories.puranams,
+        //     description: h.categories.puranamsDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX",
+        //     icon: "auto_stories",
+        //     href: "/puranams"
+        // },
         {
             title: h.categories.stories,
             description: h.categories.storiesDesc,
@@ -64,13 +64,13 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
             icon: "book_2",
             href: "/stories"
         },
-        {
-            title: h.categories.faqs,
-            description: h.categories.faqsDesc,
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
-            icon: "live_help",
-            href: "/faqs"
-        }
+        // {
+        //     title: h.categories.faqs,
+        //     description: h.categories.faqsDesc,
+        //     backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvlbYHGCImbGkMwcIWICH_KxMlKHIsbuhY1Zxdg-ysbxgtcZ3QUZDyWEMkNuiGA8kst0BZVZeTCNQOppyP9bow31DYx-Cv7fOfXhSPPjwmBg2NZCwuZ5MbtoSPBZX9JO3A1CmYe7HJaxE44hQfbc1ZQr1DSsZ-Jj14kkVRNEdVPxmBLjkSH37P4_VRcnc6URTM2DhbXpoHg-3ADRtduTV6bviEbLPF5vjEva_sszoljkBln0v5T9Ps1_O4WepidQMNvt77n__zifMT",
+        //     icon: "live_help",
+        //     href: "/faqs"
+        // }
     ];
 
     return (
