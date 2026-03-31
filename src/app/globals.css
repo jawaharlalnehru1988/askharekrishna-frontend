@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #fcfaf8;
   --foreground: #1b170d;
@@ -26,11 +28,19 @@
   --accent-cream: #f3efe7;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1a1610;
-    --foreground: #ffffff;
-  }
+.dark {
+  --background: #1a1610;
+  --foreground: #ffffff;
+  --background-light: #221c10;
+  --background-dark: #1a1610;
+  --card-light: #2a2418;
+  --card-dark: #1a1610;
+  --surface-light: #2a2418;
+  --surface-dark: #1a1610;
+  --text-main: #eceae5;
+  --text-muted: #d1c4a6;
+  --border-light: #3d321d;
+  --border-dark: #1a1610;
 }
 
 @theme inline {

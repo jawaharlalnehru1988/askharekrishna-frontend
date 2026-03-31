@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { headers } from "next/headers";
 import { LanguageProvider } from "@/components/providers/LanguageContext";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { getDictionary, Locale } from "@/lib/dictionaries";
 
 const manrope = Manrope({
@@ -50,7 +51,9 @@ export default async function RootLayout({
       </head>
       <body className="antialiased">
         <LanguageProvider locale={locale} dictionary={dictionary}>
-          {children}
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
         </LanguageProvider>
       </body>
     </html>

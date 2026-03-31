@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Button } from '../ui/Button';
 import { useLanguage } from '../providers/LanguageContext';
+import { useTheme } from '../providers/ThemeProvider';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
 
@@ -17,6 +18,7 @@ interface Story {
 
 export function Navbar() {
   const { dictionary, locale } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const { navbar: t, common: c } = dictionary;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
@@ -162,6 +164,16 @@ export function Navbar() {
           {/* Auth Actions */}
           <div className="flex items-center gap-3 shrink-0">
             <LanguageSwitcher />
+            
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-gray-100 dark:bg-[#1a150c] text-text-muted hover:text-primary transition-all duration-300 flex items-center justify-center border border-[#f3efe7] dark:border-neutral-800"
+              aria-label="Toggle Theme"
+            >
+              <span className="material-symbols-outlined text-xl">
+                {theme === 'light' ? 'dark_mode' : 'light_mode'}
+              </span>
+            </button>
 
           </div>
         </div>
