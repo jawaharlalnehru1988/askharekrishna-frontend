@@ -3,10 +3,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../providers/LanguageContext';
+import axios from 'axios';
 
 interface Story {
     id: number;
-    mainTopic: string;
+    storyCategoryName: string;
+    mainTopicName: string;
     subTopic: string;
     slug: string;
 }
@@ -44,20 +46,16 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
             try {
                 setLoading(true);
                 const [storiesRes, debateRes] = await Promise.all([
-                    fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`),
-                    fetch(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`)
+                    axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`),
+                    axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`)
                 ]);
 
-                if (storiesRes.ok) {
-                    const storiesData = await storiesRes.json();
-                    setStories(storiesData);
-                }
+                // Handle both direct array and paginated results
+                const storiesData = Array.isArray(storiesRes.data) ? storiesRes.data : (storiesRes.data.results || []);
+                setStories(storiesData);
 
-                if (debateRes.ok) {
-                    const debateData = await debateRes.json();
-                    // The debate API returns an object with a results array
-                    setDebateArticles(debateData.results || []);
-                }
+                const debateData = Array.isArray(debateRes.data) ? debateRes.data : (debateRes.data.results || []);
+                setDebateArticles(debateData);
             } catch (err) {
                 console.error('Home data fetch failed:', err);
             } finally {
@@ -68,13 +66,13 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
     }, [locale]);
 
     const storyCategories: Category[] = React.useMemo(() => {
-        const uniqueTopics = Array.from(new Set(stories.map(s => s.mainTopic)));
-        return uniqueTopics.map(topic => ({
-            title: topic,
+        const uniqueCategories = Array.from(new Set(stories.map(s => s.storyCategoryName).filter(Boolean)));
+        return uniqueCategories.map(cat => ({
+            title: cat,
             description: h.categories.storiesDesc || "Explore divine pastimes and teachings",
             backgroundImage: DEFAULT_CATEGORY_IMAGE,
-            icon: ICON_MAPPER[topic] || "book_2",
-            href: `/stories?category=${encodeURIComponent(topic)}`
+            icon: ICON_MAPPER[cat] || "book_2",
+            href: `/stories?category=${encodeURIComponent(cat)}`
         }));
     }, [stories, h.categories]);
 

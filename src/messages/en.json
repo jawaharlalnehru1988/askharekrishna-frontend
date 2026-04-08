@@ -36,7 +36,7 @@
             "startListening": "Start Reading",
             "exploreLibrary": "Explore Library"
         },
-        "audioCategories": "Article Categories",
+        "audioCategories": "Stories / Pastimes",
         "audioDesc": "Explore our collection of transcendental literature.",
         "imageGalleries": "Image Galleries",
         "imageDesc": "Explore our collection of transcendental images.",
@@ -438,6 +438,9 @@
         "browseByTopic": "Browse by Topic",
         "browseByTopicDesc": "Select a category to explore related questions.",
         "viewArticles": "View {count} Articles",
+        "debateSectionTitle": "Philosophical & Debate Articles",
+        "debateSectionDesc": "Deep dives into Vedic logic, atheism, and comparative theology.",
+        "readMore": "Read More",
         "stillHaveQuestions": {
             "title": "Still have questions?",
             "description": "Can't find the answer you're looking for? Our dedicated support team is here to help you on your spiritual journey.",

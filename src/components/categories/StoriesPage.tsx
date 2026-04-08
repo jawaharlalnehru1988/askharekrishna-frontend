@@ -11,11 +11,15 @@ import {
     Clock,
     User,
     Home,
-    Share2
+    Share2,
+    LayoutGrid,
+    Table as TableIcon,
+    Play
 } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import axios from 'axios';
 import { getDictionary } from "@/lib/dictionaries";
 import { useLanguage } from '../providers/LanguageContext';
 import { Navbar } from '../layout/Navbar';
@@ -24,7 +28,10 @@ import { useSearchParams } from 'next/navigation';
 
 interface Story {
     id: number;
-    mainTopic: string;
+    storyCategoryName: string;
+    storyCategoryDescription: string;
+    mainTopicName: string;
+    mainTopicDescription: string;
     subTopic: string;
     article: string;
     slug: string;
@@ -35,13 +42,14 @@ interface Story {
     updated_at: string;
 }
 
-type ViewMode = 'categories' | 'subtopics' | 'article';
+type ViewMode = 'categories' | 'topics' | 'articles' | 'article';
 
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
     const { stories: s } = dictionary;
     const { locale } = useLanguage();
     const searchParams = useSearchParams();
     const categoryParam = searchParams.get('category');
+    const topicParam = searchParams.get('topic');
     const storyIdParam = searchParams.get('story');
 
     const [stories, setStories] = useState<Story[]>([]);
@@ -49,15 +57,25 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('categories');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [selectedStory, setSelectedStory] = useState<Story | null>(null);
 
     useEffect(() => {
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
-                if (!response.ok) throw new Error('Failed to fetch stories');
-                const data = await response.json();
+                let url = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`;
+                
+                // Add filters if params exist
+                if (categoryParam) {
+                    url += `&storyCategoryName=${encodeURIComponent(categoryParam)}`;
+                }
+                if (topicParam) {
+                    url += `&mainTopicName=${encodeURIComponent(topicParam)}`;
+                }
+
+                const response = await axios.get(url);
+                const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setStories(data);
                 setError(null);
             } catch (err) {
@@ -69,71 +87,103 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         };
 
         fetchStories();
-    }, [locale]);
+    }, [locale, categoryParam, topicParam]);
 
     useEffect(() => {
-        if (!loading && stories.length > 0) {
+        if (!loading) {
             if (categoryParam) {
                 setSelectedCategory(categoryParam);
-                if (storyIdParam) {
-                    const story = stories.find(s => 
-                        s.id.toString() === storyIdParam || 
-                        s.slug === storyIdParam ||
-                        s.subTopic === storyIdParam
-                    );
-                    if (story) {
-                        setSelectedStory(story);
-                        setViewMode('article');
+                if (topicParam) {
+                    setSelectedTopic(topicParam);
+                    if (storyIdParam) {
+                        const story = stories.find(s => 
+                            s.slug === storyIdParam || 
+                            s.id.toString() === storyIdParam ||
+                            s.subTopic === storyIdParam
+                        );
+                        if (story) {
+                            setSelectedStory(story);
+                            setViewMode('article');
+                        } else {
+                            setViewMode('articles');
+                        }
                     } else {
-                        setViewMode('subtopics');
+                        setViewMode('articles');
+                        setSelectedStory(null);
                     }
                 } else {
-                    setViewMode('subtopics');
+                    setViewMode('topics');
+                    setSelectedTopic(null);
+                    setSelectedStory(null);
                 }
             } else {
-                // If on /stories without params, reset to categories
                 setViewMode('categories');
                 setSelectedCategory(null);
+                setSelectedTopic(null);
                 setSelectedStory(null);
             }
         }
-    }, [categoryParam, storyIdParam, loading, stories]);
+    }, [categoryParam, topicParam, storyIdParam, loading, stories]);
 
     const categories = useMemo(() => {
-        const uniqueCategories = Array.from(new Set(stories.map(story => story.mainTopic)));
+        const uniqueCategories = Array.from(new Set(stories.map(story => story.storyCategoryName).filter(Boolean)));
         return uniqueCategories.map(name => ({
             name,
-            count: stories.filter(story => story.mainTopic === name).length,
+            count: stories.filter(story => story.storyCategoryName === name).length,
             // Generic nice image or placeholder
             image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX"
         }));
     }, [stories]);
 
-    const filteredSubtopics = useMemo(() => {
+    const topics = useMemo(() => {
         if (!selectedCategory) return [];
-        return stories.filter(story => story.mainTopic === selectedCategory);
+        const uniqueTopics = Array.from(new Set(stories.filter(s => s.storyCategoryName === selectedCategory).map(s => s.mainTopicName).filter(Boolean)));
+        return uniqueTopics.map(name => ({
+            name,
+            count: stories.filter(story => story.mainTopicName === name).length,
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
+        }));
     }, [stories, selectedCategory]);
 
+    const articles = useMemo(() => {
+        if (!selectedTopic) return [];
+        return stories.filter(story => story.mainTopicName === selectedTopic);
+    }, [stories, selectedTopic]);
+
     const handleCategoryClick = (categoryName: string) => {
-        setSelectedCategory(categoryName);
-        setViewMode('subtopics');
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('category', categoryName);
+        params.delete('topic');
+        params.delete('story');
+        window.history.pushState(null, '', `?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleTopicClick = (topicName: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('topic', topicName);
+        params.delete('story');
+        window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubtopicClick = (story: Story) => {
-        setSelectedStory(story);
-        setViewMode('article');
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('story', story.slug || story.id.toString());
+        window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleBack = () => {
+        const params = new URLSearchParams(searchParams.toString());
         if (viewMode === 'article') {
-            setViewMode('subtopics');
-            setSelectedStory(null);
-        } else if (viewMode === 'subtopics') {
-            setViewMode('categories');
-            setSelectedCategory(null);
+            params.delete('story');
+        } else if (viewMode === 'articles') {
+            params.delete('topic');
+        } else if (viewMode === 'topics') {
+            params.delete('category');
         }
+        window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -183,10 +233,16 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 {s.hero.pastimes}
                             </span>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
-                                {viewMode === 'categories' ? s.hero.title : selectedCategory}
+                                {viewMode === 'categories' ? s.hero.title : 
+                                 viewMode === 'topics' ? selectedCategory : 
+                                 viewMode === 'articles' ? selectedTopic :
+                                 selectedStory?.subTopic}
                             </h1>
                             <p className="max-w-2xl mx-auto text-lg text-text-muted dark:text-gray-300">
-                                {viewMode === 'categories' ? s.hero.description : selectedStory?.subTopic || `${filteredSubtopics.length} stories available`}
+                                {viewMode === 'categories' ? s.hero.description : 
+                                 viewMode === 'topics' ? `${topics.length} topics available` :
+                                 viewMode === 'articles' ? `${articles.length} stories available` :
+                                 selectedStory?.mainTopicName}
                             </p>
                         </div>
 
@@ -200,17 +256,48 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 Home
                             </Link>
 
-                            {viewMode !== 'categories' && (
+                            <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                            <Link
+                                href="/stories"
+                                className={`text-sm font-bold transition-colors ${viewMode === 'categories' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                            >
+                                Stories
+                            </Link>
+
+                            {selectedCategory && (
                                 <>
                                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                                    <Link
+                                        href={`/stories?category=${encodeURIComponent(selectedCategory)}`}
+                                        className={`text-sm font-bold transition-colors ${viewMode === 'topics' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                                    >
+                                        {selectedCategory}
+                                    </Link>
+                                </>
+                            )}
+
+                            {selectedTopic && (
+                                <>
+                                    <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                                    <Link
+                                        href={`/stories?category=${encodeURIComponent(selectedCategory!)}&topic=${encodeURIComponent(selectedTopic)}`}
+                                        className={`text-sm font-bold transition-colors ${viewMode === 'articles' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                                    >
+                                        {selectedTopic}
+                                    </Link>
+                                </>
+                            )}
+
+                            {viewMode !== 'categories' && (
+                                <div className="ml-auto">
                                     <button
                                         onClick={handleBack}
                                         className="group flex items-center text-sm font-bold text-primary hover:text-black dark:hover:text-white transition-colors"
                                     >
                                         <ChevronLeft className="mr-1 group-hover:-translate-x-1 transition-transform" />
-                                        {viewMode === 'article' ? 'Back to List' : 'Back to Categories'}
+                                        Back
                                     </button>
-                                </>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -243,11 +330,11 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                             <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                                                 {category.name}
                                             </h3>
-                                            <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow">
-                                                {category.count} stories to explore
+                                            <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
+                                                {stories.find(s => s.storyCategoryName === category.name)?.storyCategoryDescription || `${category.count} stories to explore`}
                                             </p>
                                             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                                                {s.listenNow} <ArrowRight size={16} className="ml-1" />
+                                                View Topics <ArrowRight size={16} className="ml-1" />
                                             </div>
                                         </div>
                                     </button>
@@ -255,34 +342,36 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             </div>
                         )}
 
-                        {/* Phase 2: Subtopics View */}
-                        {viewMode === 'subtopics' && (
-                            <div className="max-w-4xl mx-auto space-y-6">
-                                {filteredSubtopics.map((story) => (
+                        {/* Phase 2: Topics View */}
+                        {viewMode === 'topics' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {topics.map((topic, index) => (
                                     <button
-                                        key={story.id}
-                                        onClick={() => handleSubtopicClick(story)}
-                                        className="w-full group flex items-start gap-6 p-6 rounded-2xl bg-white dark:bg-[#2a2418] border border-border-light dark:border-neutral-800 hover:border-primary/40 transition-all hover:shadow-lg text-left"
+                                        key={index}
+                                        onClick={() => handleTopicClick(topic.name)}
+                                        className="group flex flex-col text-left h-full bg-white dark:bg-[#2a2418] rounded-2xl border border-border-light dark:border-neutral-800 hover:border-primary/40 transition-all hover:shadow-lg overflow-hidden"
                                     >
-                                        <div className="hidden sm:flex size-14 rounded-xl bg-primary/10 text-primary items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
-                                            <ScrollText size={28} />
-                                        </div>
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                                                {story.subTopic}
-                                            </h3>
-                                            <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-text-muted uppercase tracking-wider">
-                                                <span className="flex items-center gap-1">
-                                                    <Calendar size={14} />
-                                                    {new Date(story.created_at).toLocaleDateString()}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <User size={14} />
-                                                    Sri Krishna-Vani
-                                                </span>
+                                        <div className="relative h-48 w-full overflow-hidden">
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                                style={{ backgroundImage: `url('${topic.image}')` }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                            <div className="absolute bottom-4 left-4">
+                                                <div className="bg-primary/90 p-2 rounded-lg text-text-main backdrop-blur-sm">
+                                                    <LayoutGrid size={24} />
+                                                </div>
                                             </div>
-                                            <div className="mt-4 flex items-center text-sm font-bold text-primary">
-                                                Read Story <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                                        </div>
+                                        <div className="p-6 flex flex-col flex-grow">
+                                            <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                                                {topic.name}
+                                            </h3>
+                                            <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
+                                                {stories.find(s => s.mainTopicName === topic.name)?.mainTopicDescription || `${topic.count} stories available in this topic`}
+                                            </p>
+                                            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                                                Explore Collective <ArrowRight size={16} className="ml-1" />
                                             </div>
                                         </div>
                                     </button>
@@ -290,7 +379,72 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             </div>
                         )}
 
-                        {/* Phase 3: Article View */}
+                        {/* Phase 3: Articles Table View */}
+                        {viewMode === 'articles' && (
+                            <div className="bg-white dark:bg-[#2a2418] rounded-3xl border border-border-light dark:border-neutral-800 shadow-xl overflow-hidden">
+                                <div className="p-6 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <TableIcon size={20} className="text-primary" />
+                                        <h3 className="font-bold text-lg">Article List</h3>
+                                    </div>
+                                    <span className="text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
+                                        {articles.length} Stories
+                                    </span>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Category</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
+                                            {articles.map((story, index) => (
+                                                <tr 
+                                                    key={story.id}
+                                                    onClick={() => handleSubtopicClick(story)}
+                                                    className="group hover:bg-primary/5 cursor-pointer transition-colors"
+                                                >
+                                                    <td className="px-6 py-5 text-sm font-bold text-text-muted">
+                                                        {index + 1}
+                                                    </td>
+                                                    <td className="px-6 py-5">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-base font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
+                                                                {story.subTopic}
+                                                            </span>
+                                                            <div className="flex items-center gap-3 mt-1 md:hidden">
+                                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
+                                                                    <Calendar size={10} />
+                                                                    {new Date(story.created_at).toLocaleDateString()}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-5 hidden md:table-cell">
+                                                        <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                                                            {story.mainTopicName}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-5 text-right">
+                                                        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white rounded-xl text-xs font-bold transition-all transform active:scale-95">
+                                                            <span>Read</span>
+                                                            {story.audioPath && <Play size={12} fill="currentColor" />}
+                                                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Phase 4: Article View */}
                         {viewMode === 'article' && selectedStory && (
                             <article className="max-w-4xl mx-auto">
                                 <div className="bg-white dark:bg-[#2a2418] rounded-3xl border border-border-light dark:border-neutral-800 shadow-xl overflow-hidden relative">

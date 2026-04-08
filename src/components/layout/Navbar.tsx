@@ -8,9 +8,12 @@ import { useTheme } from '../providers/ThemeProvider';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
 
+import axios from 'axios';
+
 interface Story {
   id: number;
-  mainTopic: string;
+  storyCategoryName: string;
+  mainTopicName: string;
   subTopic: string;
   article: string;
   slug: string;
@@ -29,11 +32,10 @@ export function Navbar() {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
-        if (response.ok) {
-          const data = await response.json();
-          setStories(data);
-        }
+        const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+        // Handle both direct array and paginated results
+        const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
+        setStories(data);
       } catch (err) {
         console.error('Navbar stories fetch failed:', err);
       }
@@ -42,10 +44,10 @@ export function Navbar() {
   }, [locale]);
 
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(stories.map(s => s.mainTopic)));
+    const unique = Array.from(new Set(stories.map(s => s.storyCategoryName).filter(Boolean)));
     return unique.map(name => ({
       name,
-      items: stories.filter(s => s.mainTopic === name)
+      items: stories.filter(s => s.storyCategoryName === name)
     }));
   }, [stories]);
 

@@ -191,8 +191,8 @@ export default function FAQsPage({
                     <section className="w-full bg-background-light dark:bg-background-dark pb-12">
                         <div className="max-w-[1080px] mx-auto px-4 md:px-10">
                             <div className="flex flex-col mb-8 px-2 border-l-4 border-primary pl-6">
-                                <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">Philosophical & Debate Articles</h3>
-                                <p className="text-text-muted dark:text-gray-400 mt-1">Deep dives into Vedic logic, atheism, and comparative theology.</p>
+                                <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">{f.debateSectionTitle}</h3>
+                                <p className="text-text-muted dark:text-gray-400 mt-1">{f.debateSectionDesc}</p>
                             </div>
                             
                             <div className="flex flex-col gap-12">
@@ -215,7 +215,7 @@ export default function FAQsPage({
                                                         {article.article}
                                                     </p>
                                                     <div className="flex items-center text-xs font-semibold text-primary mt-auto uppercase tracking-wider">
-                                                        <span>Read More</span>
+                                                        <span>{f.readMore}</span>
                                                         <span className="material-symbols-outlined ml-1 text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                                     </div>
                                                 </Link>
