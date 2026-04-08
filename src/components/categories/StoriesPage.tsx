@@ -64,7 +64,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                let url = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`;
+                let url = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
                 
                 // Add filters if params exist
                 if (categoryParam) {

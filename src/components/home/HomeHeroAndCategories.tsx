@@ -46,8 +46,8 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
             try {
                 setLoading(true);
                 const [storiesRes, debateRes] = await Promise.all([
-                    axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`),
-                    axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`)
+                    axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`),
+                    axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`)
                 ]);
 
                 // Handle both direct array and paginated results
@@ -77,13 +77,13 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
     }, [stories, h.categories]);
 
     const debateCategories: Category[] = React.useMemo(() => {
-        const uniqueTopics = Array.from(new Set(debateArticles.map(a => a.mainTopic)));
-        return uniqueTopics.map(topic => ({
-            title: topic,
+        const uniqueCategories = Array.from(new Set(debateArticles.map(a => a.debateCategoryName).filter(Boolean)));
+        return uniqueCategories.map(cat => ({
+            title: cat,
             description: h.debateDesc || "Deep dives into Vedic logic and philosophy",
             backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2", // Use a placeholder or mapping
             icon: "gavel",
-            href: `/faqs?category=${encodeURIComponent(topic)}`
+            href: `/faqs?category=${encodeURIComponent(cat)}`
         }));
     }, [debateArticles, h.debateDesc]);
 
@@ -129,10 +129,10 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                 </div>
             </div>
 
-            {/* Stories Categories Grid */}
-            <div className="w-full bg-background-light dark:bg-background-dark pb-12">
+            {/* Stories Categories Horizontal Carousel (All Screens) */}
+            <div className="w-full bg-background-light dark:bg-background-dark pb-12 overflow-hidden">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide sm:overflow-x-auto sm:pb-6">
                         {loading ? (
                             Array.from({ length: 4 }).map((_, i) => (
                                 <div key={i} className="flex flex-col gap-4 p-4 bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse">
@@ -146,7 +146,7 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                                 <Link
                                     key={category.title}
                                     href={category.href}
-                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 flex-shrink-0 w-[260px] md:w-[280px] snap-center"
                                 >
                                     <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative">
                                         <div
@@ -190,16 +190,16 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
                 </div>
             )}
 
-            {/* Debate Categories Grid */}
+            {/* Debate Categories Horizontal Carousel (All Screens) */}
             {!loading && debateArticles.length > 0 && (
-                <div className="w-full bg-background-light dark:bg-background-dark pb-20">
+                <div className="w-full bg-background-light dark:bg-background-dark pb-20 overflow-hidden">
                     <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide sm:overflow-x-auto sm:pb-6">
                             {debateCategories.map((category) => (
                                 <Link
                                     key={category.title}
                                     href={category.href}
-                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary transition-all duration-300"
+                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary transition-all duration-300 flex-shrink-0 w-[260px] md:w-[280px] snap-center"
                                 >
                                     <div className="flex items-center gap-4">
                                         <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">

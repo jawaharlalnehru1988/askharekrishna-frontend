@@ -32,7 +32,7 @@ export function Navbar() {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+        const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`);
         // Handle both direct array and paginated results
         const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
         setStories(data);

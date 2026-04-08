@@ -2,7 +2,26 @@
 
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
+import { 
+    HelpCircle, 
+    MessageSquare, 
+    ArrowRight, 
+    ChevronLeft, 
+    Home, 
+    Search,
+    BookOpen,
+    LayoutGrid,
+    Table as TableIcon,
+    Play,
+    Loader2,
+    Calendar,
+    Clock
+} from "lucide-react";
 import { getDictionary } from "@/lib/dictionaries";
+import { useSearchParams } from 'next/navigation';
+import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 const FAQ_CATEGORIES = [
     {
         title: "Questions from Atheists",
@@ -66,14 +85,23 @@ const FAQ_CATEGORIES = [
     }
 ];
 
-interface Article {
+interface DebateArticle {
     id: number;
-    mainTopic: string;
+    debateCategoryName: string;
+    debateCategoryDescription: string;
+    mainTopicName: string;
+    mainTopicDescription: string;
     subTopic: string;
     article: string;
     slug: string;
     order: number;
+    language: string;
+    audioPath: string | null;
+    created_at: string;
+    updated_at: string;
 }
+
+type ViewMode = 'categories' | 'topics' | 'articles' | 'article';
 
 export default function FAQsPage({ 
     dictionary,
@@ -83,18 +111,34 @@ export default function FAQsPage({
     locale: string 
 }) {
     const { common: c, faqs: f } = dictionary;
-    const [articles, setArticles] = useState<Article[]>([]);
+    const searchParams = useSearchParams();
+    const categoryParam = searchParams.get('category');
+    const topicParam = searchParams.get('topic');
+    const articleParam = searchParams.get('article');
+
+    const [articles, setArticles] = useState<DebateArticle[]>([]);
     const [loading, setLoading] = useState(true);
+    const [viewMode, setViewMode] = useState<ViewMode>('categories');
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+    const [selectedArticle, setSelectedArticle] = useState<DebateArticle | null>(null);
 
     useEffect(() => {
         const fetchArticles = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setArticles(data.results || []);
+                let url = `https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
+                
+                if (categoryParam) {
+                    url += `&debateCategoryName=${encodeURIComponent(categoryParam)}`;
                 }
+                if (topicParam) {
+                    url += `&mainTopicName=${encodeURIComponent(topicParam)}`;
+                }
+
+                const response = await axios.get(url);
+                const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
+                setArticles(data);
             } catch (err) {
                 console.error('FAQ articles fetch failed:', err);
             } finally {
@@ -102,19 +146,104 @@ export default function FAQsPage({
             }
         };
         fetchArticles();
-    }, [locale]);
+    }, [locale, categoryParam, topicParam]);
 
-    // Group articles by mainTopic
-    const groupedArticles = useMemo(() => {
-        const groups: Record<string, Article[]> = {};
-        articles.forEach(article => {
-            if (!groups[article.mainTopic]) {
-                groups[article.mainTopic] = [];
+    useEffect(() => {
+        if (!loading) {
+            if (categoryParam) {
+                setSelectedCategory(categoryParam);
+                if (topicParam) {
+                    setSelectedTopic(topicParam);
+                    if (articleParam) {
+                        const art = articles.find(a => 
+                            a.slug === articleParam || 
+                            a.id.toString() === articleParam ||
+                            a.subTopic === articleParam
+                        );
+                        if (art) {
+                            setSelectedArticle(art);
+                            setViewMode('article');
+                        } else {
+                            setViewMode('articles');
+                        }
+                    } else {
+                        setViewMode('articles');
+                        setSelectedArticle(null);
+                    }
+                } else {
+                    setViewMode('topics');
+                    setSelectedTopic(null);
+                    setSelectedArticle(null);
+                }
+            } else {
+                setViewMode('categories');
+                setSelectedCategory(null);
+                setSelectedTopic(null);
+                setSelectedArticle(null);
             }
-            groups[article.mainTopic].push(article);
-        });
-        return groups;
+        }
+    }, [categoryParam, topicParam, articleParam, loading, articles]);
+
+    const categories = useMemo(() => {
+        const unique = Array.from(new Set(articles.map(a => a.debateCategoryName).filter(Boolean)));
+        return unique.map(name => ({
+            name,
+            count: articles.filter(a => a.debateCategoryName === name).length,
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
+        }));
     }, [articles]);
+
+    const topics = useMemo(() => {
+        if (!selectedCategory) return [];
+        const unique = Array.from(new Set(articles.filter(a => a.debateCategoryName === selectedCategory).map(a => a.mainTopicName).filter(Boolean)));
+        return unique.map(name => ({
+            name,
+            count: articles.filter(a => a.mainTopicName === name).length,
+            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
+        }));
+    }, [articles, selectedCategory]);
+
+    const filteredArticles = useMemo(() => {
+        if (!selectedTopic) return [];
+        return articles.filter(a => a.mainTopicName === selectedTopic);
+    }, [articles, selectedTopic]);
+
+    const handleCategoryClick = (name: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('category', name);
+        params.delete('topic');
+        params.delete('article');
+        window.history.pushState(null, '', `?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleTopicClick = (name: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('topic', name);
+        params.delete('article');
+        window.history.pushState(null, '', `?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleArticleClick = (art: DebateArticle) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('article', art.slug || art.id.toString());
+        window.history.pushState(null, '', `?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleBack = () => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (viewMode === 'article') {
+            params.delete('article');
+        } else if (viewMode === 'articles') {
+            params.delete('topic');
+        } else if (viewMode === 'topics') {
+            params.delete('category');
+        }
+        window.history.pushState(null, '', `?${params.toString()}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const localizedCategories = [
         {
@@ -149,130 +278,276 @@ export default function FAQsPage({
         }
     ];
 
+    if (loading) {
+        return (
+            <div className="bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-300 min-h-screen flex flex-col font-lexend">
+                <div className="flex-grow flex flex-col items-center justify-center min-h-[60vh]">
+                    <Loader2 size={48} className="text-primary animate-spin mb-4" />
+                    <p className="text-text-muted animate-pulse">Loading Divine Debates...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-300 min-h-screen flex flex-col font-lexend">
-            {/* Main Content */}
-            <main className="flex-grow flex flex-col items-center w-full">
+            <main className="flex-grow">
                 {/* Hero Section */}
-                <section className="w-full relative overflow-hidden bg-background-light dark:bg-background-dark">
-                    <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
-                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}>
-                    </div>
-                    <div className="layout-content-container max-w-[960px] mx-auto px-4 md:px-10 py-16 md:py-24 flex flex-col items-center text-center relative z-10">
-                        <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full border border-primary/20">
-                            {f.helpCenter}
-                        </span>
-                        <h1 className="text-text-main dark:text-white text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4">
-                            {f.title}
-                        </h1>
-                        <p className="text-text-muted dark:text-gray-400 text-lg md:text-xl font-normal leading-relaxed max-w-[600px] mb-10">
-                            {f.description}
-                        </p>
-                        {/* Search Bar */}
-                        <div className="w-full max-w-[560px] relative group">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <span className="material-symbols-outlined text-text-muted">search</span>
-                            </div>
-                            <input
-                                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-surface-dark border-2 border-[#e7dfcf] dark:border-gray-700 rounded-2xl text-text-main dark:text-white placeholder-text-muted focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm group-hover:shadow-md text-base"
-                                placeholder={f.searchPlaceholder} type="text"
-                            />
-                            <div className="absolute inset-y-0 right-2 flex items-center">
-                                <button className="bg-primary hover:bg-primary-dark text-text-main font-bold py-2 px-6 rounded-xl text-sm transition-colors shadow-sm">
-                                    {f.search}
-                                </button>
-                            </div>
+                <section className="w-full relative overflow-hidden bg-gradient-to-b from-[#fdfbf7] to-background-light dark:from-[#2a2418] dark:to-background-dark border-b border-[#f3efe7] dark:border-neutral-800/50 pt-16 pb-12">
+                    <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+                        <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+                            <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-primary uppercase bg-primary/10 rounded-full border border-primary/20">
+                                {f.helpCenter}
+                            </span>
+                            <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+                                {viewMode === 'categories' ? f.title : 
+                                 viewMode === 'topics' ? selectedCategory : 
+                                 viewMode === 'articles' ? selectedTopic :
+                                 selectedArticle?.subTopic}
+                            </h1>
+                            <p className="text-lg text-text-muted dark:text-gray-400 mb-8 leading-relaxed">
+                                {viewMode === 'categories' ? f.description : 
+                                 viewMode === 'topics' ? `${topics.length} topics to explore` :
+                                 viewMode === 'articles' ? `${filteredArticles.length} articles available` :
+                                 selectedArticle?.mainTopicName}
+                            </p>
+                        </div>
+
+                        {/* Breadcrumbs */}
+                        <div className="flex flex-wrap items-center gap-4 mt-8">
+                            <Link href="/" className="flex items-center text-sm font-bold text-text-muted hover:text-primary transition-colors">
+                                <Home size={18} className="mr-1.5" />
+                                Home
+                            </Link>
+
+                            <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                            <Link
+                                href="/faqs"
+                                className={`text-sm font-bold transition-colors ${viewMode === 'categories' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                            >
+                                Debates
+                            </Link>
+
+                            {selectedCategory && (
+                                <>
+                                    <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                                    <Link
+                                        href={`/faqs?category=${encodeURIComponent(selectedCategory)}`}
+                                        className={`text-sm font-bold transition-colors ${viewMode === 'topics' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                                    >
+                                        {selectedCategory}
+                                    </Link>
+                                </>
+                            )}
+
+                            {selectedTopic && (
+                                <>
+                                    <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
+                                    <Link
+                                        href={`/faqs?category=${encodeURIComponent(selectedCategory!)}&topic=${encodeURIComponent(selectedTopic)}`}
+                                        className={`text-sm font-bold transition-colors ${viewMode === 'articles' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                                    >
+                                        {selectedTopic}
+                                    </Link>
+                                </>
+                            )}
+
+                            {viewMode !== 'categories' && (
+                                <div className="ml-auto">
+                                    <button
+                                        onClick={handleBack}
+                                        className="group flex items-center text-sm font-bold text-primary hover:text-black dark:hover:text-white transition-colors"
+                                    >
+                                        <ChevronLeft className="mr-1 group-hover:-translate-x-1 transition-transform" />
+                                        Back
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
 
-                {/* Dynamic FAQ Topics Section */}
-                {!loading && Object.keys(groupedArticles).length > 0 && (
-                    <section className="w-full bg-background-light dark:bg-background-dark pb-12">
-                        <div className="max-w-[1080px] mx-auto px-4 md:px-10">
-                            <div className="flex flex-col mb-8 px-2 border-l-4 border-primary pl-6">
-                                <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">{f.debateSectionTitle}</h3>
-                                <p className="text-text-muted dark:text-gray-400 mt-1">{f.debateSectionDesc}</p>
-                            </div>
-                            
-                            <div className="flex flex-col gap-12">
-                                {Object.entries(groupedArticles).map(([mainTopic, topicArticles]) => (
-                                    <div key={mainTopic} className="flex flex-col gap-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                                                <span className="material-symbols-outlined">menu_book</span>
+                <section className="py-12 md:py-16">
+                    <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+                        {/* Categories View */}
+                        {viewMode === 'categories' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {categories.map((cat, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => handleCategoryClick(cat.name)}
+                                        className="group flex flex-col text-left bg-white dark:bg-[#2a2418] border border-border-light dark:border-neutral-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300"
+                                    >
+                                        <div className="relative h-48 w-full overflow-hidden">
+                                            <div 
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                                style={{ backgroundImage: `url('${cat.image}')` }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                            <div className="absolute bottom-4 left-4">
+                                                <div className="bg-primary/95 p-2 rounded-xl text-text-main backdrop-blur-sm">
+                                                    <MessageSquare size={24} />
+                                                </div>
                                             </div>
-                                            <h4 className="text-xl font-bold text-text-main dark:text-white">{mainTopic}</h4>
                                         </div>
-                                        
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {topicArticles.map((article) => (
-                                                <Link key={article.id} href={`/faqs/${article.slug}`} className="group relative flex flex-col p-6 bg-surface-light dark:bg-surface-dark border border-[#f3efe7] dark:border-gray-800 rounded-2xl hover:shadow-lg hover:border-primary/30 transition-all duration-300">
-                                                    <h5 className="text-lg font-bold text-text-main dark:text-white mb-3 group-hover:text-primary transition-colors">
-                                                        {article.subTopic}
-                                                    </h5>
-                                                    <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
-                                                        {article.article}
-                                                    </p>
-                                                    <div className="flex items-center text-xs font-semibold text-primary mt-auto uppercase tracking-wider">
-                                                        <span>{f.readMore}</span>
-                                                        <span className="material-symbols-outlined ml-1 text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                                    </div>
-                                                </Link>
-                                            ))}
+                                        <div className="p-6">
+                                            <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{cat.name}</h3>
+                                            <p className="text-sm text-text-muted dark:text-gray-400 line-clamp-2 italic">
+                                                {articles.find(a => a.debateCategoryName === cat.name)?.debateCategoryDescription || `${cat.count} topics available`}
+                                            </p>
+                                            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                                                Explore Topics <ArrowRight size={16} className="ml-1" />
+                                            </div>
                                         </div>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-                )}
+                        )}
 
-                {/* Original FAQ Categories Grid (Fallback/Static) */}
-                <section className="w-full bg-background-light dark:bg-background-dark pb-20 mt-12">
-                    <div className="max-w-[1080px] mx-auto px-4 md:px-10">
-                        <div className="flex flex-col mb-8 px-2">
-                            <h3 className="text-2xl font-bold text-text-main dark:text-white tracking-tight">{f.browseByTopic}</h3>
-                            <p className="text-text-muted dark:text-gray-400 mt-1">{f.browseByTopicDesc}</p>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {localizedCategories.map((category, index) => (
-                                <Link key={index} href={category.href} className="group relative flex flex-col p-8 bg-surface-light dark:bg-surface-dark border border-[#f3efe7] dark:border-gray-800 rounded-2xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:border-primary/30 transition-all duration-300 transform hover:-translate-y-1">
-                                    <div className={`size-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${category.bgClass} ${category.colorClass}`}>
-                                        <span className="material-symbols-outlined text-3xl">{category.icon}</span>
-                                    </div>
-                                    <h4 className="text-xl font-bold text-text-main dark:text-white mb-2 group-hover:text-primary transition-colors">
-                                        {category.title}
-                                    </h4>
-                                    <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed mb-4 flex-grow">
-                                        {category.description}
-                                    </p>
-                                    <div className="flex items-center text-sm font-semibold text-primary mt-auto">
-                                        <span>{f.viewArticles.replace('{count}', category.articleCount.toString())}</span>
-                                        <span className="material-symbols-outlined ml-1 text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                        {/* Topics View */}
+                        {viewMode === 'topics' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {topics.map((topic, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => handleTopicClick(topic.name)}
+                                        className="group flex flex-col text-left bg-white dark:bg-[#2a2418] border border-border-light dark:border-neutral-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300"
+                                    >
+                                        <div className="relative h-44 w-full overflow-hidden">
+                                            <div 
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                                style={{ backgroundImage: `url('${topic.image}')` }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                            <div className="absolute bottom-4 left-4">
+                                                <div className="bg-primary/95 p-2 rounded-xl text-text-main backdrop-blur-sm">
+                                                    <LayoutGrid size={24} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="p-6">
+                                            <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{topic.name}</h3>
+                                            <p className="text-sm text-text-muted dark:text-gray-400 line-clamp-2 italic">
+                                                {articles.find(a => a.mainTopicName === topic.name)?.mainTopicDescription || `${topic.count} articles in this topic`}
+                                            </p>
+                                            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                                                View Articles <ArrowRight size={16} className="ml-1" />
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
-                {/* CTA Section */}
-                <section className="w-full bg-surface-light dark:bg-surface-dark border-t border-[#f3efe7] dark:border-gray-800">
-                    <div className="max-w-[960px] mx-auto px-4 md:px-10 py-16 md:py-24">
-                        <div className="bg-primary/10 dark:bg-primary/5 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-                            <div className="flex flex-col gap-3">
-                                <h2 className="text-2xl md:text-3xl font-bold text-text-main dark:text-white">{f.stillHaveQuestions.title}</h2>
-                                <p className="text-text-muted dark:text-gray-400 max-w-md">
-                                    {f.stillHaveQuestions.description}
-                                </p>
+                        {/* Articles Table View */}
+                        {viewMode === 'articles' && (
+                            <div className="bg-white dark:bg-[#2a2418] rounded-3xl border border-border-light dark:border-neutral-800 shadow-xl overflow-hidden">
+                                <div className="p-6 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between bg-gray-50/50 dark:bg-black/10">
+                                    <div className="flex items-center gap-2">
+                                        <TableIcon size={20} className="text-primary" />
+                                        <h3 className="font-bold text-lg">Debate Articles</h3>
+                                    </div>
+                                    <span className="text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
+                                        {filteredArticles.length} items
+                                    </span>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Theme</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Direct Link</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
+                                            {filteredArticles.map((art, index) => (
+                                                <tr 
+                                                    key={art.id}
+                                                    onClick={() => handleArticleClick(art)}
+                                                    className="group hover:bg-primary/5 cursor-pointer transition-colors"
+                                                >
+                                                    <td className="px-6 py-5 text-sm font-bold text-text-muted">{index + 1}</td>
+                                                    <td className="px-6 py-5">
+                                                        <span className="text-base font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
+                                                            {art.subTopic}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-5 hidden md:table-cell">
+                                                        <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                                                            {art.mainTopicName}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-5 text-right">
+                                                        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white rounded-xl text-xs font-bold transition-all transform active:scale-95">
+                                                            <span>Explore</span>
+                                                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div className="flex-shrink-0">
-                                <button className="bg-primary hover:bg-primary-dark text-text-main text-base font-bold py-3 px-8 rounded-xl transition-all shadow-sm hover:shadow-md transform hover:scale-105">
-                                    {f.stillHaveQuestions.contactSupport}
-                                </button>
-                            </div>
-                        </div>
+                        )}
+
+                        {/* Article Detail View */}
+                        {viewMode === 'article' && selectedArticle && (
+                            <article className="max-w-4xl mx-auto">
+                                <div className="bg-white dark:bg-[#2a2418] rounded-3xl border border-border-light dark:border-neutral-800 shadow-xl overflow-hidden">
+                                    <div className="p-8 md:p-12">
+                                        <div className="flex items-center gap-4 mb-8">
+                                            <div className="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                                                <HelpCircle size={24} />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-2xl font-bold">{selectedArticle.subTopic}</h2>
+                                                <p className="text-sm text-text-muted">In {selectedArticle.mainTopicName}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="prose prose-stone dark:prose-invert max-w-none 
+                                            prose-headings:font-black prose-headings:tracking-tight
+                                            prose-p:text-lg prose-p:leading-relaxed prose-p:text-text-main dark:prose-p:text-gray-300
+                                            prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:italic
+                                            prose-strong:text-primary prose-strong:font-bold">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                {selectedArticle.article}
+                                            </ReactMarkdown>
+                                        </div>
+
+                                        {selectedArticle.audioPath && (
+                                            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="size-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg">
+                                                        <Clock size={24} />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-lg">Audio Commentary</h4>
+                                                        <p className="text-sm text-text-muted">Listen to the philosophical deep dive</p>
+                                                    </div>
+                                                </div>
+                                                <button className="px-8 py-3 bg-primary hover:bg-primary-dark text-black font-black rounded-xl shadow-lg transition-all">
+                                                    Play Now
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="p-8 border-t border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/5 text-center">
+                                        <button
+                                            onClick={handleBack}
+                                            className="px-8 py-3 bg-background-light dark:bg-[#332d21] border border-border-light dark:border-neutral-800 rounded-xl font-bold inline-flex items-center gap-2 hover:bg-white dark:hover:bg-[#3e3729] transition-all"
+                                        >
+                                            <ChevronLeft size={20} />
+                                            Back to {selectedTopic}
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+                        )}
                     </div>
                 </section>
             </main>
