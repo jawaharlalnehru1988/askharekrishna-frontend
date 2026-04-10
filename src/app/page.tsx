@@ -18,7 +18,7 @@ export default async function Home() {
 
       <HomeHeroAndCategories h={h} />
 
-      <OtherWebsites />
+      {/* <OtherWebsites /> */}
 
       {/* <Footer /> */}
     </div>

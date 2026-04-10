@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 interface OtherSite {
     id: number;
@@ -22,20 +23,19 @@ const themeClasses: Record<string, { bg: string; border: string; text: string; l
 
 async function getOtherSites(): Promise<OtherSite[]> {
     try {
-        const response = await fetch('https://api.askharekrishna.com/api/ourOtherSites/', {
-            next: { revalidate: 3600 }
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch sites');
-        }
-        return response.json();
+        const response = await axios.get('https://api.askharekrishna.com/api/ourOtherSites/');
+        return response.data;
     } catch (error) {
         console.error('Error fetching other sites:', error);
         return [];
     }
 }
 
+const SHOW_SECTION = false;
+
 export default async function OtherWebsites() {
+    if (!SHOW_SECTION) return null;
+    
     const sites = await getOtherSites();
 
     if (sites.length === 0) return null;
