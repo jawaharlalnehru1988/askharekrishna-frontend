@@ -30,8 +30,10 @@ interface Story {
     id: number;
     storyCategoryName: string;
     storyCategoryDescription: string;
+    storyCategoryImage?: string;
     mainTopicName: string;
     mainTopicDescription: string;
+    mainTopicImage?: string;
     subTopic: string;
     article: string;
     slug: string;
@@ -127,22 +129,27 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
     const categories = useMemo(() => {
         const uniqueCategories = Array.from(new Set(stories.map(story => story.storyCategoryName).filter(Boolean)));
-        return uniqueCategories.map(name => ({
-            name,
-            count: stories.filter(story => story.storyCategoryName === name).length,
-            // Generic nice image or placeholder
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX"
-        }));
+        return uniqueCategories.map(name => {
+            const firstStory = stories.find(s => s.storyCategoryName === name);
+            return {
+                name,
+                count: stories.filter(story => story.storyCategoryName === name).length,
+                image: firstStory?.storyCategoryImage || firstStory?.mainTopicImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX"
+            };
+        });
     }, [stories]);
 
     const topics = useMemo(() => {
         if (!selectedCategory) return [];
         const uniqueTopics = Array.from(new Set(stories.filter(s => s.storyCategoryName === selectedCategory).map(s => s.mainTopicName).filter(Boolean)));
-        return uniqueTopics.map(name => ({
-            name,
-            count: stories.filter(story => story.mainTopicName === name).length,
-            image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
-        }));
+        return uniqueTopics.map(name => {
+            const firstStory = stories.find(s => s.mainTopicName === name);
+            return {
+                name,
+                count: stories.filter(story => story.mainTopicName === name).length,
+                image: firstStory?.mainTopicImage || firstStory?.storyCategoryImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
+            };
+        });
     }, [stories, selectedCategory]);
 
     const articles = useMemo(() => {

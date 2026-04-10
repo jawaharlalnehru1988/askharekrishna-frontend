@@ -8,7 +8,21 @@ import axios from 'axios';
 interface Story {
     id: number;
     storyCategoryName: string;
+    storyCategoryDescription?: string;
+    storyCategoryImage?: string;
     mainTopicName: string;
+    mainTopicImage?: string;
+    subTopic: string;
+    slug: string;
+}
+
+interface DebateArticle {
+    id: number;
+    debateCategoryName: string;
+    debateCategoryDescription?: string;
+    debateCategoryImage?: string;
+    mainTopicName: string;
+    mainTopicImage?: string;
     subTopic: string;
     slug: string;
 }
@@ -38,7 +52,7 @@ const ICON_MAPPER: Record<string, string> = {
 export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h }) => {
     const { locale } = useLanguage();
     const [stories, setStories] = React.useState<Story[]>([]);
-    const [debateArticles, setDebateArticles] = React.useState<any[]>([]);
+    const [debateArticles, setDebateArticles] = React.useState<DebateArticle[]>([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
@@ -67,24 +81,30 @@ export const HomeHeroAndCategories: React.FC<HomeHeroAndCategoriesProps> = ({ h 
 
     const storyCategories: Category[] = React.useMemo(() => {
         const uniqueCategories = Array.from(new Set(stories.map(s => s.storyCategoryName).filter(Boolean)));
-        return uniqueCategories.map(cat => ({
-            title: cat,
-            description: h.categories.storiesDesc || "Explore divine pastimes and teachings",
-            backgroundImage: DEFAULT_CATEGORY_IMAGE,
-            icon: ICON_MAPPER[cat] || "book_2",
-            href: `/stories?category=${encodeURIComponent(cat)}`
-        }));
+        return uniqueCategories.map(cat => {
+            const firstStory = stories.find(s => s.storyCategoryName === cat);
+            return {
+                title: cat,
+                description: firstStory?.storyCategoryDescription || h.categories.storiesDesc || "Explore divine pastimes and teachings",
+                backgroundImage: firstStory?.storyCategoryImage || firstStory?.mainTopicImage || DEFAULT_CATEGORY_IMAGE,
+                icon: ICON_MAPPER[cat] || "book_2",
+                href: `/stories?category=${encodeURIComponent(cat)}`
+            };
+        });
     }, [stories, h.categories]);
 
     const debateCategories: Category[] = React.useMemo(() => {
         const uniqueCategories = Array.from(new Set(debateArticles.map(a => a.debateCategoryName).filter(Boolean)));
-        return uniqueCategories.map(cat => ({
-            title: cat,
-            description: h.debateDesc || "Deep dives into Vedic logic and philosophy",
-            backgroundImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2", // Use a placeholder or mapping
-            icon: "gavel",
-            href: `/faqs?category=${encodeURIComponent(cat)}`
-        }));
+        return uniqueCategories.map(cat => {
+            const firstArticle = debateArticles.find(a => a.debateCategoryName === cat);
+            return {
+                title: cat,
+                description: firstArticle?.debateCategoryDescription || h.debateDesc || "Deep dives into Vedic logic and philosophy",
+                backgroundImage: firstArticle?.debateCategoryImage || firstArticle?.mainTopicImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2",
+                icon: "gavel",
+                href: `/faqs?category=${encodeURIComponent(cat)}`
+            };
+        });
     }, [debateArticles, h.debateDesc]);
 
     return (
