@@ -25,6 +25,8 @@ import { useLanguage } from '../providers/LanguageContext';
 import { Navbar } from '../layout/Navbar';
 import { Footer } from '../layout/Footer';
 import { useSearchParams } from 'next/navigation';
+import AudioPlayer from '../audio/AudioPlayer';
+
 
 interface Story {
     id: number;
@@ -61,6 +63,8 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
     const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
 
     useEffect(() => {
         const fetchStories = async () => {
@@ -180,6 +184,23 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    const handleNextStory = () => {
+        if (!selectedStory || articles.length <= 1) return;
+        const currentIndex = articles.findIndex(a => a.id === selectedStory.id);
+        if (currentIndex === -1) return;
+        const nextIndex = (currentIndex + 1) % articles.length;
+        handleSubtopicClick(articles[nextIndex]);
+    };
+
+    const handlePreviousStory = () => {
+        if (!selectedStory || articles.length <= 1) return;
+        const currentIndex = articles.findIndex(a => a.id === selectedStory.id);
+        if (currentIndex === -1) return;
+        const prevIndex = (currentIndex - 1 + articles.length) % articles.length;
+        handleSubtopicClick(articles[prevIndex]);
+    };
+
 
     const handleBack = () => {
         const params = new URLSearchParams(searchParams.toString());
@@ -474,6 +495,34 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         </button>
                                     </div>
                                     <div className="p-8 md:p-12">
+                                        {selectedStory.audioPath && (
+                                            <div className="mb-12">
+                                                <AudioPlayer
+                                                    url={selectedStory.audioPath}
+                                                    title={selectedStory.subTopic}
+                                                    playing={isPlaying}
+                                                    setPlaying={setIsPlaying}
+                                                    onNext={handleNextStory}
+                                                    onPrevious={handlePreviousStory}
+                                                    resource={{
+                                                        id: selectedStory.id,
+                                                        category: selectedStory.storyCategoryName,
+                                                        audioPath: selectedStory.audioPath,
+                                                        imagePath: selectedStory.storyCategoryImage || selectedStory.mainTopicImage || null,
+                                                        videoPath: null,
+                                                        translations: [],
+                                                        title: selectedStory.subTopic,
+                                                        authorName: "Sri Krishna Kirtan",
+                                                        description: selectedStory.mainTopicDescription,
+                                                        tamilLyrics: "",
+                                                        englishLyrics: "",
+                                                        order: selectedStory.order,
+                                                        created_at: selectedStory.created_at,
+                                                        updated_at: selectedStory.updated_at
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
                                         <div className="prose prose-stone dark:prose-invert max-w-none 
                                             prose-headings:font-black prose-headings:tracking-tight
                                             prose-h1:text-4xl md:prose-h1:text-5xl prose-h1:mb-8
@@ -487,23 +536,6 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                 {selectedStory.article}
                                             </ReactMarkdown>
                                         </div>
-                                        
-                                        {selectedStory.audioPath && (
-                                            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="size-12 rounded-full bg-primary text-white flex items-center justify-center shadow-lg">
-                                                        <Clock size={24} />
-                                                    </div>
-                                                    <div>
-                                                        <h4 className="font-bold text-lg">Audio Available</h4>
-                                                        <p className="text-sm text-text-muted">Listen to this divine story</p>
-                                                    </div>
-                                                </div>
-                                                <button className="px-8 py-3 bg-primary hover:bg-primary-dark text-black font-black rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                                                    Play Audio
-                                                </button>
-                                            </div>
-                                        )}
                                     </div>
 
                                     {/* Bottom Share Section */}
