@@ -554,7 +554,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         id: selectedStory.id,
                                                         category: selectedStory.storyCategoryName,
                                                         audioPath: selectedStory.audioPath,
-                                                        imagePath: selectedStory.storyCategoryImage || selectedStory.mainTopicImage || null,
+                                                        imagePath: selectedStory.mainTopicImage || selectedStory.storyCategoryImage || null,
                                                         videoPath: null,
                                                         translations: [],
                                                         title: selectedStory.subTopic,

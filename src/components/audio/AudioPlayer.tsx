@@ -39,14 +39,14 @@ export interface AudioPlayerProps {
     playlistTabs?: { id: string; label: string }[];
 }
 
-export const AudioPlayer: React.FC<AudioPlayerProps> = ({ 
-    url, 
-    title, 
-    onEnded, 
-    onNext, 
-    onPrevious, 
-    resource, 
-    playing: simplePlaying, 
+export const AudioPlayer: React.FC<AudioPlayerProps> = ({
+    url,
+    title,
+    onEnded,
+    onNext,
+    onPrevious,
+    resource,
+    playing: simplePlaying,
     setPlaying: setSimplePlaying,
     currentTrack,
     playlist,
@@ -66,9 +66,17 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         }
     };
 
+    const ensureAbsoluteUrl = (path: string | null | undefined) => {
+        if (!path) return "";
+        if (path.startsWith('http')) return path;
+        const apiBase = "https://api.askharekrishna.com";
+        const cleanPath = path.startsWith('/') ? path : `/${path}`;
+        return `${apiBase}${cleanPath}`;
+    };
+
     const activeUrl = currentTrack?.audioUrl || url || "";
     const activeTitle = currentTrack?.title || title || resource?.title || "Devotional Audio";
-    const activeImage = currentTrack?.coverImage || resource?.imagePath || "";
+    const activeImage = ensureAbsoluteUrl(currentTrack?.coverImage || resource?.imagePath);
 
     const [isRepeat, setIsRepeat] = useState(false);
     const [duration, setDuration] = useState(0);
@@ -224,15 +232,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     };
 
     return (
-        <div className="w-full bg-stone-800/60 dark:bg-stone-900/40 backdrop-blur-2xl rounded-3xl p-6 border border-white/10 dark:border-stone-800/50 shadow-2xl relative overflow-hidden transition-all duration-500">
+        <div className="w-full bg-stone-800/10 dark:bg-stone-900/10 backdrop-blur-2xl rounded-3xl p-6 border border-white/10 dark:border-stone-800/50 shadow-2xl relative overflow-hidden transition-all duration-500">
             {/* Dynamic Background Image */}
             {activeImage && (
                 <div className="absolute inset-0 -z-10 overflow-hidden">
-                    <div 
-                        className="absolute inset-0 bg-cover bg-center scale-110 blur-[80px] opacity-40 transition-all duration-1000"
+                    <div
+                        className="absolute inset-0 bg-cover bg-center scale-110 blur-[2px] opacity-80 transition-all duration-1000"
                         style={{ backgroundImage: `url('${activeImage}')` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-stone-900/20 to-stone-900/60" />
+                    <div className="absolute inset-0 bg-stone-900/20" />
                 </div>
             )}
 
