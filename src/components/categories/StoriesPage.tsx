@@ -70,6 +70,35 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         const fetchStories = async () => {
             try {
                 setLoading(true);
+
+                // New: Optimized path for Direct ID links (Deep Linking)
+                const isNumericId = storyIdParam && /^\d+$/.test(storyIdParam);
+                if (isNumericId && !categoryParam && !topicParam) {
+                    try {
+                        const idResponse = await axios.get(`https://api.askharekrishna.com/api/v1/stories/id/${storyIdParam}/`);
+                        const story = idResponse.data;
+                        if (story) {
+                            // Immediately set the story so it shows up quickly
+                            setStories([story]);
+                            
+                            // Background task: Fetch the rest of the topic to enable navigation (Next/Prev)
+                            let listUrl = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
+                            listUrl += `&storyCategoryName=${encodeURIComponent(story.storyCategoryName)}`;
+                            listUrl += `&mainTopicName=${encodeURIComponent(story.mainTopicName)}`;
+                            
+                            const listResponse = await axios.get(listUrl);
+                            const listData = Array.isArray(listResponse.data) ? listResponse.data : (listResponse.data.results || []);
+                            setStories(listData);
+                            setLoading(false);
+                            setError(null);
+                            return;
+                        }
+                    } catch (idErr) {
+                        console.error('Error fetching by ID:', idErr);
+                        // Fall through to default fetch if ID fetch fails
+                    }
+                }
+                
                 let url = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
                 
                 // Add filters if params exist
@@ -93,29 +122,41 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         };
 
         fetchStories();
-    }, [locale, categoryParam, topicParam]);
+    }, [locale, categoryParam, topicParam, storyIdParam]); // Added storyIdParam as dependency
+
 
     useEffect(() => {
         if (!loading) {
+            // Deep link support: If story is provided, try to find it and its hierarchy first
+            if (storyIdParam) {
+                const story = stories.find(s => 
+                    s.slug === storyIdParam || 
+                    s.id.toString() === storyIdParam ||
+                    s.subTopic === storyIdParam
+                );
+                if (story) {
+                    setSelectedStory(story);
+                    setSelectedCategory(story.storyCategoryName);
+                    setSelectedTopic(story.mainTopicName);
+                    setViewMode('article');
+                    return;
+                }
+            }
+
+            // Standard hierarchy-based navigation
             if (categoryParam) {
                 setSelectedCategory(categoryParam);
                 if (topicParam) {
                     setSelectedTopic(topicParam);
-                    if (storyIdParam) {
-                        const story = stories.find(s => 
-                            s.slug === storyIdParam || 
-                            s.id.toString() === storyIdParam ||
-                            s.subTopic === storyIdParam
-                        );
-                        if (story) {
-                            setSelectedStory(story);
-                            setViewMode('article');
-                        } else {
-                            setViewMode('articles');
-                        }
-                    } else {
-                        setViewMode('articles');
-                        setSelectedStory(null);
+                    setViewMode('articles'); // Default to list if story above didn't match
+                    const story = stories.find(s => 
+                        s.slug === storyIdParam || 
+                        s.id.toString() === storyIdParam ||
+                        s.subTopic === storyIdParam
+                    );
+                    if (story) {
+                        setSelectedStory(story);
+                        setViewMode('article');
                     }
                 } else {
                     setViewMode('topics');
@@ -130,6 +171,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
             }
         }
     }, [categoryParam, topicParam, storyIdParam, loading, stories]);
+
 
     const categories = useMemo(() => {
         const uniqueCategories = Array.from(new Set(stories.map(story => story.storyCategoryName).filter(Boolean)));
@@ -217,11 +259,15 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
     const handleWhatsAppShare = () => {
         if (!selectedStory) return;
-        const currentUrl = window.location.href;
-        const message = `Check out this devotional story: *${selectedStory.subTopic}*\n\nRead here:\n${currentUrl}`;
+        const currentUrl = new URL(window.location.href);
+        // Use numeric ID for the shortest possible URL
+        const shareUrl = `${currentUrl.origin}${currentUrl.pathname}?story=${selectedStory.id}`;
+        const message = `Check out this devotional story: *${selectedStory.subTopic}*\n\nRead here:\n${shareUrl}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
+
+
 
     if (loading) {
         return (
