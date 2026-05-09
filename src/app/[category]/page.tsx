@@ -12,6 +12,7 @@ import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
 import KirtansPage from "@/components/categories/KirtansPage";
 import FAQsPage from "@/components/categories/FAQsPage";
 import StoriesPage from "@/components/categories/StoriesPage";
+import PoojaVidhisSection from "@/components/categories/PoojaVidhisSection";
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
 
@@ -101,6 +102,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         return (
             <Layout>
                 <StoriesPage dictionary={dictionary} />
+                <PoojaVidhisSection />
             </Layout>
         );
     }

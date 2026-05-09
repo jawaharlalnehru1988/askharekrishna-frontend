@@ -506,5 +506,10 @@
                 "description": "Illustrative stories explaining the philosophical depths of Lord Krishna's message."
             }
         }
+    },
+    "poojaVidhis": {
+        "badge": "Daily Rituals",
+        "title": "Pooja Vidhis & Procedures",
+        "description": "Explore the systematic ways to perform daily devotional activities."
     }
 }

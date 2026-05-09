@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
 import { HomeHeroAndCategories } from '@/components/home/HomeHeroAndCategories';
 import OtherWebsites from '@/components/categories/OtherWebsites';
+import PoojaVidhisSection from '@/components/categories/PoojaVidhisSection';
 
 export default async function Home() {
   const headersList = await headers();
@@ -18,9 +19,11 @@ export default async function Home() {
 
       <HomeHeroAndCategories h={h} />
 
-      {/* <OtherWebsites /> */}
+      <PoojaVidhisSection />
 
-      {/* <Footer /> */}
+      <OtherWebsites />
+
+      <Footer />
     </div>
   );
 }

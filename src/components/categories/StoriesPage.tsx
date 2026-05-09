@@ -22,8 +22,6 @@ import remarkGfm from 'remark-gfm';
 import axios from 'axios';
 import { getDictionary } from "@/lib/dictionaries";
 import { useLanguage } from '../providers/LanguageContext';
-import { Navbar } from '../layout/Navbar';
-import { Footer } from '../layout/Footer';
 import { useSearchParams } from 'next/navigation';
 import AudioPlayer from '../audio/AudioPlayer';
 
@@ -271,33 +269,23 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
     if (loading) {
         return (
-            <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
-                <Navbar />
-                <div className="flex-grow flex flex-col items-center justify-center min-h-[60vh]">
-                    <Loader2 size={48} className="text-primary animate-spin mb-4" />
-                    <p className="text-text-muted animate-pulse">Loading Divine Stories...</p>
-                </div>
-                <Footer />
+            <div className="flex-grow flex flex-col items-center justify-center min-h-[60vh]">
+                <Loader2 size={48} className="text-primary animate-spin mb-4" />
+                <p className="text-text-muted animate-pulse">Loading Divine Stories...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
-                <Navbar />
-                <div className="flex-grow flex items-center justify-center min-h-[60vh] text-red-500 font-bold">
-                    <p>{error}</p>
-                </div>
-                <Footer />
+            <div className="flex-grow flex items-center justify-center min-h-[60vh] text-red-500 font-bold">
+                <p>{error}</p>
             </div>
         );
     }
 
     return (
-        <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
-            <Navbar />
-            
+        <>
             <main className="flex-grow">
                 {/* Hero Section */}
                 <section className="pt-12 pb-8 md:pt-16 md:pb-12 bg-gradient-to-b from-[#fdfbf7] to-background-light dark:from-[#2a2418] dark:to-background-dark border-b border-[#f3efe7] dark:border-neutral-800/50">
@@ -624,9 +612,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                     </div>
                 </section>
             </main>
-
-            <Footer />
-        </div>
+        </>
     );
 };
 
