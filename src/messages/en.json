@@ -510,6 +510,7 @@
     "poojaVidhis": {
         "badge": "Daily Rituals",
         "title": "Pooja Vidhis & Procedures",
-        "description": "Explore the systematic ways to perform daily devotional activities."
+        "description": "Explore the systematic ways to perform daily devotional activities.",
+        "viewAll": "View All"
     }
 }

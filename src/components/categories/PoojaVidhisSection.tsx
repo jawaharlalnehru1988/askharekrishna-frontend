@@ -14,6 +14,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useLanguage } from '../providers/LanguageContext';
 
+import Link from 'next/link';
+
 interface PoojaVidhiArticle {
     id: number;
     mainTopic: string;
@@ -28,7 +30,7 @@ interface PoojaVidhiArticle {
     updated_at: string;
 }
 
-const PoojaVidhisSection = () => {
+const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => {
     const { locale, dictionary } = useLanguage();
     const { poojaVidhis: p } = dictionary;
     const [articles, setArticles] = useState<PoojaVidhiArticle[]>([]);
@@ -42,8 +44,6 @@ const PoojaVidhisSection = () => {
                 setLoading(true);
                 const response = await axios.get('https://api.askharekrishna.com/api/v1/pooja_vidhis/articles/');
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                console.log('Pooja Vidhis fetched:', data.length, 'articles found');
-                console.log('Current locale:', locale);
                 setArticles(data);
                 setError(null);
             } catch (err) {
@@ -63,7 +63,8 @@ const PoojaVidhisSection = () => {
         window.open(whatsappUrl, '_blank');
     };
 
-    const filteredArticles = articles.filter(article => article.language === locale);
+    const allFilteredArticles = articles.filter(article => article.language === locale);
+    const displayArticles = isHomePage ? allFilteredArticles.slice(0, 8) : allFilteredArticles;
 
     if (loading) {
         return (
@@ -76,27 +77,38 @@ const PoojaVidhisSection = () => {
         );
     }
 
-    if (error || filteredArticles.length === 0) {
+    if (error || allFilteredArticles.length === 0) {
         return null;
     }
 
     return (
-        <section className="py-20 bg-gradient-to-b from-[#fdfbf7] to-background-light dark:from-[#2a2418] dark:to-background-dark border-y border-[#f3efe7] dark:border-neutral-800/50">
+        <section className={`py-20 bg-gradient-to-b from-[#fdfbf7] to-background-light dark:from-[#2a2418] dark:to-background-dark ${isHomePage ? 'border-y' : ''} border-[#f3efe7] dark:border-neutral-800/50`}>
             <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                <div className="mb-12 text-center">
-                    <span className="inline-block mb-3 text-primary font-bold uppercase tracking-[0.2em] text-xs">
-                        {p?.badge || (locale === 'ta' ? 'தினசரி வழிபாடுகள்' : 'Daily Rituals')}
-                    </span>
-                    <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tight text-text-main dark:text-white">
-                        {p?.title || (locale === 'ta' ? 'பூஜை விதிமுறைகள் மற்றும் முறைகள்' : 'Pooja Vidhis & Procedures')}
-                    </h2>
-                    <p className="max-w-2xl mx-auto text-lg text-text-muted dark:text-gray-400 leading-relaxed">
-                        {p?.description || (locale === 'ta' ? 'தினசரி பக்தி செயல்பாடுகளைச் செய்வதற்கான முறையான வழிகளை ஆராயுங்கள்.' : 'Explore the systematic ways to perform daily devotional activities.')}
-                    </p>
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div className={isHomePage ? 'text-left' : 'text-center w-full'}>
+                        <span className="inline-block mb-3 text-primary font-bold uppercase tracking-[0.2em] text-xs">
+                            {p?.badge || (locale === 'ta' ? 'தினசரி வழிபாடுகள்' : 'Daily Rituals')}
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-text-main dark:text-white leading-tight">
+                            {p?.title || (locale === 'ta' ? 'பூஜை விதிமுறைகள் மற்றும் முறைகள்' : 'Pooja Vidhis & Procedures')}
+                        </h2>
+                        <p className={`max-w-2xl ${!isHomePage ? 'mx-auto' : ''} text-lg text-text-muted dark:text-gray-400 leading-relaxed`}>
+                            {p?.description || (locale === 'ta' ? 'தினசரி பக்தி செயல்பாடுகளைச் செய்வதற்கான முறையான வழிகளை ஆராயுங்கள்.' : 'Explore the systematic ways to perform daily devotional activities.')}
+                        </p>
+                    </div>
+                    {isHomePage && allFilteredArticles.length > 8 && (
+                        <Link 
+                            href="/pooja-vidhis" 
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-black font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 active:scale-95"
+                        >
+                            {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
+                            <ArrowRight size={18} />
+                        </Link>
+                    )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {filteredArticles.map((article) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {displayArticles.map((article) => (
                         <div 
                             key={article.id}
                             className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
