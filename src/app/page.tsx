@@ -3,7 +3,9 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
-import { HomeHeroAndCategories } from '@/components/home/HomeHeroAndCategories';
+import { HomeHero } from '@/components/home/HomeHero';
+import { StoriesCarousel } from '@/components/home/StoriesCarousel';
+import { DebateCarousel } from '@/components/home/DebateCarousel';
 import OtherWebsites from '@/components/categories/OtherWebsites';
 import PoojaVidhisSection from '@/components/categories/PoojaVidhisSection';
 
@@ -17,9 +19,13 @@ export default async function Home() {
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
       <Navbar />
 
-      <HomeHeroAndCategories h={h} />
+      <HomeHero h={h} />
+
+      <StoriesCarousel h={h} />
 
       <PoojaVidhisSection />
+
+      <DebateCarousel h={h} />
 
       <OtherWebsites />
 
