@@ -4,7 +4,6 @@ export const categories = [
     "puranams",
     "prabhupada",
     "bhagavad-gita",
-    "kirtans",
-    "faqs",
     "stories",
+    "debate",
 ];

@@ -8,16 +8,18 @@ import {
     ScrollText,
     Calendar,
     Share2,
-    X
+    X,
+    Gavel,
+    Search
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useLanguage } from '../providers/LanguageContext';
-
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-interface PoojaVidhiArticle {
-    mainTopic: string;
+interface DebateArticle {
+    topic: string;
     subTopic: string;
     article: string;
     slug: string;
@@ -31,44 +33,53 @@ interface PoojaVidhiArticle {
     categoryName?: string;
 }
 
-interface PoojaVidhiCategory {
+interface DebateCategory {
     name: string;
     description: string;
     image: string | null;
-    articleList: PoojaVidhiArticle[];
+    articleList: DebateArticle[];
 }
 
-const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => {
+const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     const { locale, dictionary } = useLanguage();
-    const { poojaVidhis: p } = dictionary;
-    const [categories, setCategories] = useState<PoojaVidhiCategory[]>([]);
+    const searchParams = useSearchParams();
+    const initialCategory = searchParams.get('category') || 'All';
+
+    const [categories, setCategories] = useState<DebateCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedArticle, setSelectedArticle] = useState<PoojaVidhiArticle | null>(null);
+    const [selectedArticle, setSelectedArticle] = useState<DebateArticle | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeCategory, setActiveCategory] = useState<string>('All');
+    const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
 
     useEffect(() => {
-        const fetchArticles = async () => {
+        const fetchDebates = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/pooja_vidhis/articles/?language=${locale}`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setCategories(data);
+                
+                // If initialCategory was set from URL, make sure it's valid, otherwise default to 'All'
+                if (initialCategory !== 'All') {
+                    const categoryExists = data.some((cat: DebateCategory) => cat.name === initialCategory);
+                    if (!categoryExists) setActiveCategory('All');
+                }
+                
                 setError(null);
             } catch (err) {
-                console.error('Error fetching pooja vidhis:', err);
-                setError('Failed to load Pooja Vidhis.');
+                console.error('Error fetching debates:', err);
+                setError('Failed to load Debates.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchArticles();
-    }, [locale]);
+        fetchDebates();
+    }, [locale, initialCategory]);
 
-    const handleWhatsAppShare = (article: PoojaVidhiArticle) => {
-        const message = `Check out this Pooja Vidhi article: *${article.subTopic}*\n\nRead here: ${window.location.href}`;
+    const handleWhatsAppShare = (article: DebateArticle) => {
+        const message = `Check out this Debate article: *${article.subTopic}*\n\nRead here: ${window.location.href}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
@@ -96,7 +107,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
     const filteredArticles = allArticles.filter(article => {
         const matchesSearch = article.subTopic.toLowerCase().includes(searchQuery.toLowerCase()) || 
                              article.article.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = activeCategory === 'All' || article.mainTopic === activeCategory;
+        const matchesCategory = activeCategory === 'All' || article.topic === activeCategory;
         return matchesSearch && matchesCategory;
     });
 
@@ -123,14 +134,10 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
             <div className="flex flex-col items-center justify-center py-20 bg-background-light dark:bg-background-dark">
                 <Loader2 size={40} className="text-primary animate-spin mb-4" />
                 <p className="text-text-muted animate-pulse font-medium">
-                    {locale === 'ta' ? 'பூஜை முறைகளை ஏற்றுகிறது...' : 'Loading Pooja Vidhis...'}
+                    {locale === 'ta' ? 'விவாதங்களை ஏற்றுகிறது...' : 'Loading Debates...'}
                 </p>
             </div>
         );
-    }
-
-    if (error || (categories.length === 0 && !loading)) {
-        return null;
     }
 
     return (
@@ -139,24 +146,15 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
                     <div className={isHomePage ? 'text-left max-w-2xl' : 'text-center w-full max-w-3xl mx-auto'}>
                         <span className="inline-block mb-3 text-primary font-bold uppercase tracking-[0.2em] text-xs">
-                            {p?.badge || (locale === 'ta' ? 'தினசரி வழிபாடுகள்' : 'Daily Rituals')}
+                            {locale === 'ta' ? 'தர்க்கம் மற்றும் தத்துவம்' : 'Logic & Philosophy'}
                         </span>
                         <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-text-main dark:text-white leading-tight">
-                            {p?.title || (locale === 'ta' ? 'பூஜை விதிமுறைகள் மற்றும் முறைகள்' : 'Pooja Vidhis & Procedures')}
+                            {locale === 'ta' ? 'விவாதங்கள்' : 'Debates'}
                         </h2>
                         <p className="text-lg text-text-muted dark:text-gray-400 leading-relaxed">
-                            {p?.description || (locale === 'ta' ? 'தினசரி பக்தி செயல்பாடுகளைச் செய்வதற்கான முறையான வழிகளை ஆராயுங்கள்.' : 'Explore the systematic ways to perform daily devotional activities.')}
+                            {locale === 'ta' ? 'வேத தர்க்கம் மற்றும் தத்துவத்தின் ஆழமான ஆய்வுகள்.' : 'Deep dives into Vedic logic and philosophy to answer challenging questions.'}
                         </p>
                     </div>
-                    {isHomePage && allArticles.length > 8 && (
-                        <Link 
-                            href="/pooja-vidhis" 
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-black font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 active:scale-95"
-                        >
-                            {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
-                            <ArrowRight size={18} />
-                        </Link>
-                    )}
                 </div>
 
                 {!isHomePage && (
@@ -164,17 +162,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                         <div className="relative w-full md:max-w-md group">
                             <input
                                 type="text"
-                                placeholder={locale === 'ta' ? 'தேடுக...' : 'Search vidhis...'}
+                                placeholder={locale === 'ta' ? 'தேடுக...' : 'Search debates...'}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-white dark:bg-[#2a2418] border border-[#f3efe7] dark:border-neutral-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm group-hover:shadow-md"
                             />
-                            <svg 
+                            <Search 
                                 className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-text-muted group-focus-within:text-primary transition-colors"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                            />
                         </div>
 
                         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full no-scrollbar">
@@ -201,7 +196,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     ) : displayArticles.length > 0 ? (
                         displayArticles.map((article, index) => (
                             <div 
-                                key={`${article.slug}-${article.mainTopic}-${index}`}
+                                key={`${article.slug}-${article.topic}-${index}`}
                                 className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
                                 onClick={() => setSelectedArticle(article)}
                             >
@@ -214,14 +209,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                                     <div className="absolute bottom-4 left-4">
                                         <div className="bg-primary/90 p-2 rounded-lg text-white backdrop-blur-sm shadow-lg">
-                                            <ScrollText size={20} />
+                                            <Gavel size={20} />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="p-6 flex flex-col flex-grow">
                                     <div className="flex items-center gap-2 mb-3">
                                          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded uppercase tracking-wider">
-                                             {article.mainTopic}
+                                             {article.topic}
                                          </span>
                                      </div>
                                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
@@ -230,7 +225,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
 
                                     <div className="mt-auto pt-5 border-t border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                                         <span className="text-sm font-bold text-primary flex items-center gap-2 group-hover:translate-x-2 transition-transform">
-                                            {locale === 'ta' ? 'விதிமுறையை வாசிக்க' : 'Read Procedure'} <ArrowRight size={16} />
+                                            {locale === 'ta' ? 'கட்டுரையை வாசிக்க' : 'Read Article'} <ArrowRight size={16} />
                                         </span>
                                         <div className="flex items-center gap-1">
                                             <button 
@@ -251,10 +246,10 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     ) : (
                         <div className="col-span-full py-20 text-center">
                             <div className="size-16 bg-gray-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <ScrollText size={32} className="text-text-muted" />
+                                <Gavel size={32} className="text-text-muted" />
                             </div>
                             <h3 className="text-xl font-bold text-text-main dark:text-white mb-2">
-                                {locale === 'ta' ? 'முடிவுகள் எதுவும் இல்லை' : 'No Vidhis Found'}
+                                {locale === 'ta' ? 'விவாதங்கள் எதுவும் இல்லை' : 'No Debates Found'}
                             </h3>
                             <p className="text-text-muted dark:text-gray-400">
                                 {locale === 'ta' ? 'உங்கள் தேடலை மாற்ற முயற்சிக்கவும்.' : 'Try adjusting your search or category filter.'}
@@ -265,16 +260,16 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
             </div>
 
             {selectedArticle && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-[#1a160f] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setSelectedArticle(null)}>
+                    <div className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-[#1a160f] rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-neutral-800">
                             <div className="flex items-center gap-3">
                                 <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                                    <ScrollText size={24} />
+                                    <Gavel size={24} />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-text-main dark:text-white line-clamp-1">{selectedArticle.subTopic}</h4>
-                                    <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{selectedArticle.mainTopic}</p>
+                                    <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{selectedArticle.topic}</p>
                                 </div>
                             </div>
                             <button 
@@ -288,7 +283,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                         <div className="flex-grow overflow-y-auto p-6 md:p-10 custom-scrollbar">
                             <div className="relative h-64 md:h-96 w-full rounded-2xl overflow-hidden mb-10 shadow-lg">
                                 <img 
-                                    src={selectedArticle.articleImage} 
+                                    src={selectedArticle.articleImage || (selectedArticle as any).categoryImage || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800'} 
                                     alt={selectedArticle.subTopic}
                                     className="w-full h-full object-cover"
                                 />
@@ -310,7 +305,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                             
                             <div className="mt-12 pt-8 border-t border-gray-100 dark:border-neutral-800 text-center">
                                 <p className="text-sm font-bold text-text-muted mb-6 uppercase tracking-[0.3em]">
-                                     {locale === 'ta' ? 'இந்த விதிமுறையைப் பகிரவும்' : 'Share this Procedure'}
+                                     {locale === 'ta' ? 'இந்த விவாதத்தைப் பகிரவும்' : 'Share this Debate'}
                                  </p>
                                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                      <button 
@@ -342,4 +337,4 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
     );
 };
 
-export default PoojaVidhisSection;
+export default DebateSection;

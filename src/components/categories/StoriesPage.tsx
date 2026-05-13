@@ -28,23 +28,26 @@ import AudioPlayer from '../audio/AudioPlayer';
 
 interface Story {
     id: number;
-    storyCategoryName: string;
-    storyCategoryDescription: string;
-    storyCategoryImage?: string;
-    mainTopicName: string;
-    mainTopicDescription: string;
-    mainTopicImage?: string;
+    mainTopic: number | string;
     subTopic: string;
     article: string;
     slug: string;
     order: number;
     language: string;
     audioPath: string | null;
+    articleImage: string;
     created_at: string;
     updated_at: string;
 }
 
-type ViewMode = 'categories' | 'topics' | 'articles' | 'article';
+interface StoryCategory {
+    name: string;
+    description: string;
+    image: string | null;
+    articleList: Story[];
+}
+
+type ViewMode = 'categories' | 'articles' | 'article';
 
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
     const { stories: s } = dictionary;
@@ -54,12 +57,11 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const topicParam = searchParams.get('topic');
     const storyIdParam = searchParams.get('story');
 
-    const [stories, setStories] = useState<Story[]>([]);
+    const [categories, setCategories] = useState<StoryCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('categories');
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+    const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
     const [selectedStory, setSelectedStory] = useState<Story | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
@@ -68,48 +70,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         const fetchStories = async () => {
             try {
                 setLoading(true);
-
-                // New: Optimized path for Direct ID links (Deep Linking)
-                const isNumericId = storyIdParam && /^\d+$/.test(storyIdParam);
-                if (isNumericId && !categoryParam && !topicParam) {
-                    try {
-                        const idResponse = await axios.get(`https://api.askharekrishna.com/api/v1/stories/id/${storyIdParam}/`);
-                        const story = idResponse.data;
-                        if (story) {
-                            // Immediately set the story so it shows up quickly
-                            setStories([story]);
-                            
-                            // Background task: Fetch the rest of the topic to enable navigation (Next/Prev)
-                            let listUrl = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
-                            listUrl += `&storyCategoryName=${encodeURIComponent(story.storyCategoryName)}`;
-                            listUrl += `&mainTopicName=${encodeURIComponent(story.mainTopicName)}`;
-                            
-                            const listResponse = await axios.get(listUrl);
-                            const listData = Array.isArray(listResponse.data) ? listResponse.data : (listResponse.data.results || []);
-                            setStories(listData);
-                            setLoading(false);
-                            setError(null);
-                            return;
-                        }
-                    } catch (idErr) {
-                        console.error('Error fetching by ID:', idErr);
-                        // Fall through to default fetch if ID fetch fails
-                    }
-                }
-                
-                let url = `https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`;
-                
-                // Add filters if params exist
-                if (categoryParam) {
-                    url += `&storyCategoryName=${encodeURIComponent(categoryParam)}`;
-                }
-                if (topicParam) {
-                    url += `&mainTopicName=${encodeURIComponent(topicParam)}`;
-                }
-
-                const response = await axios.get(url);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                setStories(data);
+                setCategories(data);
                 setError(null);
             } catch (err) {
                 console.error('Error fetching stories:', err);
@@ -120,22 +83,24 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         };
 
         fetchStories();
-    }, [locale, categoryParam, topicParam, storyIdParam]); // Added storyIdParam as dependency
+    }, [locale]);
 
 
     useEffect(() => {
-        if (!loading) {
-            // Deep link support: If story is provided, try to find it and its hierarchy first
+        if (!loading && categories.length > 0) {
+            const allStories = categories.flatMap(cat => cat.articleList);
+            
+            // Deep link support
             if (storyIdParam) {
-                const story = stories.find(s => 
+                const story = allStories.find(s => 
                     s.slug === storyIdParam || 
-                    s.id.toString() === storyIdParam ||
+                    s.id?.toString() === storyIdParam ||
                     s.subTopic === storyIdParam
                 );
                 if (story) {
+                    const category = categories.find(cat => cat.articleList.some(a => (a.slug || a.id?.toString()) === (story.slug || story.id?.toString())));
                     setSelectedStory(story);
-                    setSelectedCategory(story.storyCategoryName);
-                    setSelectedTopic(story.mainTopicName);
+                    setSelectedCategoryName(category?.name || null);
                     setViewMode('article');
                     return;
                 }
@@ -143,76 +108,50 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
             // Standard hierarchy-based navigation
             if (categoryParam) {
-                setSelectedCategory(categoryParam);
-                if (topicParam) {
-                    setSelectedTopic(topicParam);
-                    setViewMode('articles'); // Default to list if story above didn't match
-                    const story = stories.find(s => 
-                        s.slug === storyIdParam || 
-                        s.id.toString() === storyIdParam ||
-                        s.subTopic === storyIdParam
+                setSelectedCategoryName(categoryParam);
+                // In simplified 3-phase, we go straight to articles
+                if (storyIdParam) {
+                    const category = categories.find(c => c.name === categoryParam);
+                    const story = category?.articleList.find(s => 
+                        s.slug === storyIdParam || s.id?.toString() === storyIdParam || s.subTopic === storyIdParam
                     );
                     if (story) {
                         setSelectedStory(story);
                         setViewMode('article');
+                    } else {
+                        setViewMode('articles');
                     }
                 } else {
-                    setViewMode('topics');
-                    setSelectedTopic(null);
+                    setViewMode('articles');
                     setSelectedStory(null);
                 }
             } else {
                 setViewMode('categories');
-                setSelectedCategory(null);
-                setSelectedTopic(null);
+                setSelectedCategoryName(null);
                 setSelectedStory(null);
             }
         }
-    }, [categoryParam, topicParam, storyIdParam, loading, stories]);
+    }, [categoryParam, storyIdParam, loading, categories]);
 
 
-    const categories = useMemo(() => {
-        const uniqueCategories = Array.from(new Set(stories.map(story => story.storyCategoryName).filter(Boolean)));
-        return uniqueCategories.map(name => {
-            const firstStory = stories.find(s => s.storyCategoryName === name);
-            return {
-                name,
-                count: stories.filter(story => story.storyCategoryName === name).length,
-                image: firstStory?.storyCategoryImage || firstStory?.mainTopicImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDhY_NhYKWePf34oB7wsKgQDF5IjaU3WgdzzbrjTS3ns1F6W8yWb0hQZCj98d_vYe02FNG6CA5T-LktpHeVuKwjEpHPEZtpocboX-DLIeS3_BqL3PbkrKqU2FSdrslrYXtD9NjwtQTHnutwd5klsS35nQ4WPe5Z9BZ4yDSAAv2c_YB2YXWEBOAqrn-Z5dn9drBhxOA1MgWtI52f9jLA8n8rSZQgSNl5ZHggjBUZF3j460L_EJMsB4p7OMLRdwxdFmlPYg99hEdZ9BbX"
-            };
-        });
-    }, [stories]);
+    const categoryList = useMemo(() => {
+        return categories.map(cat => ({
+            name: cat.name,
+            count: cat.articleList.length,
+            image: cat.image || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800",
+            description: cat.description
+        }));
+    }, [categories]);
 
-    const topics = useMemo(() => {
-        if (!selectedCategory) return [];
-        const uniqueTopics = Array.from(new Set(stories.filter(s => s.storyCategoryName === selectedCategory).map(s => s.mainTopicName).filter(Boolean)));
-        return uniqueTopics.map(name => {
-            const firstStory = stories.find(s => s.mainTopicName === name);
-            return {
-                name,
-                count: stories.filter(story => story.mainTopicName === name).length,
-                image: firstStory?.mainTopicImage || firstStory?.storyCategoryImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2"
-            };
-        });
-    }, [stories, selectedCategory]);
-
-    const articles = useMemo(() => {
-        if (!selectedTopic) return [];
-        return stories.filter(story => story.mainTopicName === selectedTopic);
-    }, [stories, selectedTopic]);
+    const articleList = useMemo(() => {
+        if (!selectedCategoryName) return [];
+        const category = categories.find(c => c.name === selectedCategoryName);
+        return category ? category.articleList : [];
+    }, [categories, selectedCategoryName]);
 
     const handleCategoryClick = (categoryName: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('category', categoryName);
-        params.delete('topic');
-        params.delete('story');
-        window.history.pushState(null, '', `?${params.toString()}`);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleTopicClick = (topicName: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('topic', topicName);
         params.delete('story');
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -226,19 +165,19 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     };
 
     const handleNextStory = () => {
-        if (!selectedStory || articles.length <= 1) return;
-        const currentIndex = articles.findIndex(a => a.id === selectedStory.id);
+        if (!selectedStory || articleList.length <= 1) return;
+        const currentIndex = articleList.findIndex(a => a.id === selectedStory.id);
         if (currentIndex === -1) return;
-        const nextIndex = (currentIndex + 1) % articles.length;
-        handleSubtopicClick(articles[nextIndex]);
+        const nextIndex = (currentIndex + 1) % articleList.length;
+        handleSubtopicClick(articleList[nextIndex]);
     };
 
     const handlePreviousStory = () => {
-        if (!selectedStory || articles.length <= 1) return;
-        const currentIndex = articles.findIndex(a => a.id === selectedStory.id);
+        if (!selectedStory || articleList.length <= 1) return;
+        const currentIndex = articleList.findIndex(a => a.id === selectedStory.id);
         if (currentIndex === -1) return;
-        const prevIndex = (currentIndex - 1 + articles.length) % articles.length;
-        handleSubtopicClick(articles[prevIndex]);
+        const prevIndex = (currentIndex - 1 + articleList.length) % articleList.length;
+        handleSubtopicClick(articleList[prevIndex]);
     };
 
 
@@ -247,8 +186,6 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         if (viewMode === 'article') {
             params.delete('story');
         } else if (viewMode === 'articles') {
-            params.delete('topic');
-        } else if (viewMode === 'topics') {
             params.delete('category');
         }
         window.history.pushState(null, '', `?${params.toString()}`);
@@ -296,15 +233,13 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             </span>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
                                 {viewMode === 'categories' ? s.hero.title : 
-                                 viewMode === 'topics' ? selectedCategory : 
-                                 viewMode === 'articles' ? selectedTopic :
+                                 viewMode === 'articles' ? selectedCategoryName :
                                  selectedStory?.subTopic}
                             </h1>
                             <p className="max-w-2xl mx-auto text-lg text-text-muted dark:text-gray-300">
                                 {viewMode === 'categories' ? s.hero.description : 
-                                 viewMode === 'topics' ? `${topics.length} topics available` :
-                                 viewMode === 'articles' ? `${articles.length} stories available` :
-                                 selectedStory?.mainTopicName}
+                                 viewMode === 'articles' ? `${articleList.length} stories available` :
+                                 selectedStory?.mainTopic}
                             </p>
                         </div>
 
@@ -326,26 +261,14 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 Stories
                             </Link>
 
-                            {selectedCategory && (
+                            {selectedCategoryName && (
                                 <>
                                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
                                     <Link
-                                        href={`/stories?category=${encodeURIComponent(selectedCategory)}`}
-                                        className={`text-sm font-bold transition-colors ${viewMode === 'topics' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
-                                    >
-                                        {selectedCategory}
-                                    </Link>
-                                </>
-                            )}
-
-                            {selectedTopic && (
-                                <>
-                                    <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
-                                    <Link
-                                        href={`/stories?category=${encodeURIComponent(selectedCategory!)}&topic=${encodeURIComponent(selectedTopic)}`}
+                                        href={`/stories?category=${encodeURIComponent(selectedCategoryName)}`}
                                         className={`text-sm font-bold transition-colors ${viewMode === 'articles' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
                                     >
-                                        {selectedTopic}
+                                        {selectedCategoryName}
                                     </Link>
                                 </>
                             )}
@@ -370,7 +293,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                         {/* Phase 1: Categories View */}
                         {viewMode === 'categories' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {categories.map((category, index) => (
+                                {categoryList.map((category, index) => (
                                     <button
                                         key={index}
                                         onClick={() => handleCategoryClick(category.name)}
@@ -393,7 +316,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                 {category.name}
                                             </h3>
                                             <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
-                                                {stories.find(s => s.storyCategoryName === category.name)?.storyCategoryDescription || `${category.count} stories to explore`}
+                                                {category.description || `${category.count} stories to explore`}
                                             </p>
                                             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                                                 View Topics <ArrowRight size={16} className="ml-1" />
@@ -404,42 +327,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             </div>
                         )}
 
-                        {/* Phase 2: Topics View */}
-                        {viewMode === 'topics' && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {topics.map((topic, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => handleTopicClick(topic.name)}
-                                        className="group flex flex-col text-left h-full bg-white dark:bg-[#2a2418] rounded-2xl border border-border-light dark:border-neutral-800 hover:border-primary/40 transition-all hover:shadow-lg overflow-hidden"
-                                    >
-                                        <div className="relative h-48 w-full overflow-hidden">
-                                            <div
-                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${topic.image}')` }}
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                            <div className="absolute bottom-4 left-4">
-                                                <div className="bg-primary/90 p-2 rounded-lg text-text-main backdrop-blur-sm">
-                                                    <LayoutGrid size={24} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="p-6 flex flex-col flex-grow">
-                                            <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                                                {topic.name}
-                                            </h3>
-                                            <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
-                                                {stories.find(s => s.mainTopicName === topic.name)?.mainTopicDescription || `${topic.count} stories available in this topic`}
-                                            </p>
-                                            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                                                Explore Collective <ArrowRight size={16} className="ml-1" />
-                                            </div>
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+
 
                         {/* Phase 3: Articles Table View */}
                         {viewMode === 'articles' && (
@@ -450,7 +338,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         <h3 className="font-bold text-lg">Article List</h3>
                                     </div>
                                     <span className="text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
-                                        {articles.length} Stories
+                                        {articleList.length} Stories
                                     </span>
                                 </div>
                                 <div className="overflow-x-auto">
@@ -464,9 +352,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
-                                            {articles.map((story, index) => (
+                                            {articleList.map((story, index) => (
                                                 <tr 
-                                                    key={story.id}
+                                                    key={`${story.id}-${index}`}
                                                     onClick={() => handleSubtopicClick(story)}
                                                     className="group hover:bg-primary/5 cursor-pointer transition-colors"
                                                 >
@@ -488,7 +376,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                     </td>
                                                     <td className="px-6 py-5 hidden md:table-cell">
                                                         <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                                                            {story.mainTopicName}
+                                                            {selectedCategoryName}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-5 text-right">
@@ -540,14 +428,14 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                     onPrevious={handlePreviousStory}
                                                     resource={{
                                                         id: selectedStory.id,
-                                                        category: selectedStory.storyCategoryName,
+                                                        category: selectedCategoryName || '',
                                                         audioPath: selectedStory.audioPath,
-                                                        imagePath: selectedStory.mainTopicImage || selectedStory.storyCategoryImage || null,
+                                                        imagePath: selectedStory.articleImage || null,
                                                         videoPath: null,
                                                         translations: [],
                                                         title: selectedStory.subTopic,
                                                         authorName: "Sri Krishna Kirtan",
-                                                        description: selectedStory.mainTopicDescription,
+                                                        description: selectedStory.mainTopic.toString(),
                                                         tamilLyrics: "",
                                                         englishLyrics: "",
                                                         order: selectedStory.order,
@@ -604,7 +492,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         className="px-8 py-4 bg-primary text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-primary-dark transition-all shadow-sm"
                                     >
                                         <ChevronLeft size={20} />
-                                        Back to {selectedCategory}
+                                        Back to {selectedCategoryName}
                                     </button>
                                 </div>
                             </article>

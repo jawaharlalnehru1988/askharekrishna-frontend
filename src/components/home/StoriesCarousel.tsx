@@ -7,13 +7,15 @@ import { useLanguage } from '../providers/LanguageContext';
 
 interface Story {
     id: number;
-    storyCategoryName: string;
-    storyCategoryDescription?: string;
-    storyCategoryImage?: string;
-    mainTopicName: string;
-    mainTopicImage?: string;
     subTopic: string;
     slug: string;
+}
+
+interface StoryCategory {
+    name: string;
+    description: string;
+    image: string | null;
+    articleList: Story[];
 }
 
 interface Category {
@@ -40,16 +42,16 @@ interface StoriesCarouselProps {
 
 export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [stories, setStories] = useState<Story[]>([]);
+    const [categories, setCategories] = useState<StoryCategory[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                setStories(data);
+                setCategories(data);
             } catch (err) {
                 console.error('Stories fetch failed:', err);
             } finally {
@@ -60,18 +62,14 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
     }, [locale]);
 
     const storyCategories: Category[] = useMemo(() => {
-        const uniqueCategories = Array.from(new Set(stories.map(s => s.storyCategoryName).filter(Boolean)));
-        return uniqueCategories.map(cat => {
-            const firstStory = stories.find(s => s.storyCategoryName === cat);
-            return {
-                title: cat,
-                description: firstStory?.storyCategoryDescription || h.categories.storiesDesc || "Explore divine pastimes and teachings",
-                backgroundImage: firstStory?.storyCategoryImage || firstStory?.mainTopicImage || DEFAULT_CATEGORY_IMAGE,
-                icon: ICON_MAPPER[cat] || "book_2",
-                href: `/stories?category=${encodeURIComponent(cat)}`
-            };
-        });
-    }, [stories, h.categories]);
+        return categories.map(cat => ({
+            title: cat.name,
+            description: cat.description || h.categories.storiesDesc || "Explore divine pastimes and teachings",
+            backgroundImage: cat.image || DEFAULT_CATEGORY_IMAGE,
+            icon: ICON_MAPPER[cat.name] || "book_2",
+            href: `/stories?category=${encodeURIComponent(cat.name)}`
+        }));
+    }, [categories, h.categories]);
 
     return (
         <>

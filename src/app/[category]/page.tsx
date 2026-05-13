@@ -9,10 +9,10 @@ import RamayanamPage from '@/components/categories/RamayanamPage';
 import PuranamsPage from "@/components/categories/PuranamsPage";
 import PrabhupadaPage from "@/components/categories/PrabhupadaPage";
 import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
-import KirtansPage from "@/components/categories/KirtansPage";
-import FAQsPage from "@/components/categories/FAQsPage";
+
 import StoriesPage from "@/components/categories/StoriesPage";
 import PoojaVidhisSection from "@/components/categories/PoojaVidhisSection";
+import DebateSection from "@/components/categories/DebateSection";
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
 
@@ -82,27 +82,23 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         );
     }
 
-    if (category === 'kirtans') {
-        return (
-            <Layout>
-                <KirtansPage dictionary={dictionary} />
-            </Layout>
-        );
-    }
 
-    if (category === 'faqs') {
-        return (
-            <Layout>
-                <FAQsPage dictionary={dictionary} locale={locale} />
-            </Layout>
-        );
-    }
+
+
 
     if (category === 'stories') {
         return (
             <Layout>
                 <StoriesPage dictionary={dictionary} />
                 <PoojaVidhisSection />
+            </Layout>
+        );
+    }
+
+    if (category === 'debate') {
+        return (
+            <Layout>
+                <DebateSection />
             </Layout>
         );
     }

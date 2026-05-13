@@ -4,22 +4,33 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { useLanguage } from '../providers/LanguageContext';
+import { Gavel, ArrowRight } from 'lucide-react';
 
 interface DebateArticle {
     id: number;
-    debateCategoryName: string;
-    debateCategoryDescription?: string;
-    debateCategoryImage?: string;
-    mainTopicName: string;
-    mainTopicImage?: string;
+    topic: string;
     subTopic: string;
+    article: string;
     slug: string;
+    order: number;
+    language: string;
+    audioPath: string | null;
+    articleImage: string;
+    created_at: string;
+    updated_at: string;
 }
 
-interface Category {
+interface DebateCategory {
+    name: string;
+    description: string;
+    image: string | null;
+    articleList: DebateArticle[];
+}
+
+interface CategoryCard {
     title: string;
     description: string;
-    backgroundImage: string;
+    backgroundImage: string | null;
     icon: string;
     href: string;
 }
@@ -30,85 +41,89 @@ interface DebateCarouselProps {
 
 export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [debateArticles, setDebateArticles] = useState<DebateArticle[]>([]);
+    const [categories, setCategories] = useState<DebateCategory[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchDebate = async () => {
+        const fetchDebates = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                setDebateArticles(data);
+                setCategories(data);
             } catch (err) {
                 console.error('Debate fetch failed:', err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchDebate();
+        fetchDebates();
     }, [locale]);
 
-    const debateCategories: Category[] = useMemo(() => {
-        const uniqueCategories = Array.from(new Set(debateArticles.map(a => a.debateCategoryName).filter(Boolean)));
-        return uniqueCategories.map(cat => {
-            const firstArticle = debateArticles.find(a => a.debateCategoryName === cat);
-            return {
-                title: cat,
-                description: firstArticle?.debateCategoryDescription || h.debateDesc || "Deep dives into Vedic logic and philosophy",
-                backgroundImage: firstArticle?.debateCategoryImage || firstArticle?.mainTopicImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDT45XlV17fLImZ5J2UfLxvD9yWclvE9Z_j_S2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2T1-L6J7uV2pG4r0TNR_B5h8_VpW9Gz6Xg7mR4J3p_S8V0U2",
-                icon: "gavel",
-                href: `/faqs?category=${encodeURIComponent(cat)}`
-            };
-        });
-    }, [debateArticles, h.debateDesc]);
+    const categoryCards: CategoryCard[] = useMemo(() => {
+        return categories.map(cat => ({
+            title: cat.name,
+            description: cat.description || h.debateDesc || "Deep dives into Vedic logic and philosophy",
+            backgroundImage: cat.image,
+            icon: "gavel",
+            href: `/debate?category=${encodeURIComponent(cat.name)}`
+        }));
+    }, [categories, h.debateDesc]);
 
-    if (!loading && debateArticles.length === 0) return null;
+    if (!loading && categories.length === 0) return null;
 
     return (
         <>
             <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight text-text-main dark:text-white md:text-3xl leading-tight">{h.debateTopics}</h2>
-                        <p className="mt-2 text-text-muted dark:text-gray-400 font-medium">{h.debateDesc}</p>
+                        <span className="inline-block mb-2 text-primary font-bold uppercase tracking-[0.2em] text-xs">
+                             {locale === 'ta' ? 'தர்க்கம் மற்றும் தத்துவம்' : 'Logic & Philosophy'}
+                        </span>
+                        <h2 className="text-3xl font-bold tracking-tight text-text-main dark:text-white md:text-4xl leading-tight">
+                            {h.debateTopics || (locale === 'ta' ? 'விவாதங்கள்' : 'Debates')}
+                        </h2>
+                        <p className="mt-2 text-text-muted dark:text-gray-400 font-medium">
+                            {h.debateDesc || (locale === 'ta' ? 'வேத தர்க்கம் மற்றும் தத்துவத்தின் ஆழமான ஆய்வுகள்.' : 'Explore the systematic ways to answer challenging questions.')}
+                        </p>
                     </div>
-                    <Link href="/faqs" className="hidden font-bold transition-colors sm:flex text-primary hover:text-yellow-600 text-sm items-center gap-1">
-                        {h.viewAll} <span className="material-symbols-outlined text-base">arrow_forward</span>
+                    <Link href="/debate" className="hidden font-bold transition-colors sm:flex text-primary hover:text-primary-dark text-sm items-center gap-2 group">
+                        {h.viewAll || 'View All'} 
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
             </div>
 
             <div className="w-full bg-background-light dark:bg-background-dark pb-20 overflow-hidden">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                    <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide sm:overflow-x-auto sm:pb-6">
+                    <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide sm:overflow-x-auto sm:pb-6 no-scrollbar">
                         {loading ? (
                              Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="h-40 w-[260px] md:w-[280px] bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse flex-shrink-0"></div>
+                                <div key={i} className="h-48 w-[280px] md:w-[320px] bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse flex-shrink-0"></div>
                             ))
                         ) : (
-                            debateCategories.map((category) => (
+                            categoryCards.map((category) => (
                                 <Link
                                     key={category.title}
                                     href={category.href}
-                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary transition-all duration-300 flex-shrink-0 w-[260px] md:w-[280px] snap-center"
+                                    className="group flex flex-col gap-4 p-6 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary/50 shadow-sm hover:shadow-xl transition-all duration-300 flex-shrink-0 w-[280px] md:w-[320px] snap-center"
                                 >
                                     <div className="flex items-center gap-4">
-                                        <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                            <span className="material-symbols-outlined text-2xl">{category.icon}</span>
+                                        <div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner">
+                                            <Gavel size={28} />
                                         </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
+                                        <div className="flex-grow">
+                                            <h3 className="text-lg font-bold text-text-main dark:text-white group-hover:text-primary transition-colors line-clamp-2">
                                                 {category.title}
                                             </h3>
                                         </div>
                                     </div>
-                                    <p className="mt-2 text-sm text-text-muted dark:text-gray-400 line-clamp-2">
+                                    <p className="text-sm text-text-muted dark:text-gray-400 line-clamp-3 leading-relaxed">
                                         {category.description}
                                     </p>
-                                    <div className="mt-4 flex items-center text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span>Read Articles</span>
-                                        <span className="material-symbols-outlined text-base ml-1">arrow_forward</span>
+                                    <div className="mt-auto pt-4 flex items-center text-sm font-bold text-primary group-hover:translate-x-1 transition-transform">
+                                        <span>{locale === 'ta' ? 'கட்டுரைகளைக் காண்க' : 'View Articles'}</span>
+                                        <ArrowRight size={16} className="ml-2" />
                                     </div>
                                 </Link>
                             ))

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useLanguage } from '../providers/LanguageContext';
 
 export function Footer() {
-    const { dictionary } = useLanguage();
+    const { dictionary, locale } = useLanguage();
     const { footer: f } = dictionary;
     const currentYear = new Date().getFullYear();
 
@@ -29,12 +29,12 @@ export function Footer() {
                             <h4 className="font-bold text-text-main dark:text-white text-sm uppercase tracking-wider">{f.content}</h4>
                             <Link href="/bhagavad-gita" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{dictionary.navbar.bhagavadGita}</Link>
                             <Link href="/mahabharatam" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{dictionary.navbar.mahabharatam}</Link>
-                            <Link href="/kirtans" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{dictionary.navbar.kirtans}</Link>
+
                             <Link href="/prabhupada" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{dictionary.navbar.prabhupada}</Link>
                         </div>
                         <div className="flex flex-col gap-3">
                             <h4 className="font-bold text-text-main dark:text-white text-sm uppercase tracking-wider">{f.support}</h4>
-                            <Link href="/faqs" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.faq}</Link>
+                            <Link href="/debate" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{locale === 'ta' ? 'விவாதங்கள்' : 'Debates'}</Link>
                             <Link href="#" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.contactUs}</Link>
                             <Link href="#" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.donate}</Link>
                             <Link href="#" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.privacyPolicy}</Link>

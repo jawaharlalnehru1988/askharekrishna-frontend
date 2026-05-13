@@ -14,8 +14,7 @@
         "puranams": "Puranams",
         "prabhupada": "Prabhupada",
         "bhagavadGita": "Bhagavad Gita",
-        "stories": "Stories",
-        "kirtans": "Kirtans"
+        "stories": "Stories"
     },
     "footer": {
         "about": "Connecting hearts to the divine through the power of transcendental sound. A project dedicated to preserving and sharing Vedic wisdom.",
@@ -80,8 +79,7 @@
             "prabhupadaDesc": "Lectures by His Divine Grace A.C. Bhaktivedanta Swami.",
             "bhagavadGita": "Bhagavad Gita",
             "bhagavadGitaDesc": "The divine song of God. The manual for life.",
-            "kirtans": "Kirtans",
-            "kirtansDesc": "Soul-stirring musical chants and mantras.",
+
             "ramayanam": "Ramayanam",
             "ramayanamDesc": "The epic journey of Lord Rama, the ideal king and human.",
             "mahabharatam": "Mahabharatam",
@@ -89,9 +87,7 @@
             "puranams": "Puranams",
             "puranamsDesc": "Ancient histories of the universe and divine avatars.",
             "stories": "Stories",
-            "storiesDesc": "A collection of spiritual stories and teachings.",
-            "faqs": "FAQs",
-            "faqsDesc": "Answers to common spiritual questions."
+            "storiesDesc": "A collection of spiritual stories and teachings."
         }
     },
     "ramayanam": {

@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Button } from '../ui/Button';
 import { useLanguage } from '../providers/LanguageContext';
 import { useTheme } from '../providers/ThemeProvider';
 
@@ -12,11 +11,15 @@ import axios from 'axios';
 
 interface Story {
   id: number;
-  storyCategoryName: string;
-  mainTopicName: string;
+  mainTopic: string;
   subTopic: string;
   article: string;
   slug: string;
+}
+
+interface StoryCategory {
+  name: string;
+  articleList: Story[];
 }
 
 export function Navbar() {
@@ -25,17 +28,16 @@ export function Navbar() {
   const { navbar: t, common: c } = dictionary;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const [stories, setStories] = useState<Story[]>([]);
+  const [categories, setCategories] = useState<StoryCategory[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const storiesDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}&page_size=500`);
-        // Handle both direct array and paginated results
+        const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
         const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-        setStories(data);
+        setCategories(data);
       } catch (err) {
         console.error('Navbar stories fetch failed:', err);
       }
@@ -43,13 +45,7 @@ export function Navbar() {
     fetchStories();
   }, [locale]);
 
-  const categories = useMemo(() => {
-    const unique = Array.from(new Set(stories.map(s => s.storyCategoryName).filter(Boolean)));
-    return unique.map(name => ({
-      name,
-      items: stories.filter(s => s.storyCategoryName === name)
-    }));
-  }, [stories]);
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -110,7 +106,7 @@ export function Navbar() {
                           {/* Subtopics nested menu (on hover) */}
                           <div className="absolute left-full top-[-12px] hidden group-hover/cat:block pt-3 pl-2">
                             <div className="w-64 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-2xl py-3 max-h-[70vh] overflow-y-auto">
-                              {cat.items.map((story) => (
+                              {cat.articleList.map((story) => (
                                 <Link
                                   key={story.id}
                                   href={`/stories?category=${encodeURIComponent(cat.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
@@ -141,9 +137,9 @@ export function Navbar() {
                     {/* Nested Menu for Categories when they are primary links */}
                     <div className="absolute top-full left-0 pt-4 hidden group-hover/cat:block z-50">
                       <div className="w-64 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-2xl py-3 max-h-[70vh] overflow-y-auto">
-                        {cat.items.map((story) => (
+                        {cat.articleList.map((story, index) => (
                           <Link
-                            key={story.id}
+                            key={`${story.id}-${index}`}
                             href={`/stories?category=${encodeURIComponent(cat.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
                             className="block px-4 py-2.5 text-xs font-semibold text-text-muted dark:text-gray-400 hover:bg-primary/5 hover:text-primary transition-colors border-l-2 border-transparent hover:border-primary"
                           >
