@@ -36,6 +36,7 @@ interface Story {
     language: string;
     audioPath: string | null;
     articleImage: string;
+    imagePath?: string;
     created_at: string;
     updated_at: string;
 }
@@ -142,6 +143,14 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
             description: cat.description
         }));
     }, [categories]);
+    
+    const ensureAbsoluteUrl = (path: string | null | undefined) => {
+        if (!path) return "";
+        if (path.startsWith('http')) return path;
+        const apiBase = "https://api.askharekrishna.com";
+        const cleanPath = path.startsWith('/') ? path : `/${path}`;
+        return `${apiBase}${cleanPath}`;
+    };
 
     const articleList = useMemo(() => {
         if (!selectedCategoryName) return [];
@@ -150,23 +159,26 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     }, [categories, selectedCategoryName]);
 
     const handleCategoryClick = (categoryName: string) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams();
         params.set('category', categoryName);
-        params.delete('story');
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubtopicClick = (story: Story) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('story', story.slug || story.id.toString());
+        const params = new URLSearchParams();
+        // Use ID for short URL, fallback to slug if ID is missing (prevents crash)
+        const storyIdentifier = story.id?.toString() || story.slug;
+        params.set('story', storyIdentifier);
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleNextStory = () => {
         if (!selectedStory || articleList.length <= 1) return;
-        const currentIndex = articleList.findIndex(a => a.id === selectedStory.id);
+        const currentIndex = articleList.findIndex(a => 
+            (a.id?.toString() || a.slug) === (selectedStory.id?.toString() || selectedStory.slug)
+        );
         if (currentIndex === -1) return;
         const nextIndex = (currentIndex + 1) % articleList.length;
         handleSubtopicClick(articleList[nextIndex]);
@@ -174,7 +186,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
     const handlePreviousStory = () => {
         if (!selectedStory || articleList.length <= 1) return;
-        const currentIndex = articleList.findIndex(a => a.id === selectedStory.id);
+        const currentIndex = articleList.findIndex(a => 
+            (a.id?.toString() || a.slug) === (selectedStory.id?.toString() || selectedStory.slug)
+        );
         if (currentIndex === -1) return;
         const prevIndex = (currentIndex - 1 + articleList.length) % articleList.length;
         handleSubtopicClick(articleList[prevIndex]);
@@ -182,11 +196,11 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
 
     const handleBack = () => {
-        const params = new URLSearchParams(searchParams.toString());
-        if (viewMode === 'article') {
-            params.delete('story');
+        const params = new URLSearchParams();
+        if (viewMode === 'article' && selectedCategoryName) {
+            params.set('category', selectedCategoryName);
         } else if (viewMode === 'articles') {
-            params.delete('category');
+            // Already going back to categories, so empty params is correct
         }
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -195,8 +209,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const handleWhatsAppShare = () => {
         if (!selectedStory) return;
         const currentUrl = new URL(window.location.href);
-        // Use numeric ID for the shortest possible URL
-        const shareUrl = `${currentUrl.origin}${currentUrl.pathname}?story=${selectedStory.id}`;
+        // Fallback to slug if ID is missing
+        const storyId = selectedStory.id?.toString() || selectedStory.slug;
+        const shareUrl = `${currentUrl.origin}${currentUrl.pathname}?story=${storyId}`;
         const message = `Check out this devotional story: *${selectedStory.subTopic}*\n\nRead here:\n${shareUrl}`;
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
@@ -346,6 +361,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         <thead>
                                             <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
                                                 <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
+                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Image</th>
                                                 <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
                                                 <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Category</th>
                                                 <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Action</th>
@@ -360,6 +376,17 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                 >
                                                     <td className="px-6 py-5 text-sm font-bold text-text-muted">
                                                         {index + 1}
+                                                    </td>
+                                                    <td className="px-6 py-5">
+                                                        <div className="size-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800 shadow-sm border border-black/5">
+                                                            {(story.imagePath || story.articleImage) && (
+                                                                <img 
+                                                                    src={ensureAbsoluteUrl(story.imagePath || story.articleImage)} 
+                                                                    alt="" 
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            )}
+                                                        </div>
                                                     </td>
                                                     <td className="px-6 py-5">
                                                         <div className="flex flex-col">
@@ -417,6 +444,15 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         </button>
                                     </div>
                                     <div className="p-8 md:p-12">
+                                        {(selectedStory.imagePath || selectedStory.articleImage) && (
+                                            <div className="mb-10 rounded-2xl overflow-hidden shadow-2xl border border-black/5 ring-1 ring-black/5">
+                                                <img 
+                                                    src={ensureAbsoluteUrl(selectedStory.imagePath || selectedStory.articleImage)} 
+                                                    alt={selectedStory.subTopic}
+                                                    className="w-full h-auto max-h-[500px] object-cover"
+                                                />
+                                            </div>
+                                        )}
                                         {selectedStory.audioPath && (
                                             <div className="mb-12">
                                                 <AudioPlayer
@@ -430,7 +466,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         id: selectedStory.id,
                                                         category: selectedCategoryName || '',
                                                         audioPath: selectedStory.audioPath,
-                                                        imagePath: selectedStory.articleImage || null,
+                                                        imagePath: selectedStory.imagePath || selectedStory.articleImage || null,
                                                         videoPath: null,
                                                         translations: [],
                                                         title: selectedStory.subTopic,
