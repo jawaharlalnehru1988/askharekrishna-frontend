@@ -33,6 +33,28 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   title: "Ask Hare Krishna - Devotional Audio",
   description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
+  icons: {
+    icon: "/askharekrishnalogo.jpg",
+    apple: "/askharekrishnalogo.jpg",
+  },
+  openGraph: {
+    title: "Ask Hare Krishna - Devotional Audio",
+    description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
+    images: [
+      {
+        url: "/askharekrishnalogo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Ask Hare Krishna Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ask Hare Krishna - Devotional Audio",
+    description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
+    images: ["/askharekrishnalogo.jpg"],
+  },
 };
 
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
