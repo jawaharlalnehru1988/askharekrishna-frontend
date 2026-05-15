@@ -8,6 +8,8 @@ import { useTheme } from '../providers/ThemeProvider';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 import axios from 'axios';
+import Image from 'next/image';
+import logo from '@/app/askharekrishnalogo.jpg';
 
 interface Story {
   id: number;
@@ -66,9 +68,14 @@ export function Navbar() {
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 text-text-main dark:text-white cursor-pointer group shrink-0">
-            <div className="size-8 text-primary transition-transform group-hover:scale-110">
-              <span className="material-symbols-outlined text-3xl">temple_hindu</span>
+          <Link href="/" className="flex items-center gap-3 cursor-pointer group shrink-0">
+            <div className="size-14 transition-transform group-hover:scale-105 overflow-hidden rounded-full border-2 border-primary/10 shadow-sm">
+              <Image 
+                src={logo} 
+                alt="Ask Hare Krishna" 
+                className="h-full w-full object-cover"
+                priority
+              />
             </div>
           </Link>
 

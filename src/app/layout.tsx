@@ -35,6 +35,8 @@ export const metadata: Metadata = {
   description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
 };
 
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -45,14 +47,27 @@ export default async function RootLayout({
   const dictionary = await getDictionary(locale);
 
   return (
-    <html lang={locale} className={`${manrope.variable} ${notoSans.variable} ${inter.variable} ${lexend.variable}`}>
+    <html lang={locale} className={`dark ${manrope.variable} ${notoSans.variable} ${inter.variable} ${lexend.variable}`} suppressHydrationWarning>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var theme = localStorage.getItem('theme');
+              if (!theme || (theme !== 'light' && theme !== 'dark')) {
+                theme = 'dark';
+              }
+              document.documentElement.classList.toggle('dark', theme === 'dark');
+              document.documentElement.style.colorScheme = theme;
+            } catch (e) {}
+          })();
+        ` }} />
       </head>
       <body className="antialiased">
         <LanguageProvider locale={locale} dictionary={dictionary}>
           <ThemeProvider>
             {children}
+            <WhatsAppButton />
           </ThemeProvider>
         </LanguageProvider>
       </body>

@@ -104,7 +104,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
     const availableCategories = ['All', ...categories.map(cat => cat.name)];
 
     const SkeletonCard = () => (
-        <div className="flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 overflow-hidden animate-pulse">
+        <div className="flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 overflow-hidden animate-pulse shrink-0 w-[85vw] md:w-auto snap-center">
             <div className="h-56 w-full bg-gray-200 dark:bg-neutral-800" />
             <div className="p-6">
                 <div className="h-4 w-24 bg-gray-100 dark:bg-neutral-800 rounded mb-3" />
@@ -149,13 +149,15 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                         </p>
                     </div>
                     {isHomePage && allArticles.length > 8 && (
-                        <Link 
-                            href="/pooja-vidhis" 
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-black font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 active:scale-95"
-                        >
-                            {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
-                            <ArrowRight size={18} />
-                        </Link>
+                        <div className="shrink-0">
+                            <Link 
+                                href="/pooja-vidhis" 
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-black font-bold rounded-xl transition-all border border-primary/20 hover:border-transparent active:scale-95 whitespace-nowrap"
+                            >
+                                {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
+                                <ArrowRight size={18} />
+                            </Link>
+                        </div>
                     )}
                 </div>
 
@@ -195,14 +197,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                     {loading ? (
                         Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
                     ) : displayArticles.length > 0 ? (
                         displayArticles.map((article, index) => (
                             <div 
                                 key={`${article.slug}-${article.mainTopic}-${index}`}
-                                className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+                                className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer shrink-0 w-[85vw] md:w-auto snap-center"
                                 onClick={() => setSelectedArticle(article)}
                             >
                                 <div className="relative h-56 w-full overflow-hidden">
