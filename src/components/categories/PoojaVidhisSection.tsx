@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { 
-    ArrowRight, 
-    Loader2, 
+import {
+    ArrowRight,
+    Loader2,
     ScrollText,
     Calendar,
     Share2,
@@ -75,14 +75,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
 
     // Flatten and de-duplicate articles by slug
     const allArticles = useMemo(() => {
-        const flat = categories.flatMap(cat => 
+        const flat = categories.flatMap(cat =>
             cat.articleList.map(article => ({
                 ...article,
                 categoryImage: cat.image,
                 categoryName: cat.name
             }))
         );
-        
+
         // De-duplicate by slug
         const unique = new Map();
         flat.forEach(article => {
@@ -92,10 +92,10 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
         });
         return Array.from(unique.values());
     }, [categories]);
-    
+
     const filteredArticles = allArticles.filter(article => {
-        const matchesSearch = article.subTopic.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                             article.article.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = article.subTopic.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            article.article.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = activeCategory === 'All' || article.mainTopic === activeCategory;
         return matchesSearch && matchesCategory;
     });
@@ -142,7 +142,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                             {p?.badge || (locale === 'ta' ? 'தினசரி வழிபாடுகள்' : 'Daily Rituals')}
                         </span>
                         <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-text-main dark:text-white leading-tight">
-                            {p?.title || (locale === 'ta' ? 'பூஜை விதிமுறைகள் மற்றும் முறைகள்' : 'Pooja Vidhis & Procedures')}
+                            {p?.title || (locale === 'ta' ? 'பூஜை விதிமுறைகள் மற்றும் ஆசாரமுறைகள்' : 'Pooja Vidhis & Procedures')}
                         </h2>
                         <p className="text-lg text-text-muted dark:text-gray-400 leading-relaxed">
                             {p?.description || (locale === 'ta' ? 'தினசரி பக்தி செயல்பாடுகளைச் செய்வதற்கான முறையான வழிகளை ஆராயுங்கள்.' : 'Explore the systematic ways to perform daily devotional activities.')}
@@ -150,8 +150,8 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     </div>
                     {isHomePage && allArticles.length > 8 && (
                         <div className="shrink-0">
-                            <Link 
-                                href="/pooja-vidhis" 
+                            <Link
+                                href="/pooja-vidhis"
                                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-black font-bold rounded-xl transition-all border border-primary/20 hover:border-transparent active:scale-95 whitespace-nowrap"
                             >
                                 {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
@@ -171,7 +171,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-white dark:bg-[#2a2418] border border-[#f3efe7] dark:border-neutral-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm group-hover:shadow-md"
                             />
-                            <svg 
+                            <svg
                                 className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-text-muted group-focus-within:text-primary transition-colors"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             >
@@ -184,11 +184,10 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                 <button
                                     key={cat}
                                     onClick={() => setActiveCategory(cat)}
-                                    className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${
-                                        activeCategory === cat
+                                    className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${activeCategory === cat
                                             ? 'bg-text-main dark:bg-white text-white dark:text-black border-transparent shadow-md'
                                             : 'bg-white dark:bg-[#2a2418] text-text-muted dark:text-gray-400 border-[#f3efe7] dark:border-neutral-800 hover:border-primary hover:text-primary'
-                                    }`}
+                                        }`}
                                 >
                                     {cat}
                                 </button>
@@ -202,14 +201,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                         Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
                     ) : displayArticles.length > 0 ? (
                         displayArticles.map((article, index) => (
-                            <div 
+                            <div
                                 key={`${article.slug}-${article.mainTopic}-${index}`}
                                 className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer shrink-0 w-[85vw] md:w-auto snap-center"
                                 onClick={() => setSelectedArticle(article)}
                             >
                                 <div className="relative h-56 w-full overflow-hidden">
-                                    <img 
-                                        src={article.articleImage || article.categoryImage || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800'} 
+                                    <img
+                                        src={article.articleImage || article.categoryImage || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800'}
                                         alt={article.subTopic}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
@@ -222,20 +221,20 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                 </div>
                                 <div className="p-6 flex flex-col flex-grow">
                                     <div className="flex items-center gap-2 mb-3">
-                                         <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded uppercase tracking-wider">
-                                             {article.mainTopic}
-                                         </span>
-                                     </div>
-                                     <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                                         {article.subTopic}
-                                     </h3>
+                                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded uppercase tracking-wider">
+                                            {article.mainTopic}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                                        {article.subTopic}
+                                    </h3>
 
                                     <div className="mt-auto pt-5 border-t border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                                         <span className="text-sm font-bold text-primary flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                                             {locale === 'ta' ? 'விதிமுறையை வாசிக்க' : 'Read Procedure'} <ArrowRight size={16} />
                                         </span>
                                         <div className="flex items-center gap-1">
-                                            <button 
+                                            <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleWhatsAppShare(article);
@@ -279,7 +278,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                     <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{selectedArticle.mainTopic}</p>
                                 </div>
                             </div>
-                            <button 
+                            <button
                                 onClick={() => setSelectedArticle(null)}
                                 className="size-10 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 flex items-center justify-center transition-colors"
                             >
@@ -289,8 +288,8 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
 
                         <div className="flex-grow overflow-y-auto p-6 md:p-10 custom-scrollbar">
                             <div className="relative h-64 md:h-96 w-full rounded-2xl overflow-hidden mb-10 shadow-lg">
-                                <img 
-                                    src={selectedArticle.articleImage} 
+                                <img
+                                    src={selectedArticle.articleImage}
                                     alt={selectedArticle.subTopic}
                                     className="w-full h-full object-cover"
                                 />
@@ -309,32 +308,32 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                     {selectedArticle.article}
                                 </ReactMarkdown>
                             </div>
-                            
+
                             <div className="mt-12 pt-8 border-t border-gray-100 dark:border-neutral-800 text-center">
                                 <p className="text-sm font-bold text-text-muted mb-6 uppercase tracking-[0.3em]">
-                                     {locale === 'ta' ? 'இந்த விதிமுறையைப் பகிரவும்' : 'Share this Procedure'}
-                                 </p>
-                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                     <button 
-                                         onClick={() => handleWhatsAppShare(selectedArticle)}
-                                         className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-2xl font-black transition-all shadow-xl hover:shadow-[#25D366]/20 active:scale-95 group"
-                                     >
-                                         <svg className="size-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                                         </svg>
-                                         WhatsApp
-                                     </button>
-                                     <button 
-                                         onClick={() => {
-                                             navigator.clipboard.writeText(window.location.href);
-                                             alert(locale === 'ta' ? 'இணைப்பு நகலெடுக்கப்பட்டது!' : 'Link copied to clipboard!');
-                                         }}
-                                         className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-text-main dark:text-white rounded-2xl font-black transition-all active:scale-95 group"
-                                     >
-                                         <Share2 size={20} className="group-hover:rotate-12 transition-transform" />
-                                         {locale === 'ta' ? 'இணைப்பை நகலெடு' : 'Copy Link'}
-                                     </button>
-                                 </div>
+                                    {locale === 'ta' ? 'இந்த விதிமுறையைப் பகிரவும்' : 'Share this Procedure'}
+                                </p>
+                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                    <button
+                                        onClick={() => handleWhatsAppShare(selectedArticle)}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-2xl font-black transition-all shadow-xl hover:shadow-[#25D366]/20 active:scale-95 group"
+                                    >
+                                        <svg className="size-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                        </svg>
+                                        WhatsApp
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(window.location.href);
+                                            alert(locale === 'ta' ? 'இணைப்பு நகலெடுக்கப்பட்டது!' : 'Link copied to clipboard!');
+                                        }}
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-text-main dark:text-white rounded-2xl font-black transition-all active:scale-95 group"
+                                    >
+                                        <Share2 size={20} className="group-hover:rotate-12 transition-transform" />
+                                        {locale === 'ta' ? 'இணைப்பை நகலெடு' : 'Copy Link'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

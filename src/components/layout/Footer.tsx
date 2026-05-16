@@ -24,7 +24,7 @@ export function Footer() {
                             {f.about}
                         </p>
                     </div>
-                    <div className="flex gap-16 flex-wrap">
+                    {/* <div className="flex gap-16 flex-wrap">
                         <div className="flex flex-col gap-3">
                             <h4 className="font-bold text-text-main dark:text-white text-sm uppercase tracking-wider">{f.content}</h4>
                             <Link href="/bhagavad-gita" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{dictionary.navbar.bhagavadGita}</Link>
@@ -39,15 +39,15 @@ export function Footer() {
                             <Link href="#" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.donate}</Link>
                             <Link href="#" className="text-text-muted dark:text-gray-400 hover:text-primary text-sm transition-colors">{f.privacyPolicy}</Link>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="mt-12 pt-8 border-t border-gray-100 dark:border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-muted dark:text-gray-500">
                     <p>{f.copyright.replace('{year}', currentYear.toString())}</p>
-                    <div className="flex gap-4">
+                    {/* <div className="flex gap-4">
                         <Link href="#" className="hover:text-primary transition-colors">Instagram</Link>
                         <Link href="#" className="hover:text-primary transition-colors">Twitter</Link>
                         <Link href="#" className="hover:text-primary transition-colors">Facebook</Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </footer>

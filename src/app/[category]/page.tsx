@@ -13,6 +13,7 @@ import BagavadGitaPage from "@/components/categories/BagavadGitaPage";
 import StoriesPage from "@/components/categories/StoriesPage";
 import PoojaVidhisSection from "@/components/categories/PoojaVidhisSection";
 import DebateSection from "@/components/categories/DebateSection";
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
 
@@ -95,7 +96,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         );
     }
 
-    if (category === 'debate') {
+    if (category === 'debate' && FEATURE_FLAGS.DEBATE_SECTION) {
         return (
             <Layout>
                 <DebateSection />

@@ -65,6 +65,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
     const [selectedStory, setSelectedStory] = useState<Story | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [layoutMode, setLayoutMode] = useState<'list' | 'card'>('list');
 
 
     useEffect(() => {
@@ -349,75 +350,133 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             <div className="bg-white dark:bg-[#2a2418] rounded-3xl border border-border-light dark:border-neutral-800 shadow-xl overflow-hidden">
                                 <div className="p-6 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <TableIcon size={20} className="text-primary" />
+                                        {layoutMode === 'list' ? <TableIcon size={20} className="text-primary" /> : <LayoutGrid size={20} className="text-primary" />}
                                         <h3 className="font-bold text-lg">Article List</h3>
                                     </div>
-                                    <span className="text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
-                                        {articleList.length} Stories
-                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center bg-gray-100 dark:bg-neutral-800 p-1 rounded-xl">
+                                            <button 
+                                                onClick={() => setLayoutMode('list')}
+                                                className={`p-1.5 rounded-lg transition-all ${layoutMode === 'list' ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary' : 'text-text-muted hover:text-primary'}`}
+                                                title="List View"
+                                            >
+                                                <TableIcon size={18} />
+                                            </button>
+                                            <button 
+                                                onClick={() => setLayoutMode('card')}
+                                                className={`p-1.5 rounded-lg transition-all ${layoutMode === 'card' ? 'bg-white dark:bg-neutral-700 shadow-sm text-primary' : 'text-text-muted hover:text-primary'}`}
+                                                title="Card View"
+                                            >
+                                                <LayoutGrid size={18} />
+                                            </button>
+                                        </div>
+                                        <span className="hidden sm:block text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
+                                            {articleList.length} Stories
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
-                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
-                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Image</th>
-                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
-                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Category</th>
-                                                <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
-                                            {articleList.map((story, index) => (
-                                                <tr 
-                                                    key={`${story.id}-${index}`}
-                                                    onClick={() => handleSubtopicClick(story)}
-                                                    className="group hover:bg-primary/5 cursor-pointer transition-colors"
-                                                >
-                                                    <td className="px-6 py-5 text-sm font-bold text-text-muted">
-                                                        {index + 1}
-                                                    </td>
-                                                    <td className="px-6 py-5">
-                                                        <div className="size-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800 shadow-sm border border-black/5">
-                                                            {(story.imagePath || story.articleImage) && (
-                                                                <img 
-                                                                    src={ensureAbsoluteUrl(story.imagePath || story.articleImage)} 
-                                                                    alt="" 
-                                                                    className="w-full h-full object-cover"
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-5">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-base font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
-                                                                {story.subTopic}
-                                                            </span>
-                                                            <div className="flex items-center gap-3 mt-1 md:hidden">
-                                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
-                                                                    <Calendar size={10} />
-                                                                    {new Date(story.created_at).toLocaleDateString()}
-                                                                </span>
+                                {layoutMode === 'list' ? (
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Image</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Category</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
+                                                {articleList.map((story, index) => (
+                                                    <tr 
+                                                        key={`${story.id}-${index}`}
+                                                        onClick={() => handleSubtopicClick(story)}
+                                                        className="group hover:bg-primary/5 cursor-pointer transition-colors"
+                                                    >
+                                                        <td className="px-6 py-5 text-sm font-bold text-text-muted">
+                                                            {index + 1}
+                                                        </td>
+                                                        <td className="px-6 py-5">
+                                                            <div className="size-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800 shadow-sm border border-black/5">
+                                                                {(story.imagePath || story.articleImage) && (
+                                                                    <img 
+                                                                        src={ensureAbsoluteUrl(story.imagePath || story.articleImage)} 
+                                                                        alt="" 
+                                                                        className="w-full h-full object-cover"
+                                                                    />
+                                                                )}
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-5 hidden md:table-cell">
-                                                        <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                                                        </td>
+                                                        <td className="px-6 py-5">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-base font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
+                                                                    {story.subTopic}
+                                                                </span>
+                                                                <div className="flex items-center gap-3 mt-1 md:hidden">
+                                                                    <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
+                                                                        <Calendar size={10} />
+                                                                        {new Date(story.created_at).toLocaleDateString()}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-5 hidden md:table-cell">
+                                                            <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                                                                {selectedCategoryName}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-5 text-right">
+                                                            <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white rounded-xl text-xs font-bold transition-all transform active:scale-95">
+                                                                <span>Read</span>
+                                                                {story.audioPath && <Play size={12} fill="currentColor" />}
+                                                                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {articleList.map((story, index) => (
+                                            <button
+                                                key={`${story.id}-${index}`}
+                                                onClick={() => handleSubtopicClick(story)}
+                                                className="group flex flex-col text-left bg-gray-50/50 dark:bg-black/10 rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                            >
+                                                <div className="relative h-48 w-full overflow-hidden">
+                                                    <img 
+                                                        src={ensureAbsoluteUrl(story.imagePath || story.articleImage) || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400"} 
+                                                        alt={story.subTopic}
+                                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                                    <div className="absolute bottom-3 left-3">
+                                                        <span className="px-2 py-1 bg-primary/90 text-black text-[10px] font-bold rounded-md uppercase tracking-wider">
                                                             {selectedCategoryName}
                                                         </span>
-                                                    </td>
-                                                    <td className="px-6 py-5 text-right">
-                                                        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white rounded-xl text-xs font-bold transition-all transform active:scale-95">
-                                                            <span>Read</span>
-                                                            {story.audioPath && <Play size={12} fill="currentColor" />}
-                                                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                    </div>
+                                                </div>
+                                                <div className="p-5 flex flex-col flex-grow">
+                                                    <h4 className="text-base font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                                                        {story.subTopic}
+                                                    </h4>
+                                                    <div className="mt-auto pt-4 border-t border-gray-100 dark:border-neutral-800/50 flex items-center justify-between">
+                                                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-1.5">
+                                                            <Calendar size={12} className="text-primary/60" />
+                                                            {new Date(story.created_at).toLocaleDateString()}
+                                                        </span>
+                                                        <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all transform group-hover:translate-x-1">
+                                                            <ArrowRight size={16} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
 

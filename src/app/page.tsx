@@ -8,6 +8,7 @@ import { StoriesCarousel } from '@/components/home/StoriesCarousel';
 import { DebateCarousel } from '@/components/home/DebateCarousel';
 import OtherWebsites from '@/components/categories/OtherWebsites';
 import PoojaVidhisSection from '@/components/categories/PoojaVidhisSection';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 
 export default async function Home() {
   const headersList = await headers();
@@ -25,7 +26,7 @@ export default async function Home() {
 
       <PoojaVidhisSection />
 
-      <DebateCarousel h={h} />
+      {FEATURE_FLAGS.DEBATE_SECTION && <DebateCarousel h={h} />}
 
       <OtherWebsites />
 
