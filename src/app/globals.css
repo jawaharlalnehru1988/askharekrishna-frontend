@@ -76,18 +76,9 @@
   --font-lexend: var(--font-lexend), "sans-serif";
 }
 
-/* Soft pattern background */
-.bg-pattern {
-  background-color: var(--background-light);
-  background-image: radial-gradient(var(--primary) 0.5px, transparent 0.5px), radial-gradient(var(--primary) 0.5px, var(--background-light) 0.5px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
-  opacity: 1;
-}
-
-.dark .bg-pattern {
-  background-color: var(--background-dark);
-  background-image: radial-gradient(var(--primary) 0.5px, transparent 0.5px), radial-gradient(var(--primary) 0.5px, var(--background-dark) 0.5px);
+/* Traditional Floral background utility */
+.bg-traditional-floral {
+  background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23eead2b' fill-opacity='0.04' fill-rule='evenodd'%3E%3Cpath d='M200 200c0-30 30-60 60-60s60 30 60 60-30 60-60 60-60-30-60-60zm0 0c0-30-30-60-60-60s-60 30-60 60 30 60 60 60 60-30 60-60zm0 0c-30 0-60-30-60-60s30-60 60-60 60 30 60 60-30 60-60 60zm0 0c-30 0-60 30-60 60s30 60 60 60 60-30 60-60-30-60-60-60z'/%3E%3Cpath d='M100 100c0-15 15-30 30-30s30 15 30 30-15 30-30 30-30-15-30-30zm0 0c0-15-15-30-30-30s-30 15-30 30 15 30 30 30 30-15 30-30zm0 0c-15 0-30-15-30-30s15-30 30-30 30 15 30 30-15 30-30 30zm0 0c-15 0-30 15-30 30s15 30 30 30 30-15 30-30-15-30-30-30z' opacity='0.5'/%3E%3Cpath d='M300 300c0-15 15-30 30-30s30 15 30 30-15 30-30 30-30-15-30-30zm0 0c0-15-15-30-30-30s-30 15-30 30 15 30 30 30 30-15 30-30zm0 0c-15 0-30-15-30-30s15-30 30-30 30 15 30 30-15 30-30 30zm0 0c-15 0-30 15-30 30s15 30 30 30 30-15 30-30-15-30-30-30z' opacity='0.5'/%3E%3Cpath d='M300 100c0-15 15-30 30-30s30 15 30 30-15 30-30 30-30-15-30-30zm0 0c0-15-15-30-30-30s-30 15-30 30 15 30 30 30 30-15 30-30zm0 0c-15 0-30-15-30-30s15-30 30-30 30 15 30 30-15 30-30 30zm0 0c-15 0-30 15-30 30s15 30 30 30 30-15 30-30-15-30-30-30z' opacity='0.5'/%3E%3Cpath d='M100 300c0-15 15-30 30-30s30 15 30 30-15 30-30 30-30-15-30-30zm0 0c0-15-15-30-30-30s-30 15-30 30 15 30 30 30 30-15 30-30zm0 0c-15 0-30-15-30-30s15-30 30-30 30 15 30 30-15 30-30 30zm0 0c-15 0-30 15-30 30s15 30 30 30 30-15 30-30-15-30-30-30z' opacity='0.5'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Custom scrollbar */
