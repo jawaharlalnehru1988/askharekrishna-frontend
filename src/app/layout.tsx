@@ -31,14 +31,14 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "Ask Hare Krishna - Devotional Audio",
+  title: "Ask Hare Krishna - Devotional Articles / Audio",
   description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
   icons: {
     icon: "/askharekrishnalogo.jpg",
     apple: "/askharekrishnalogo.jpg",
   },
   openGraph: {
-    title: "Ask Hare Krishna - Devotional Audio",
+    title: "Ask Hare Krishna - Devotional Articles / Audio",
     description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
     images: [
       {
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ask Hare Krishna - Devotional Audio",
+    title: "Ask Hare Krishna - Devotional Articles / Audio",
     description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
     images: ["/askharekrishnalogo.jpg"],
   },
@@ -72,7 +72,8 @@ export default async function RootLayout({
     <html lang={locale} className={`dark ${manrope.variable} ${notoSans.variable} ${inter.variable} ${lexend.variable}`} suppressHydrationWarning>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script dangerouslySetInnerHTML={{
+          __html: `
           (function() {
             try {
               var theme = localStorage.getItem('theme');

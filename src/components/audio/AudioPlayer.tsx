@@ -75,7 +75,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     };
 
     const activeUrl = currentTrack?.audioUrl || url || "";
-    const activeTitle = currentTrack?.title || title || resource?.title || "Devotional Audio";
+    const activeTitle = currentTrack?.title || title || resource?.title || "Devotional Articles / Audio";
     const activeImage = ensureAbsoluteUrl(currentTrack?.coverImage || resource?.imagePath);
 
     const [isRepeat, setIsRepeat] = useState(false);
