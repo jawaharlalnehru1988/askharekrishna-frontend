@@ -106,9 +106,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }, [activeUrl]);
 
     useEffect(() => {
-        setLoading(true);
-        setPlayed(0);
-        setPlaying(true);
+        setTimeout(() => {
+            setLoading(true);
+            setPlayed(0);
+            setPlaying(true);
+        }, 0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeUrl]);
 
     useEffect(() => {

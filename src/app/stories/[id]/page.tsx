@@ -23,7 +23,7 @@ export default async function StoryArticlePage({
     const derivedLocale = hostHeader.startsWith('tamil.') || hostHeader.startsWith('ta.') ? 'ta' : 'en';
     const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
     let matchedStory = null;
-    let allStories = [];
+    const allStories: any[] = [];
     let categoryName = '';
 
     try {

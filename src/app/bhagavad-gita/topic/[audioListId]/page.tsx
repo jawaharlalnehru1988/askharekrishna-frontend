@@ -82,7 +82,7 @@ export default function AudioListPage({ params }: PageProps) {
             <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-text-main dark:text-white mb-4">Topic Not Found</h1>
-                    <p className="text-text-muted mb-6">The topic you're looking for doesn't exist.</p>
+                    <p className="text-text-muted mb-6">The topic you&apos;re looking for doesn&apos;t exist.</p>
                     <Link href="/bhagavad-gita" className="text-primary hover:text-primary-dark font-bold">
                         ← Back to Bhagavad Gita
                     </Link>
