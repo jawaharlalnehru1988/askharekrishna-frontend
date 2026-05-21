@@ -49,7 +49,7 @@ interface StoryCategory {
 type ViewMode = 'categories' | 'articles';
 
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
-    const { stories: s } = dictionary;
+    const { stories: s, common, navbar } = dictionary;
     const { locale } = useLanguage();
     const searchParams = useSearchParams();
     const categoryParam = searchParams.get('category');
@@ -61,7 +61,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('categories');
     const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
-    const [layoutMode, setLayoutMode] = useState<'list' | 'card'>('list');
+    const [layoutMode, setLayoutMode] = useState<'list' | 'card'>('card');
     const router = useRouter();
 
 
@@ -174,7 +174,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 {viewMode === 'categories' ? s.hero.title : selectedCategoryName}
                             </h1>
                             <p className="max-w-2xl mx-auto text-lg text-text-muted dark:text-gray-300">
-                                {viewMode === 'categories' ? s.hero.description : `${articleList.length} stories available`}
+                                {viewMode === 'categories' ? s.hero.description : `${articleList.length} ${navbar.stories}`}
                             </p>
                         </div>
 
@@ -185,7 +185,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 className="flex items-center text-sm font-bold text-text-muted hover:text-primary transition-colors"
                             >
                                 <Home size={18} className="mr-1.5" />
-                                Home
+                                {common.home}
                             </Link>
 
                             <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
@@ -193,7 +193,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 href="/stories"
                                 className={`text-sm font-bold transition-colors ${viewMode === 'categories' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
                             >
-                                Stories
+                                {navbar.stories}
                             </Link>
 
                             {selectedCategoryName && (
@@ -215,7 +215,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         className="group flex items-center text-sm font-bold text-primary hover:text-black dark:hover:text-white transition-colors"
                                     >
                                         <ChevronLeft className="mr-1 group-hover:-translate-x-1 transition-transform" />
-                                        Back
+                                        {common.back}
                                     </button>
                                 </div>
                             )}
@@ -270,7 +270,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 <div className="p-6 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         {layoutMode === 'list' ? <TableIcon size={20} className="text-primary" /> : <LayoutGrid size={20} className="text-primary" />}
-                                        <h3 className="font-bold text-lg">Article List</h3>
+                                        <h3 className="font-bold text-lg">{common.articleList}</h3>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <div className="flex items-center bg-gray-100 dark:bg-neutral-800 p-1 rounded-xl">
@@ -290,7 +290,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                             </button>
                                         </div>
                                         <span className="hidden sm:block text-xs font-bold text-text-muted bg-gray-100 dark:bg-neutral-800 px-3 py-1 rounded-full uppercase tracking-wider">
-                                            {articleList.length} Stories
+                                            {articleList.length} {navbar.stories}
                                         </span>
                                     </div>
                                 </div>
@@ -372,11 +372,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                                    <div className="absolute bottom-3 left-3">
-                                                        <span className="px-2 py-1 bg-primary/90 text-black text-[10px] font-bold rounded-md uppercase tracking-wider">
-                                                            {selectedCategoryName}
-                                                        </span>
-                                                    </div>
+
                                                 </div>
                                                 <div className="p-5 flex flex-col flex-grow">
                                                     <h4 className="text-base font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
@@ -387,8 +383,13 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                             <Calendar size={12} className="text-primary/60" />
                                                             {new Date(story.created_at).toLocaleDateString()}
                                                         </span>
-                                                        <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all transform group-hover:translate-x-1">
-                                                            <ArrowRight size={16} />
+                                                        <div className="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                                                            <span className="text-[11px] font-bold text-primary group-hover:text-text-main dark:group-hover:text-white transition-colors">
+                                                                {common.read}
+                                                            </span>
+                                                            <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                                                                <ArrowRight size={16} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

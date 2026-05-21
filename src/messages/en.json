@@ -5,7 +5,10 @@
         "comingSoon": "Coming Soon",
         "playAll": "Read All",
         "listenNow": "Read Now",
-        "home": "Home"
+        "home": "Home",
+        "back": "Back",
+        "articleList": "Article List",
+        "read": "Read"
     },
     "navbar": {
         "home": "Home",

@@ -97,7 +97,6 @@ export default async function StoryArticlePage({
                             </div>
                             <div>
                                 <h1 className="text-2xl md:text-3xl font-black text-text-main dark:text-white line-clamp-2">{matchedStory.subTopic}</h1>
-                                <p className="text-xs md:text-sm font-bold text-primary uppercase tracking-widest mt-1">{matchedStory.mainTopic}</p>
                             </div>
                         </div>
                     </div>

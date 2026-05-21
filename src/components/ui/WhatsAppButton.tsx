@@ -1,11 +1,27 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Users, X, MessageCircle } from 'lucide-react';
+import { MessageSquare, Users, X, MessageCircle, Share2 } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/components/providers/LanguageContext';
 
 export const WhatsAppButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const { dictionary } = useLanguage();
+
+  const isArticlePage = pathname?.startsWith('/stories/') && pathname.split('/').length === 3;
+
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const title = document.querySelector('h1')?.textContent || 'this article';
+    const url = window.location.href;
+    const readText = dictionary?.common?.read || 'Read';
+    const text = `${readText} ${title}: \n${url}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+  };
 
   // Close when clicking outside
   useEffect(() => {
@@ -26,6 +42,22 @@ export const WhatsAppButton = () => {
           isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'
         }`}
       >
+        {/* Share Article Option */}
+        {isArticlePage && (
+          <button
+            onClick={handleShareClick}
+            className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap text-left"
+          >
+            <div className="size-10 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Share2 size={20} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold">Share this article</span>
+              <span className="text-[10px] text-text-muted opacity-60 font-medium">Send via WhatsApp</span>
+            </div>
+          </button>
+        )}
+
         {/* Join Community Option */}
         <a
           href="https://whatsapp.com/channel/0029Vb8ColjL7UVREywToZ3a"
