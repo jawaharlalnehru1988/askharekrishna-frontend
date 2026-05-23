@@ -24,6 +24,8 @@ interface StoryCategory {
   articleList: Story[];
 }
 
+const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
+
 export function Navbar() {
   const { dictionary, locale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
@@ -31,8 +33,29 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
   const [categories, setCategories] = useState<StoryCategory[]>([]);
+  const [subscriberInitial, setSubscriberInitial] = useState<string | null>(null);
+  const [subscriberName, setSubscriberName] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const storiesDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const syncSubscriberBadge = () => {
+      const savedName = window.localStorage.getItem(SUBSCRIBER_NAME_KEY) || '';
+      const trimmedName = savedName.trim();
+      const firstLetter = trimmedName ? trimmedName.charAt(0).toUpperCase() : null;
+      setSubscriberName(trimmedName);
+      setSubscriberInitial(firstLetter);
+    };
+
+    syncSubscriberBadge();
+    window.addEventListener('subscriber-updated', syncSubscriberBadge);
+    window.addEventListener('storage', syncSubscriberBadge);
+
+    return () => {
+      window.removeEventListener('subscriber-updated', syncSubscriberBadge);
+      window.removeEventListener('storage', syncSubscriberBadge);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -168,6 +191,15 @@ export function Navbar() {
 
           {/* Auth Actions */}
           <div className="flex items-center gap-3 shrink-0">
+            {subscriberInitial ? (
+              <div
+                title={subscriberName}
+                className="size-10 rounded-full bg-primary text-black font-black text-sm flex items-center justify-center border border-primary/30 shadow-sm"
+              >
+                {subscriberInitial}
+              </div>
+            ) : null}
+
             <LanguageSwitcher />
             
             <button

@@ -30,6 +30,7 @@ interface PoojaVidhiArticle {
     updated_at: string;
     categoryImage?: string;
     categoryName?: string;
+    questions?: { id: number }[];
 }
 
 interface PoojaVidhiCategory {
@@ -42,6 +43,7 @@ interface PoojaVidhiCategory {
 const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => {
     const { locale, dictionary } = useLanguage();
     const { poojaVidhis: p } = dictionary;
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
     const [categories, setCategories] = useState<PoojaVidhiCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -52,7 +54,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
         const fetchArticles = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/pooja_vidhis/articles/?language=${locale}`);
+                const response = await axios.get(`${apiBaseUrl}/v1/pooja_vidhis/articles/?language=${locale}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setCategories(data);
                 setError(null);
@@ -65,7 +67,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
         };
 
         fetchArticles();
-    }, [locale]);
+    }, [locale, apiBaseUrl]);
 
     const handleWhatsAppShare = (article: PoojaVidhiArticle) => {
         const articleUrl = `${window.location.origin}/pooja-vidhis/${article.id}`;
@@ -225,6 +227,12 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                                     <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                                         {article.subTopic}
                                     </h3>
+
+                                    {article.questions?.length ? (
+                                        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                                            {locale === 'ta' ? `${article.questions.length} வினாக்கள்` : `${article.questions.length} MCQs`}
+                                        </div>
+                                    ) : null}
 
                                     <div className="mt-auto pt-5 border-t border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                                         <span className="text-sm font-bold text-primary flex items-center gap-2 group-hover:translate-x-2 transition-transform">

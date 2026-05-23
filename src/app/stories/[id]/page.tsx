@@ -11,6 +11,37 @@ import { Locale } from '@/lib/dictionaries';
 import { ShareButtons } from '@/components/categories/ShareButtons';
 import AudioPlayer from '@/components/audio/AudioPlayer';
 import ClientAudioWrapper from '@/components/stories/ClientAudioWrapper'; // We'll create this to handle client-side audio state
+import { PoojaVidhiQuiz } from '@/components/pooja-vidhis/PoojaVidhiQuiz';
+
+interface StoryQuestionOption {
+    id: number;
+    order: number;
+    option_text: string;
+    is_correct: boolean;
+}
+
+interface StoryQuestion {
+    id: number;
+    order: number;
+    question_text: string;
+    is_active: boolean;
+    options: StoryQuestionOption[];
+}
+
+interface StoryArticle {
+    id: number;
+    mainTopic: number | string;
+    subTopic: string;
+    article: string;
+    slug: string;
+    order: number;
+    language: string;
+    audioPath: string | null;
+    imagePath: string | null;
+    articleImage?: string | null;
+    questions?: StoryQuestion[];
+    categoryName?: string;
+}
 
 export default async function StoryArticlePage({
     params
@@ -22,8 +53,8 @@ export default async function StoryArticlePage({
     const hostHeader = headersList.get('host') || headersList.get('x-forwarded-host') || '';
     const derivedLocale = hostHeader.startsWith('tamil.') || hostHeader.startsWith('ta.') ? 'ta' : 'en';
     const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
-    let matchedStory = null;
-    const allStories: any[] = [];
+    let matchedStory: StoryArticle | null = null;
+    const allStories: StoryArticle[] = [];
     let categoryName = '';
 
     try {
@@ -33,14 +64,14 @@ export default async function StoryArticlePage({
             const categories = Array.isArray(data) ? data : (data.results || []);
             
             categories.forEach((cat: any) => {
-                cat.articleList.forEach((story: any) => {
+                cat.articleList.forEach((story: StoryArticle) => {
                     allStories.push({ ...story, categoryName: cat.name });
                 });
             });
             
-            matchedStory = allStories.find((s: any) => s.id === parseInt(id));
+            matchedStory = allStories.find((s) => s.id === parseInt(id, 10)) || null;
             if (matchedStory) {
-                categoryName = matchedStory.categoryName;
+                categoryName = matchedStory.categoryName || '';
             }
         }
     } catch (e) {
@@ -57,7 +88,7 @@ export default async function StoryArticlePage({
     const articleUrl = `${protocol}://${host}/stories/${id}`;
 
     // Find next and prev stories for the Audio Player if needed, or just navigation
-    const currentIndex = allStories.findIndex((s: any) => s.id === matchedStory.id);
+    const currentIndex = allStories.findIndex((s) => s.id === matchedStory.id);
     const nextStory = currentIndex !== -1 && currentIndex < allStories.length - 1 ? allStories[currentIndex + 1] : null;
     const prevStory = currentIndex > 0 ? allStories[currentIndex - 1] : null;
 
@@ -135,6 +166,16 @@ export default async function StoryArticlePage({
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                 {matchedStory.article}
                             </ReactMarkdown>
+                        </div>
+
+                        <div className="mt-16 pt-10 border-t border-gray-100 dark:border-neutral-800">
+                            <PoojaVidhiQuiz
+                                articleId={matchedStory.id}
+                                articleTitle={matchedStory.subTopic}
+                                locale={locale}
+                                questions={matchedStory.questions ?? []}
+                                quizType="story"
+                            />
                         </div>
 
                         <div className="mt-16 pt-10 border-t border-gray-100 dark:border-neutral-800 text-center">
