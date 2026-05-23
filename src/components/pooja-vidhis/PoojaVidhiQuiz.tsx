@@ -125,15 +125,15 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
       setSubscriberSaved(true);
       setSubscriberSuccess(
         locale === 'ta'
-          ? 'நன்றி. உங்கள் பதிவு சேமிக்கப்பட்டது.'
-          : 'Thank you. Your subscription has been saved.',
+          ? 'நன்றி. உங்கள் இலவச சந்தா பதிவு சேமிக்கப்பட்டது.'
+          : 'Thank you. Your free subscription has been saved.',
       );
     } catch (error) {
       console.error('Subscriber save failed:', error);
       setSubscriberError(
         locale === 'ta'
-          ? 'பதிவு செய்ய முடியவில்லை. மீண்டும் முயற்சிக்கவும்.'
-          : 'Failed to subscribe. Please try again.',
+          ? 'இலவச சந்தா பதிவு செய்ய முடியவில்லை. மீண்டும் முயற்சிக்கவும்.'
+          : 'Failed to save free subscription. Please try again.',
       );
     } finally {
       setSubmittingSubscriber(false);
@@ -145,7 +145,7 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
 
     const phoneNumber = subscriberForm.phone_number || (typeof window !== 'undefined' ? window.localStorage.getItem(SUBSCRIBER_PHONE_KEY) : null);
     if (!phoneNumber) {
-      setScoreError(locale === 'ta' ? 'முதலில் பதிவு செய்யவும்.' : 'Please subscribe first before submitting your score.');
+      setScoreError(locale === 'ta' ? 'மதிப்பெண் சமர்ப்பிப்பதற்கு முன் இலவச சந்தா பதிவு செய்யவும்.' : 'Please complete free subscription before submitting your score.');
       setShowSubscriberForm(true);
       return;
     }
@@ -214,8 +214,8 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
           </h2>
           <p className="text-sm text-text-muted dark:text-gray-400">
             {locale === 'ta'
-              ? 'ஒரு விடையைத் தேர்ந்தெடுக்கும்போது, தொடர உதவ உங்கள் தகவலைப் பதிவு செய்யலாம்.'
-              : 'Answer a question and we will prompt you to subscribe so you can continue.'}
+              ? 'ஒரு விடையைத் தேர்ந்தெடுக்கும்போது, தொடர உதவ இலவச சந்தா பதிவுக்கு உங்கள் தகவலைப் பதிவு செய்யலாம்.'
+              : 'Answer a question and we will prompt you for a free subscription so you can continue.'}
           </p>
         </div>
       </div>
@@ -378,7 +378,7 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
               </div>
               <div>
                 <h3 className="text-2xl font-black text-text-main dark:text-white">
-                  {locale === 'ta' ? 'தொடர பதிவு செய்யுங்கள்' : 'Subscribe to continue'}
+                  {locale === 'ta' ? 'தொடர இலவச சந்தா பதிவு செய்யுங்கள்' : 'Free Subscription to continue'}
                 </h3>
                 <p className="text-sm text-text-muted dark:text-gray-400">
                   {locale === 'ta'
@@ -449,7 +449,7 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
                     className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-black text-black transition-all disabled:opacity-60"
                   >
                     {submittingSubscriber && <Loader2 size={16} className="animate-spin" />}
-                    {locale === 'ta' ? 'பதிவு செய்யுங்கள்' : 'Subscribe'}
+                    {locale === 'ta' ? 'இலவச சந்தா பதிவு செய்யுங்கள்' : 'Subscribe Free'}
                   </button>
                   <button
                     type="button"
