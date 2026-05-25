@@ -39,28 +39,26 @@ interface Story {
     updated_at: string;
 }
 
-interface StoryCategory {
+interface StoryTopicGroup {
     name: string;
     description: string;
     image: string | null;
     articleList: Story[];
 }
 
-type ViewMode = 'categories' | 'articles';
+type ViewMode = 'topics' | 'articles';
 
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
     const { stories: s, common, navbar } = dictionary;
     const { locale } = useLanguage();
     const searchParams = useSearchParams();
-    const categoryParam = searchParams.get('category');
     const topicParam = searchParams.get('topic');
-    const storyIdParam = searchParams.get('story');
 
-    const [categories, setCategories] = useState<StoryCategory[]>([]);
+    const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<ViewMode>('categories');
-    const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<ViewMode>('topics');
+    const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
     const [layoutMode, setLayoutMode] = useState<'list' | 'card'>('card');
     const router = useRouter();
 
@@ -71,7 +69,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                 setLoading(true);
                 const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                setCategories(data);
+                setTopics(data);
                 setError(null);
             } catch (err) {
                 console.error('Error fetching stories:', err);
@@ -86,26 +84,26 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
 
     useEffect(() => {
-        if (!loading && categories.length > 0) {
+        if (!loading && topics.length > 0) {
             // Standard hierarchy-based navigation
-            if (categoryParam) {
-                setSelectedCategoryName(categoryParam);
+            if (topicParam) {
+                setSelectedTopicName(topicParam);
                 setViewMode('articles');
             } else {
-                setViewMode('categories');
-                setSelectedCategoryName(null);
+                setViewMode('topics');
+                setSelectedTopicName(null);
             }
         }
-    }, [categoryParam, loading, categories]);
+    }, [topicParam, loading, topics]);
 
-    const categoryList = useMemo(() => {
-        return categories.map(cat => ({
-            name: cat.name,
-            count: cat.articleList.length,
-            image: cat.image || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800",
-            description: cat.description
+    const topicList = useMemo(() => {
+        return topics.map(topic => ({
+            name: topic.name,
+            count: topic.articleList.length,
+            image: topic.image || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800",
+            description: topic.description
         }));
-    }, [categories]);
+    }, [topics]);
     
     const ensureAbsoluteUrl = (path: string | null | undefined) => {
         if (!path) return "";
@@ -116,14 +114,14 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     };
 
     const articleList = useMemo(() => {
-        if (!selectedCategoryName) return [];
-        const category = categories.find(c => c.name === selectedCategoryName);
-        return category ? category.articleList : [];
-    }, [categories, selectedCategoryName]);
+        if (!selectedTopicName) return [];
+        const topic = topics.find(t => t.name === selectedTopicName);
+        return topic ? topic.articleList : [];
+    }, [topics, selectedTopicName]);
 
-    const handleCategoryClick = (categoryName: string) => {
+    const handleTopicClick = (topicName: string) => {
         const params = new URLSearchParams();
-        params.set('category', categoryName);
+        params.set('topic', topicName);
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -135,7 +133,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const handleBack = () => {
         const params = new URLSearchParams();
         if (viewMode === 'articles') {
-            // Going back to categories, empty params
+            // Going back to topics, empty params
         }
         window.history.pushState(null, '', `?${params.toString()}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -171,10 +169,10 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                 {s.hero.pastimes}
                             </span>
                             <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
-                                {viewMode === 'categories' ? s.hero.title : selectedCategoryName}
+                                {viewMode === 'topics' ? s.hero.title : selectedTopicName}
                             </h1>
                             <p className="max-w-2xl mx-auto text-lg text-text-muted dark:text-gray-300">
-                                {viewMode === 'categories' ? s.hero.description : `${articleList.length} ${navbar.stories}`}
+                                {viewMode === 'topics' ? s.hero.description : `${articleList.length} ${navbar.stories}`}
                             </p>
                         </div>
 
@@ -191,19 +189,19 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                             <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
                             <Link
                                 href="/stories"
-                                className={`text-sm font-bold transition-colors ${viewMode === 'categories' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
+                                className={`text-sm font-bold transition-colors ${viewMode === 'topics' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
                             >
                                 {navbar.stories}
                             </Link>
 
-                            {selectedCategoryName && (
+                            {selectedTopicName && (
                                 <>
                                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
                                     <Link
-                                        href={`/stories?category=${encodeURIComponent(selectedCategoryName)}`}
+                                        href={`/stories?topic=${encodeURIComponent(selectedTopicName)}`}
                                         className={`text-sm font-bold transition-colors ${viewMode === 'articles' ? 'text-primary' : 'text-text-muted hover:text-primary'}`}
                                     >
-                                        {selectedCategoryName}
+                                        {selectedTopicName}
                                     </Link>
                                 </>
                             )}
@@ -225,19 +223,19 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
                 <section className="py-12 md:py-16">
                     <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                        {/* Phase 1: Categories View */}
-                        {viewMode === 'categories' && (
+                        {/* Phase 1: Topics View */}
+                        {viewMode === 'topics' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {categoryList.map((category, index) => (
+                                {topicList.map((topic, index) => (
                                     <button
                                         key={index}
-                                        onClick={() => handleCategoryClick(category.name)}
+                                        onClick={() => handleTopicClick(topic.name)}
                                         className="group flex flex-col text-left h-full bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                                     >
                                         <div className="relative h-56 w-full overflow-hidden">
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                                                style={{ backgroundImage: `url('${category.image}')` }}
+                                                style={{ backgroundImage: `url('${topic.image}')` }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                                             <div className="absolute bottom-4 left-4">
@@ -248,10 +246,10 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                         </div>
                                         <div className="p-6 flex flex-col flex-grow">
                                             <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                                                {category.name}
+                                                {topic.name}
                                             </h3>
                                             <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
-                                                {category.description || `${category.count} stories to explore`}
+                                                {topic.description || `${topic.count} stories to explore`}
                                             </p>
                                             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                                                 View Topics <ArrowRight size={16} className="ml-1" />
@@ -342,7 +340,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         </td>
                                                         <td className="px-6 py-5 hidden md:table-cell">
                                                             <span className="inline-block px-2 py-1 rounded-md bg-gray-100 dark:bg-neutral-800 text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                                                                {selectedCategoryName}
+                                                                {selectedTopicName}
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-5 text-right">

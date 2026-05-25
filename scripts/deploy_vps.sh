@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-APP_DIR="/var/www/askharekrishna-platform/frontend"
+APP_DIR="/var/www/askharekrishna-platform/frontends/articlesFrontend"
 BRANCH="master"
 SERVICE_NAME="askharekrishna-frontend.service"
 

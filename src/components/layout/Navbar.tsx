@@ -19,7 +19,7 @@ interface Story {
   slug: string;
 }
 
-interface StoryCategory {
+interface StoryTopicGroup {
   name: string;
   articleList: Story[];
 }
@@ -32,7 +32,7 @@ export function Navbar() {
   const { navbar: t, common: c } = dictionary;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const [categories, setCategories] = useState<StoryCategory[]>([]);
+  const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
   const [subscriberInitial, setSubscriberInitial] = useState<string | null>(null);
   const [subscriberName, setSubscriberName] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -62,7 +62,7 @@ export function Navbar() {
       try {
         const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
         const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-        setCategories(data);
+        setTopics(data);
       } catch (err) {
         console.error('Navbar stories fetch failed:', err);
       }
@@ -106,8 +106,8 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 ml-8">
             <Link href="/" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap">{t.home}</Link>
 
-            {categories.length > 0 ? (
-              categories.length > 3 ? (
+            {topics.length > 0 ? (
+              topics.length > 3 ? (
                 <div className="relative" ref={storiesDropdownRef}>
                   <button
                     onClick={() => setIsStoriesOpen(!isStoriesOpen)}
@@ -122,24 +122,24 @@ export function Navbar() {
                       <div className="px-4 py-2 mb-2 border-b border-gray-100 dark:border-neutral-800">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Categories</span>
                       </div>
-                      {categories.map((cat, i) => (
+                      {topics.map((topic, i) => (
                         <div key={i} className="group/cat relative">
                           <Link
-                            href={`/stories?category=${encodeURIComponent(cat.name)}`}
+                            href={`/stories?topic=${encodeURIComponent(topic.name)}`}
                             onClick={() => setIsStoriesOpen(false)}
                             className="flex items-center justify-between px-4 py-2.5 text-sm font-bold text-text-main dark:text-gray-200 hover:bg-primary/10 hover:text-primary transition-colors"
                           >
-                            <span>{cat.name}</span>
+                            <span>{topic.name}</span>
                             <span className="material-symbols-outlined text-lg opacity-40">chevron_right</span>
                           </Link>
 
                           {/* Subtopics nested menu (on hover) */}
                           <div className="absolute left-full top-[-12px] hidden group-hover/cat:block pt-3 pl-2">
                             <div className="w-64 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-2xl py-3 max-h-[70vh] overflow-y-auto">
-                              {cat.articleList.map((story) => (
+                              {topic.articleList.map((story) => (
                                 <Link
                                   key={story.id}
-                                  href={`/stories?category=${encodeURIComponent(cat.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
+                                  href={`/stories?topic=${encodeURIComponent(topic.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
                                   onClick={() => setIsStoriesOpen(false)}
                                   className="block px-4 py-2.5 text-xs font-semibold text-text-muted dark:text-gray-400 hover:bg-primary/5 hover:text-primary transition-colors border-l-2 border-transparent hover:border-primary"
                                 >
@@ -154,23 +154,23 @@ export function Navbar() {
                   )}
                 </div>
               ) : (
-                categories.map((cat, i) => (
+                topics.map((topic, i) => (
                   <div key={i} className="relative group/cat" ref={i === 0 ? storiesDropdownRef : null}>
                     <Link
-                      href={`/stories?category=${encodeURIComponent(cat.name)}`}
+                      href={`/stories?topic=${encodeURIComponent(topic.name)}`}
                       className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1"
                     >
-                      {cat.name}
+                      {topic.name}
                       <span className="material-symbols-outlined text-sm opacity-40">expand_more</span>
                     </Link>
 
                     {/* Nested Menu for Categories when they are primary links */}
                     <div className="absolute top-full left-0 pt-4 hidden group-hover/cat:block z-50">
                       <div className="w-64 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-2xl py-3 max-h-[70vh] overflow-y-auto">
-                        {cat.articleList.map((story, index) => (
+                        {topic.articleList.map((story, index) => (
                           <Link
                             key={`${story.id}-${index}`}
-                            href={`/stories?category=${encodeURIComponent(cat.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
+                            href={`/stories?topic=${encodeURIComponent(topic.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
                             className="block px-4 py-2.5 text-xs font-semibold text-text-muted dark:text-gray-400 hover:bg-primary/5 hover:text-primary transition-colors border-l-2 border-transparent hover:border-primary"
                           >
                             {story.subTopic}

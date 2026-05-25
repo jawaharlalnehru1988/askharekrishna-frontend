@@ -11,7 +11,7 @@ interface Story {
     slug: string;
 }
 
-interface StoryCategory {
+interface StoryTopicGroup {
     name: string;
     description: string;
     image: string | null;
@@ -42,7 +42,7 @@ interface StoriesCarouselProps {
 
 export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [categories, setCategories] = useState<StoryCategory[]>([]);
+    const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
                 setLoading(true);
                 const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-                setCategories(data);
+                setTopics(data);
             } catch (err) {
                 console.error('Stories fetch failed:', err);
             } finally {
@@ -62,14 +62,14 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
     }, [locale]);
 
     const storyCategories: Category[] = useMemo(() => {
-        return categories.map(cat => ({
-            title: cat.name,
-            description: cat.description || h.categories.storiesDesc || "Explore divine pastimes and teachings",
-            backgroundImage: cat.image || DEFAULT_CATEGORY_IMAGE,
-            icon: ICON_MAPPER[cat.name] || "book_2",
-            href: `/stories?category=${encodeURIComponent(cat.name)}`
+        return topics.map(topic => ({
+            title: topic.name,
+            description: topic.description || h.categories.storiesDesc || "Explore divine pastimes and teachings",
+            backgroundImage: topic.image || DEFAULT_CATEGORY_IMAGE,
+            icon: ICON_MAPPER[topic.name] || "book_2",
+            href: `/stories?topic=${encodeURIComponent(topic.name)}`
         }));
-    }, [categories, h.categories]);
+    }, [topics, h.categories]);
 
     return (
         <>

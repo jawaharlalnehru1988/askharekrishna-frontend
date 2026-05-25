@@ -28,4 +28,4 @@ jobs:
           port: 22
           script_stop: true
           script: |
-            bash /var/www/askharekrishna-platform/frontend/scripts/deploy_vps.sh
+            bash /var/www/askharekrishna-platform/frontends/articlesFrontend/scripts/deploy_vps.sh

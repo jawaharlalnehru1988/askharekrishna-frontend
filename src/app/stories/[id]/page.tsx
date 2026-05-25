@@ -40,7 +40,7 @@ interface StoryArticle {
     imagePath: string | null;
     articleImage?: string | null;
     questions?: StoryQuestion[];
-    categoryName?: string;
+    topicName?: string;
 }
 
 export default async function StoryArticlePage({
@@ -55,23 +55,23 @@ export default async function StoryArticlePage({
     const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
     let matchedStory: StoryArticle | null = null;
     const allStories: StoryArticle[] = [];
-    let categoryName = '';
+    let topicName = '';
 
     try {
-        const res = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`, { next: { revalidate: 3600 } });
+        const res = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`, { next: { revalidate: 60 } });
         if (res.ok) {
             const data = await res.json();
             const categories = Array.isArray(data) ? data : (data.results || []);
             
             categories.forEach((cat: any) => {
                 cat.articleList.forEach((story: StoryArticle) => {
-                    allStories.push({ ...story, categoryName: cat.name });
+                    allStories.push({ ...story, topicName: cat.name });
                 });
             });
             
             matchedStory = allStories.find((s) => s.id === parseInt(id, 10)) || null;
             if (matchedStory) {
-                categoryName = matchedStory.categoryName || '';
+                topicName = matchedStory.topicName || '';
             }
         }
     } catch (e) {
@@ -115,8 +115,8 @@ export default async function StoryArticlePage({
                         Stories
                     </Link>
                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
-                    <Link href={`/stories?category=${encodeURIComponent(categoryName)}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
-                        {categoryName}
+                    <Link href={`/stories?topic=${encodeURIComponent(topicName)}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
+                        {topicName}
                     </Link>
                 </div>
 
@@ -148,7 +148,7 @@ export default async function StoryArticlePage({
                             <div className="mb-12">
                                 <ClientAudioWrapper 
                                     matchedStory={matchedStory}
-                                    categoryName={categoryName}
+                                    categoryName={topicName}
                                     nextStoryId={nextStory?.id}
                                     prevStoryId={prevStory?.id}
                                 />
