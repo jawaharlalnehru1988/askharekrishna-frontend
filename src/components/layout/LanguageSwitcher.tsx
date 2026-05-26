@@ -2,16 +2,22 @@
 
 import React from 'react';
 import { useLanguage } from '../providers/LanguageContext';
+import { Locale } from '@/lib/dictionaries';
+
+const LOCALE_TO_SUBDOMAIN: Record<Locale, string> = {
+    en: '',
+    ta: 'tamil',
+    hi: 'hindi',
+};
 
 export function LanguageSwitcher() {
     const { locale } = useLanguage();
     const [isNavigating, setIsNavigating] = React.useState(false);
 
-    const toggleLanguage = () => {
+    const switchLanguage = (nextLocale: Locale) => {
         if (isNavigating) return;
+        if (nextLocale === locale) return;
         setIsNavigating(true);
-
-        const nextLocale = locale === 'en' ? 'ta' : 'en';
         const hostname = window.location.hostname;
         const protocol = window.location.protocol;
         const port = window.location.port;
@@ -30,13 +36,14 @@ export function LanguageSwitcher() {
             const parts = cleanHostname.split('.');
             if (parts.length > 1) {
                 // If the first part is a known locale prefix, remove it
-                if (['tamil', 'ta', 'english', 'en'].includes(parts[0])) {
+                if (['tamil', 'ta', 'hindi', 'hi', 'english', 'en'].includes(parts[0])) {
                     baseDomain = parts.slice(1).join('.');
                 }
             }
         }
 
-        const newHostname = nextLocale === 'ta' ? `tamil.${baseDomain}` : baseDomain;
+        const localeSubdomain = LOCALE_TO_SUBDOMAIN[nextLocale];
+        const newHostname = localeSubdomain ? `${localeSubdomain}.${baseDomain}` : baseDomain;
 
         // Redirect to home page if not already there, to avoid missing translations/articles
         const isHomePage = window.location.pathname === '/';
@@ -49,9 +56,7 @@ export function LanguageSwitcher() {
     };
 
     return (
-        <button
-            onClick={toggleLanguage}
-            disabled={isNavigating}
+        <div
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-light dark:border-border-dark text-xs font-bold transition-colors ${
                 isNavigating 
                 ? 'opacity-50 cursor-not-allowed bg-surface-light dark:bg-surface-dark' 
@@ -61,7 +66,17 @@ export function LanguageSwitcher() {
             <span className={`material-symbols-outlined text-sm ${isNavigating ? 'animate-spin' : ''}`}>
                 {isNavigating ? 'progress_activity' : 'language'}
             </span>
-            {locale === 'en' ? 'தமிழ்' : 'English'}
-        </button>
+            <select
+                value={locale}
+                disabled={isNavigating}
+                onChange={(e) => switchLanguage(e.target.value as Locale)}
+                className="bg-transparent text-xs font-bold outline-none cursor-pointer"
+                aria-label="Select language"
+            >
+                <option value="en">English</option>
+                <option value="ta">தமிழ்</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
     );
 }

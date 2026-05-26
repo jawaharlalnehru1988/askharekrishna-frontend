@@ -48,7 +48,7 @@ export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
         const fetchDebates = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setCategories(data);
             } catch (err) {

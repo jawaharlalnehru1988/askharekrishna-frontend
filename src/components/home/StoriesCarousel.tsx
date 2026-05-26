@@ -49,7 +49,7 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setTopics(data);
             } catch (err) {

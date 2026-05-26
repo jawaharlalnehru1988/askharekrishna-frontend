@@ -85,7 +85,7 @@ export const WhatsAppButton = () => {
             <MessageSquare size={20} />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold">Contact Admin</span>
+            <span className="text-sm font-bold">Any Question?</span>
             <span className="text-[10px] text-text-muted opacity-60 font-medium">Chat directly with us</span>
           </div>
         </a>

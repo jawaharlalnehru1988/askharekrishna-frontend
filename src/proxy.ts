@@ -16,6 +16,8 @@ export function proxy(request: NextRequest) {
     const lowerHost = host.toLowerCase();
     if (lowerHost.startsWith('tamil.') || lowerHost.startsWith('ta.')) {
         locale = 'ta';
+    } else if (lowerHost.startsWith('hindi.') || lowerHost.startsWith('hi.')) {
+        locale = 'hi';
     } else if (lowerHost.startsWith('english.') || lowerHost.startsWith('en.')) {
         locale = 'en';
     }

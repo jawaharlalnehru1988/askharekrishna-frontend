@@ -53,7 +53,13 @@ export default async function PoojaVidhiArticlePage({
     const { id } = await params;
     const headersList = await headers();
     const hostHeader = headersList.get('host') || headersList.get('x-forwarded-host') || '';
-    const derivedLocale = hostHeader.startsWith('tamil.') || hostHeader.startsWith('ta.') ? 'ta' : 'en';
+    const lowerHost = hostHeader.toLowerCase();
+    let derivedLocale: Locale = 'en';
+    if (lowerHost.startsWith('tamil.') || lowerHost.startsWith('ta.')) {
+        derivedLocale = 'ta';
+    } else if (lowerHost.startsWith('hindi.') || lowerHost.startsWith('hi.')) {
+        derivedLocale = 'hi';
+    }
     const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
     let matchedArticle: PoojaVidhiArticle | null = null;
     try {
