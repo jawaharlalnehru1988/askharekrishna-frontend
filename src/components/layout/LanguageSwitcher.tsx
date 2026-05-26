@@ -8,6 +8,9 @@ const LOCALE_TO_SUBDOMAIN: Record<Locale, string> = {
     en: '',
     ta: 'tamil',
     hi: 'hindi',
+    kn: 'kannada',
+    te: 'telugu',
+    ml: 'malayalam',
 };
 
 export function LanguageSwitcher() {
@@ -36,7 +39,7 @@ export function LanguageSwitcher() {
             const parts = cleanHostname.split('.');
             if (parts.length > 1) {
                 // If the first part is a known locale prefix, remove it
-                if (['tamil', 'ta', 'hindi', 'hi', 'english', 'en'].includes(parts[0])) {
+                if (['tamil', 'ta', 'hindi', 'hi', 'kannada', 'kn', 'telugu', 'te', 'malayalam', 'ml', 'english', 'en'].includes(parts[0])) {
                     baseDomain = parts.slice(1).join('.');
                 }
             }
@@ -70,12 +73,15 @@ export function LanguageSwitcher() {
                 value={locale}
                 disabled={isNavigating}
                 onChange={(e) => switchLanguage(e.target.value as Locale)}
-                className="bg-transparent text-xs font-bold outline-none cursor-pointer"
+                className="bg-transparent text-xs font-bold outline-none cursor-pointer text-text-main dark:text-text-main"
                 aria-label="Select language"
             >
-                <option value="en">English</option>
-                <option value="ta">தமிழ்</option>
-                <option value="hi">हिन्दी</option>
+                <option value="en" className="text-black bg-white">English</option>
+                <option value="ta" className="text-black bg-white">தமிழ்</option>
+                <option value="hi" className="text-black bg-white">हिन्दी</option>
+                <option value="kn" className="text-black bg-white">ಕನ್ನಡ</option>
+                <option value="te" className="text-black bg-white">తెలుగు</option>
+                <option value="ml" className="text-black bg-white">മലയാളം</option>
             </select>
         </div>
     );

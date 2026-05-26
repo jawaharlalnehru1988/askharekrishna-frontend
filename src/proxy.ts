@@ -18,6 +18,12 @@ export function proxy(request: NextRequest) {
         locale = 'ta';
     } else if (lowerHost.startsWith('hindi.') || lowerHost.startsWith('hi.')) {
         locale = 'hi';
+    } else if (lowerHost.startsWith('kannada.') || lowerHost.startsWith('kn.')) {
+        locale = 'kn';
+    } else if (lowerHost.startsWith('telugu.') || lowerHost.startsWith('te.')) {
+        locale = 'te';
+    } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
+        locale = 'ml';
     } else if (lowerHost.startsWith('english.') || lowerHost.startsWith('en.')) {
         locale = 'en';
     }

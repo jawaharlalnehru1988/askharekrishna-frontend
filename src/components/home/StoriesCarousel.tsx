@@ -21,6 +21,7 @@ interface StoryTopicGroup {
 interface Category {
     title: string;
     description: string;
+    articleCount: number;
     backgroundImage: string;
     icon: string;
     href: string;
@@ -65,11 +66,14 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
         return topics.map(topic => ({
             title: topic.name,
             description: topic.description || h.categories.storiesDesc || "Explore divine pastimes and teachings",
+            articleCount: topic.articleList?.length || 0,
             backgroundImage: topic.image || DEFAULT_CATEGORY_IMAGE,
             icon: ICON_MAPPER[topic.name] || "book_2",
             href: `/stories?topic=${encodeURIComponent(topic.name)}`
         }));
     }, [topics, h.categories]);
+
+    const visibleStoryCategories = useMemo(() => storyCategories.slice(0, 8), [storyCategories]);
 
     return (
         <>
@@ -79,29 +83,31 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
                         <h2 className="text-2xl font-bold tracking-tight text-text-main dark:text-white md:text-3xl leading-tight">{h.audioCategories}</h2>
                         <p className="mt-2 text-text-muted dark:text-gray-400">{h.audioDesc}</p>
                     </div>
-                    <Link href="/stories" className="hidden font-bold transition-colors sm:flex text-primary hover:text-yellow-600 text-sm items-center gap-1">
-                        {h.viewAll} <span className="material-symbols-outlined text-base">arrow_forward</span>
-                    </Link>
+                    {storyCategories.length > 8 && (
+                        <Link href="/stories" className="hidden font-bold transition-colors sm:flex text-primary hover:text-yellow-600 text-sm items-center gap-1">
+                            {h.viewAll} <span className="material-symbols-outlined text-base">arrow_forward</span>
+                        </Link>
+                    )}
                 </div>
             </div>
 
             <div className="w-full bg-background-light dark:bg-background-dark pb-12 overflow-hidden">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                    <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide sm:overflow-x-auto sm:pb-6">
+                    <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                         {loading ? (
-                            Array.from({ length: 4 }).map((_, i) => (
-                                <div key={i} className="flex flex-col gap-4 p-4 bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse">
+                            Array.from({ length: 8 }).map((_, i) => (
+                                <div key={i} className="flex flex-col gap-4 p-4 bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse shrink-0 w-[85vw] sm:w-[420px] md:w-[340px]">
                                     <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-neutral-800 rounded-xl"></div>
                                     <div className="h-6 w-32 bg-gray-100 dark:bg-neutral-800 rounded"></div>
                                     <div className="h-4 w-full bg-gray-100 dark:bg-neutral-800 rounded"></div>
                                 </div>
                             ))
                         ) : (
-                            storyCategories.map((category) => (
+                            visibleStoryCategories.map((category) => (
                                 <Link
                                     key={category.title}
                                     href={category.href}
-                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 flex-shrink-0 w-[260px] md:w-[280px] snap-center"
+                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 shrink-0 w-[85vw] sm:w-[420px] md:w-[340px] snap-center"
                                 >
                                     <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative">
                                         <div
@@ -121,6 +127,9 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
                                         </h3>
                                         <p className="mt-1 text-sm transition-colors text-text-muted dark:text-gray-400 line-clamp-2 italic">
                                             {category.description}
+                                        </p>
+                                        <p className="mt-2 text-xs font-bold uppercase tracking-wider text-primary/90">
+                                            {category.articleCount} {locale === 'ta' ? 'கட்டுரைகள்' : locale === 'hi' ? 'लेख' : locale === 'kn' ? 'ಲೇಖನಗಳು' : locale === 'te' ? 'వ్యాసాలు' : locale === 'ml' ? 'ലേഖനങ്ങൾ' : 'Articles'}
                                         </p>
                                     </div>
                                 </Link>

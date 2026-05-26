@@ -59,6 +59,12 @@ export default async function PoojaVidhiArticlePage({
         derivedLocale = 'ta';
     } else if (lowerHost.startsWith('hindi.') || lowerHost.startsWith('hi.')) {
         derivedLocale = 'hi';
+    } else if (lowerHost.startsWith('kannada.') || lowerHost.startsWith('kn.')) {
+        derivedLocale = 'kn';
+    } else if (lowerHost.startsWith('telugu.') || lowerHost.startsWith('te.')) {
+        derivedLocale = 'te';
+    } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
+        derivedLocale = 'ml';
     }
     const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
     let matchedArticle: PoojaVidhiArticle | null = null;
