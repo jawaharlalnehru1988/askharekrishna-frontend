@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { headers } from 'next/headers';
@@ -8,6 +9,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Locale } from '@/lib/dictionaries';
 import { ShareButtons } from '@/components/categories/ShareButtons';
 import { PoojaVidhiQuiz } from '@/components/pooja-vidhis/PoojaVidhiQuiz';
+import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 export const dynamic = 'force-dynamic';
@@ -43,13 +45,7 @@ interface PoojaVidhiArticle {
   questions?: PoojaVidhiQuestion[];
 }
 
-export default async function PoojaVidhiQuizOnlyPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const headersList = await headers();
+function resolveLocale(headersList: Headers): Locale {
   const hostHeader = headersList.get('host') || headersList.get('x-forwarded-host') || '';
   const lowerHost = hostHeader.toLowerCase();
   let derivedLocale: Locale = 'en';
@@ -64,17 +60,59 @@ export default async function PoojaVidhiQuizOnlyPage({
   } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
     derivedLocale = 'ml';
   }
-  const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
+  return (headersList.get('x-locale') as Locale) || derivedLocale;
+}
 
-  let matchedArticle: PoojaVidhiArticle | null = null;
+async function fetchPoojaArticleById(id: string): Promise<PoojaVidhiArticle | null> {
   try {
     const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/`, { cache: 'no-store' });
-    if (res.ok) {
-      matchedArticle = await res.json();
-    }
-  } catch (e) {
-    console.error('Error fetching article quiz', e);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const headersList = await headers();
+  const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
+
+  const article = await fetchPoojaArticleById(id);
+  if (!article) {
+    return {
+      title: 'Pooja Vidhi Quiz Not Found | Ask Hare Krishna',
+      description: 'This quiz is not available in the selected language.',
+    };
+  }
+
+  const description = toPlainExcerpt(article.article || article.subTopic);
+  const image = toAbsoluteMediaUrl(article.articleImage);
+
+  return buildArticleMetadata({
+    host,
+    path: `/pooja-vidhis/${id}/quiz`,
+    title: `${article.subTopic} Quiz | Ask Hare Krishna`,
+    description,
+    imageUrl: image,
+  });
+}
+
+export default async function PoojaVidhiQuizOnlyPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const headersList = await headers();
+  const locale = resolveLocale(headersList);
+
+  let matchedArticle: PoojaVidhiArticle | null = null;
+  matchedArticle = await fetchPoojaArticleById(id);
 
   if (!matchedArticle) {
     return notFound();

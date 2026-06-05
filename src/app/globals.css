@@ -139,3 +139,24 @@ details[open] summary~* {
     scrollbar-width: none;
   }
 }
+
+.stories-topic-strip {
+  display: flex;
+  overflow-x: auto;
+}
+
+@media (min-width: 1024px) {
+  .stories-topic-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow-x: visible !important;
+    padding-bottom: 0;
+  }
+
+  .stories-topic-card,
+  .stories-topic-skeleton {
+    width: auto !important;
+    flex-shrink: 1 !important;
+    scroll-snap-align: none;
+  }
+}

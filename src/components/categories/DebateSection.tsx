@@ -19,7 +19,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 interface DebateArticle {
-    topic: string;
+    mainTopic?: string;
+    topic?: string;
     subTopic: string;
     article: string;
     slug: string;
@@ -43,14 +44,17 @@ interface DebateCategory {
 const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     const { locale, dictionary } = useLanguage();
     const searchParams = useSearchParams();
-    const initialCategory = searchParams.get('category') || 'All';
+    const initialMainTopic = searchParams.get('mainTopic') || searchParams.get('category') || 'All';
+    const initialQuery = searchParams.get('query') || '';
 
     const [categories, setCategories] = useState<DebateCategory[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedArticle, setSelectedArticle] = useState<DebateArticle | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
+    const [activeMainTopic, setActiveMainTopic] = useState<string>(initialMainTopic);
+
+    const getMainTopic = (article: DebateArticle) => (article.mainTopic || article.topic || '').trim();
 
     useEffect(() => {
         const fetchDebates = async () => {
@@ -60,10 +64,21 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setCategories(data);
                 
-                // If initialCategory was set from URL, make sure it's valid, otherwise default to 'All'
-                if (initialCategory !== 'All') {
-                    const categoryExists = data.some((cat: DebateCategory) => cat.name === initialCategory);
-                    if (!categoryExists) setActiveCategory('All');
+                // If initialMainTopic was set from URL, make sure it's valid, otherwise default to 'All'
+                if (initialMainTopic !== 'All') {
+                    const mainTopics = new Set<string>();
+                    data.forEach((cat: DebateCategory) => {
+                        (cat.articleList || []).forEach((article) => {
+                            const topic = getMainTopic(article) || cat.name;
+                            if (topic) {
+                                mainTopics.add(topic);
+                            }
+                        });
+                    });
+
+                    if (!mainTopics.has(initialMainTopic)) {
+                        setActiveMainTopic('All');
+                    }
                 }
                 
                 setError(null);
@@ -76,7 +91,7 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
         };
 
         fetchDebates();
-    }, [locale, initialCategory]);
+    }, [locale, initialMainTopic]);
 
     const handleWhatsAppShare = (article: DebateArticle) => {
         const message = `Check out this Debate article: *${article.subTopic}*\n\nRead here: ${window.location.href}`;
@@ -107,12 +122,21 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     const filteredArticles = allArticles.filter(article => {
         const matchesSearch = article.subTopic.toLowerCase().includes(searchQuery.toLowerCase()) || 
                              article.article.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = activeCategory === 'All' || article.topic === activeCategory;
-        return matchesSearch && matchesCategory;
+        const matchesMainTopic = activeMainTopic === 'All' || getMainTopic(article) === activeMainTopic;
+        return matchesSearch && matchesMainTopic;
     });
 
     const displayArticles = isHomePage ? filteredArticles.slice(0, 8) : filteredArticles;
-    const availableCategories = ['All', ...categories.map(cat => cat.name)];
+    const availableMainTopics = useMemo(() => {
+        const topicSet = new Set<string>();
+        allArticles.forEach((article) => {
+            const topic = getMainTopic(article);
+            if (topic) {
+                topicSet.add(topic);
+            }
+        });
+        return ['All', ...Array.from(topicSet.values()).sort((a, b) => a.localeCompare(b))];
+    }, [allArticles]);
 
     const SkeletonCard = () => (
         <div className="flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 overflow-hidden animate-pulse">
@@ -173,17 +197,17 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                         </div>
 
                         <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full no-scrollbar">
-                            {availableCategories.map((cat) => (
+                            {availableMainTopics.map((topic) => (
                                 <button
-                                    key={cat}
-                                    onClick={() => setActiveCategory(cat)}
+                                    key={topic}
+                                    onClick={() => setActiveMainTopic(topic)}
                                     className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${
-                                        activeCategory === cat
+                                        activeMainTopic === topic
                                             ? 'bg-text-main dark:bg-white text-white dark:text-black border-transparent shadow-md'
                                             : 'bg-white dark:bg-[#2a2418] text-text-muted dark:text-gray-400 border-[#f3efe7] dark:border-neutral-800 hover:border-primary hover:text-primary'
                                     }`}
                                 >
-                                    {cat}
+                                    {topic}
                                 </button>
                             ))}
                         </div>
@@ -196,7 +220,7 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                     ) : displayArticles.length > 0 ? (
                         displayArticles.map((article, index) => (
                             <div 
-                                key={`${article.slug}-${article.topic}-${index}`}
+                                key={`${article.slug}-${getMainTopic(article)}-${index}`}
                                 className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
                                 onClick={() => setSelectedArticle(article)}
                             >
@@ -216,7 +240,7 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                                 <div className="p-6 flex flex-col flex-grow">
                                     <div className="flex items-center gap-2 mb-3">
                                          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded uppercase tracking-wider">
-                                             {article.topic}
+                                             {getMainTopic(article)}
                                          </span>
                                      </div>
                                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
@@ -269,7 +293,7 @@ const DebateSection = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-text-main dark:text-white line-clamp-1">{selectedArticle.subTopic}</h4>
-                                    <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{selectedArticle.topic}</p>
+                                    <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">{getMainTopic(selectedArticle)}</p>
                                 </div>
                             </div>
                             <button 

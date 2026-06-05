@@ -139,8 +139,8 @@ export default function AudioListPage({ params }: PageProps) {
         setIsPlaying(true);
     };
 
-    const handlePlayPause = () => {
-        setIsPlaying(!isPlaying);
+    const handlePlayPause = (nextPlaying: boolean) => {
+        setIsPlaying(nextPlaying);
     };
 
     const handleBack = () => {

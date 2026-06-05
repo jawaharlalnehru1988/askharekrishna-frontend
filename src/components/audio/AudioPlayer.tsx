@@ -31,7 +31,7 @@ export interface AudioPlayerProps {
     currentTrack?: AudioTrack;
     playlist?: AudioTrack[];
     onTrackChange?: (track: AudioTrack) => void;
-    onPlayPause?: () => void;
+    onPlayPause?: (playing: boolean) => void;
     isPlaying?: boolean;
     backHref?: string;
     onBack?: () => void;
@@ -60,7 +60,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const playing = isAdvancedMode ? !!advancedPlaying : !!simplePlaying;
     const setPlaying = (p: boolean) => {
         if (isAdvancedMode) {
-            if (onPlayPause) onPlayPause();
+            if (p !== playing && onPlayPause) onPlayPause(p);
         } else {
             if (setSimplePlaying) setSimplePlaying(p);
         }
@@ -86,32 +86,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const [loading, setLoading] = useState(true);
 
     const audioRef = useRef<HTMLAudioElement>(null);
-
-    // Position Restoration
-    useEffect(() => {
-        if (!activeUrl || !audioRef.current) return;
-
-        const savedTime = localStorage.getItem(`audio_pos_${activeUrl}`);
-        if (savedTime) {
-            const time = parseFloat(savedTime);
-            const audio = audioRef.current;
-            if (audio && (isNaN(audio.duration) || time < audio.duration - 5)) {
-                audio.currentTime = time;
-            } else if (audio && !isNaN(audio.duration)) {
-                audio.currentTime = 0;
-            } else {
-                audio.currentTime = time;
-            }
-        }
-    }, [activeUrl]);
+    // Track the URL whose saved position we should restore once metadata loads.
+    // We capture it at the moment the URL changes so onLoadedMetadata can read it.
+    const pendingRestoreUrlRef = useRef<string>('');
 
     useEffect(() => {
-        setTimeout(() => {
-            setLoading(true);
-            setPlayed(0);
-            setPlaying(true);
-        }, 0);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setLoading(true);
+        setPlayed(0);
+        pendingRestoreUrlRef.current = activeUrl;
+        // Do NOT auto-play on mount — wait for an explicit user gesture
     }, [activeUrl]);
 
     useEffect(() => {
@@ -129,15 +112,14 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (playing) {
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(err => {
-                    console.warn("Playback blocked:", err);
-                    setPlaying(false);
-                });
-            }
-        } else {
+        if (playing && audio.paused) {
+            // Only call play() when the element is actually paused to avoid
+            // redundant calls that can interfere with in-flight promises.
+            audio.play().catch(err => {
+                console.warn("Playback blocked:", err);
+                setPlaying(false);
+            });
+        } else if (!playing && !audio.paused) {
             audio.pause();
         }
     }, [playing, activeUrl]);
@@ -168,7 +150,28 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         };
     }, [activeUrl, activeTitle, activeImage, onEnded, onNext, onPrevious]);
 
-    const handlePlayPause = () => setPlaying(!playing);
+    const requestPlayingChange = async (nextPlaying: boolean) => {
+        const audio = audioRef.current;
+        if (!audio) {
+            setPlaying(nextPlaying);
+            return;
+        }
+
+        if (nextPlaying) {
+            try {
+                await audio.play();
+                setPlaying(true);
+            } catch (err) {
+                console.warn('Playback blocked:', err);
+                setPlaying(false);
+            }
+        } else {
+            audio.pause();
+            setPlaying(false);
+        }
+    };
+
+    const handlePlayPause = () => requestPlayingChange(!playing);
 
     const onTimeUpdate = () => {
         if (!seeking && audioRef.current) {
@@ -184,9 +187,24 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     };
 
     const onLoadedMetadata = () => {
-        if (audioRef.current) {
-            setDuration(audioRef.current.duration);
-            setLoading(false);
+        const audio = audioRef.current;
+        if (!audio) return;
+        setDuration(audio.duration);
+        setLoading(false);
+
+        // Restore saved position NOW that metadata (and duration) is available.
+        // Doing this earlier (before metadata loads) aborts the network request.
+        const url = pendingRestoreUrlRef.current;
+        if (url) {
+            const savedTime = localStorage.getItem(`audio_pos_${url}`);
+            if (savedTime) {
+                const time = parseFloat(savedTime);
+                if (!isNaN(time) && time > 0 && time < audio.duration - 5) {
+                    audio.currentTime = time;
+                    setPlayed(time / audio.duration);
+                }
+            }
+            pendingRestoreUrlRef.current = '';
         }
     };
 

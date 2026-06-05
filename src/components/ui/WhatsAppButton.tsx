@@ -4,14 +4,43 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, Users, X, MessageCircle, Share2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/components/providers/LanguageContext';
+import { Locale } from '@/lib/dictionaries';
+
+const WHATSAPP_COMMUNITY_CHANNELS: Partial<Record<Locale, string>> = {
+  ta: 'https://whatsapp.com/channel/0029Vb8ColjL7UVREywToZ3a',
+  en: 'https://whatsapp.com/channel/0029VbC3fRd5kg75y4s7303q',
+};
+
+const DEFAULT_WHATSAPP_COMMUNITY_CHANNEL = WHATSAPP_COMMUNITY_CHANNELS.en;
+
+function resolveLocaleFromHostname(hostname: string): Locale | null {
+  const lowerHost = hostname.toLowerCase();
+
+  if (lowerHost.startsWith('tamil.') || lowerHost.startsWith('ta.')) return 'ta';
+  if (lowerHost.startsWith('hindi.') || lowerHost.startsWith('hi.')) return 'hi';
+  if (lowerHost.startsWith('kannada.') || lowerHost.startsWith('kn.')) return 'kn';
+  if (lowerHost.startsWith('telugu.') || lowerHost.startsWith('te.')) return 'te';
+  if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) return 'ml';
+  if (lowerHost.startsWith('english.') || lowerHost.startsWith('en.')) return 'en';
+
+  return 'en';
+}
 
 export const WhatsAppButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [hostnameLocale, setHostnameLocale] = useState<Locale | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const { dictionary } = useLanguage();
+  const { locale, dictionary } = useLanguage();
 
   const isArticlePage = pathname?.startsWith('/stories/') && pathname.split('/').length === 3;
+  const effectiveLocale = hostnameLocale || locale;
+  const communityChannelUrl = WHATSAPP_COMMUNITY_CHANNELS[effectiveLocale] || DEFAULT_WHATSAPP_COMMUNITY_CHANNEL;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHostnameLocale(resolveLocaleFromHostname(window.location.hostname));
+  }, []);
 
   const handleShareClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,7 +89,7 @@ export const WhatsAppButton = () => {
 
         {/* Join Community Option */}
         <a
-          href="https://whatsapp.com/channel/0029Vb8ColjL7UVREywToZ3a"
+          href={communityChannelUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap"
@@ -69,7 +98,7 @@ export const WhatsAppButton = () => {
             <Users size={20} />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold">Join Community</span>
+            <span className="text-sm font-bold">Join Whatsapp Channel</span>
             <span className="text-[10px] text-text-muted opacity-60 font-medium">Follow our WhatsApp channel</span>
           </div>
         </a>

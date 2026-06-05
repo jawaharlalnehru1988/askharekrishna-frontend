@@ -31,6 +31,7 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://askharekrishna.com'),
   title: "Ask Hare Krishna - Devotional Articles / Audio",
   description: "Authentic spiritual audio books and transcendental vibrations for your daily devotional life.",
   icons: {

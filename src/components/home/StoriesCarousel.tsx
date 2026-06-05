@@ -93,10 +93,10 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
 
             <div className="w-full bg-background-light dark:bg-background-dark pb-12 overflow-hidden">
                 <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-                    <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                    <div className="stories-topic-strip flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                         {loading ? (
                             Array.from({ length: 8 }).map((_, i) => (
-                                <div key={i} className="flex flex-col gap-4 p-4 bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse shrink-0 w-[85vw] sm:w-[420px] md:w-[340px]">
+                                <div key={i} className="stories-topic-skeleton flex flex-col gap-4 p-4 bg-white dark:bg-[#2a2418] rounded-2xl border border-gray-100 dark:border-neutral-800 animate-pulse shrink-0 w-[85vw] sm:w-[420px] md:w-[340px] lg:w-auto">
                                     <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-neutral-800 rounded-xl"></div>
                                     <div className="h-6 w-32 bg-gray-100 dark:bg-neutral-800 rounded"></div>
                                     <div className="h-4 w-full bg-gray-100 dark:bg-neutral-800 rounded"></div>
@@ -107,7 +107,7 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
                                 <Link
                                     key={category.title}
                                     href={category.href}
-                                    className="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 shrink-0 w-[85vw] sm:w-[420px] md:w-[340px] snap-center"
+                                    className="stories-topic-card group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-[#2a2418] border border-transparent hover:border-primary/30 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 shrink-0 w-[85vw] sm:w-[420px] md:w-[340px] lg:w-auto snap-center"
                                 >
                                     <div className="w-full aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative">
                                         <div

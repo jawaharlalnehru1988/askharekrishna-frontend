@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -12,6 +13,7 @@ import { ShareButtons } from '@/components/categories/ShareButtons';
 import AudioPlayer from '@/components/audio/AudioPlayer';
 import ClientAudioWrapper from '@/components/stories/ClientAudioWrapper'; // We'll create this to handle client-side audio state
 import { PoojaVidhiQuiz } from '@/components/pooja-vidhis/PoojaVidhiQuiz';
+import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
 
 interface StoryQuestionOption {
     id: number;
@@ -41,15 +43,10 @@ interface StoryArticle {
     articleImage?: string | null;
     questions?: StoryQuestion[];
     topicName?: string;
+    mainTopicName?: string;
 }
 
-export default async function StoryArticlePage({
-    params
-}: {
-    params: Promise<{ id: string }>
-}) {
-    const { id } = await params;
-    const headersList = await headers();
+function resolveLocale(headersList: Headers): Locale {
     const hostHeader = headersList.get('host') || headersList.get('x-forwarded-host') || '';
     const lowerHost = hostHeader.toLowerCase();
     let derivedLocale: Locale = 'en';
@@ -64,10 +61,86 @@ export default async function StoryArticlePage({
     } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
         derivedLocale = 'ml';
     }
-    const locale = (headersList.get('x-locale') as Locale) || derivedLocale;
+    return (headersList.get('x-locale') as Locale) || derivedLocale;
+}
+
+async function fetchStoryArticleById(id: string, locale: Locale): Promise<StoryArticle | null> {
+    try {
+        const byIdResponse = await fetch(
+            `https://api.askharekrishna.com/api/v1/stories/id/${id}/?language=${locale}`,
+            { next: { revalidate: 60 } },
+        );
+        if (byIdResponse.ok) {
+            const byIdData = await byIdResponse.json();
+            return byIdData as StoryArticle;
+        }
+    } catch {
+        // Fall back to list endpoint if direct ID endpoint has an issue.
+    }
+
+    try {
+        const res = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`, { next: { revalidate: 60 } });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const categories = Array.isArray(data) ? data : (data.results || []);
+        for (const category of categories) {
+            const found = (category.articleList || []).find((story: StoryArticle) => String(story.id) === id);
+            if (found) {
+                return { ...found, topicName: category.name };
+            }
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+    const { id } = await params;
+    const headersList = await headers();
+    const locale = resolveLocale(headersList);
+    const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
+
+    const story = await fetchStoryArticleById(id, locale);
+    if (!story) {
+        return {
+            title: 'Story Not Found | Ask Hare Krishna',
+            description: 'This story is not available in the selected language.',
+        };
+    }
+
+    const description = toPlainExcerpt(story.article || story.subTopic);
+    const image = toAbsoluteMediaUrl(story.imagePath || story.articleImage);
+
+    return buildArticleMetadata({
+        host,
+        path: `/stories/${id}`,
+        title: `${story.subTopic} | Ask Hare Krishna`,
+        description,
+        imageUrl: image,
+    });
+}
+
+export default async function StoryArticlePage({
+    params
+}: {
+    params: Promise<{ id: string }>
+}) {
+    const { id } = await params;
+    const headersList = await headers();
+    const locale = resolveLocale(headersList);
     let matchedStory: StoryArticle | null = null;
     const allStories: StoryArticle[] = [];
     let topicName = '';
+
+    matchedStory = await fetchStoryArticleById(id, locale);
+    if (matchedStory) {
+        topicName = matchedStory.topicName || matchedStory.mainTopicName || '';
+    }
 
     try {
         const res = await fetch(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`, { next: { revalidate: 60 } });
@@ -76,14 +149,17 @@ export default async function StoryArticlePage({
             const categories = Array.isArray(data) ? data : (data.results || []);
             
             categories.forEach((cat: any) => {
-                cat.articleList.forEach((story: StoryArticle) => {
+                (cat.articleList || []).forEach((story: StoryArticle) => {
                     allStories.push({ ...story, topicName: cat.name });
                 });
             });
-            
-            matchedStory = allStories.find((s) => s.id === parseInt(id, 10)) || null;
-            if (matchedStory) {
-                topicName = matchedStory.topicName || '';
+
+            if (!matchedStory) {
+                matchedStory = allStories.find((s) => s.id === parseInt(id, 10)) || null;
+            }
+            if (matchedStory && !topicName) {
+                const matchedFromList = allStories.find((s) => s.id === matchedStory?.id);
+                topicName = matchedFromList?.topicName || matchedStory.topicName || matchedStory.mainTopicName || '';
             }
         }
     } catch (e) {

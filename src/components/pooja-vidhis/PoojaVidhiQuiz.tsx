@@ -2,8 +2,9 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { CheckCircle2, Loader2, Lock, ShieldAlert, X } from 'lucide-react';
+import { CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { Locale } from '@/lib/dictionaries';
+import { SubscriberFormModal } from '../subscribers/SubscriberFormModal';
 
 interface PoojaVidhiQuestionOption {
   id: number;
@@ -38,39 +39,18 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
   const [responses, setResponses] = useState<Record<number, number>>({});
   const [showSubscriberForm, setShowSubscriberForm] = useState(false);
   const [subscriberSaved, setSubscriberSaved] = useState(false);
-  const [submittingSubscriber, setSubmittingSubscriber] = useState(false);
   const [submittingScore, setSubmittingScore] = useState(false);
-  const [subscriberError, setSubscriberError] = useState<string | null>(null);
-  const [subscriberSuccess, setSubscriberSuccess] = useState<string | null>(null);
   const [scoreError, setScoreError] = useState<string | null>(null);
   const [scoreSuccess, setScoreSuccess] = useState<string | null>(null);
   const [hasSubmittedScore, setHasSubmittedScore] = useState(false);
-  const [subscriberForm, setSubscriberForm] = useState({
-    name: '',
-    phone_number: '',
-    place: '',
-  });
 
   const storageKey = useMemo(() => `${STORAGE_PREFIX}:${articleId}`, [articleId]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const stored = window.localStorage.getItem(storageKey);
-    setSubscriberSaved(stored === '1');
-    const savedPhone = window.localStorage.getItem(SUBSCRIBER_PHONE_KEY);
-    const savedName = window.localStorage.getItem(SUBSCRIBER_NAME_KEY);
-    if (savedPhone) {
-      setSubscriberForm((current) => ({
-        ...current,
-        phone_number: savedPhone,
-      }));
-    }
-    if (savedName) {
-      setSubscriberForm((current) => ({
-        ...current,
-        name: savedName,
-      }));
-    }
+    const globalPhone = window.localStorage.getItem(SUBSCRIBER_PHONE_KEY);
+    setSubscriberSaved(stored === '1' || Boolean(globalPhone));
   }, [storageKey]);
 
   const totalQuestions = questions.length;
@@ -92,58 +72,18 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
       [questionId]: optionId,
     }));
 
-    if (!subscriberSaved) {
+    const hasGlobalPhone = typeof window !== 'undefined' && Boolean(window.localStorage.getItem(SUBSCRIBER_PHONE_KEY));
+    if (!subscriberSaved && !hasGlobalPhone) {
       setShowSubscriberForm(true);
-    }
-  };
-
-  const handleSubscriberSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubscriberError(null);
-    setSubscriberSuccess(null);
-    setSubmittingSubscriber(true);
-
-    try {
-      const payload = {
-        ...subscriberForm,
-        language: locale,
-      };
-
-      await axios.post(`${API_BASE_URL}/subscribers/`, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(storageKey, '1');
-        window.localStorage.setItem(SUBSCRIBER_PHONE_KEY, subscriberForm.phone_number);
-        window.localStorage.setItem(SUBSCRIBER_NAME_KEY, subscriberForm.name.trim());
-        window.dispatchEvent(new Event('subscriber-updated'));
-      }
-
+    } else if (!subscriberSaved && hasGlobalPhone) {
       setSubscriberSaved(true);
-      setSubscriberSuccess(
-        locale === 'ta'
-          ? 'நன்றி. உங்கள் இலவச சந்தா பதிவு சேமிக்கப்பட்டது.'
-          : 'Thank you. Your free subscription has been saved.',
-      );
-    } catch (error) {
-      console.error('Subscriber save failed:', error);
-      setSubscriberError(
-        locale === 'ta'
-          ? 'இலவச சந்தா பதிவு செய்ய முடியவில்லை. மீண்டும் முயற்சிக்கவும்.'
-          : 'Failed to save free subscription. Please try again.',
-      );
-    } finally {
-      setSubmittingSubscriber(false);
     }
   };
 
   const handleScoreSubmit = async () => {
     if (!allAnswered) return;
 
-    const phoneNumber = subscriberForm.phone_number || (typeof window !== 'undefined' ? window.localStorage.getItem(SUBSCRIBER_PHONE_KEY) : null);
+    const phoneNumber = typeof window !== 'undefined' ? window.localStorage.getItem(SUBSCRIBER_PHONE_KEY) : null;
     if (!phoneNumber) {
       setScoreError(locale === 'ta' ? 'மதிப்பெண் சமர்ப்பிப்பதற்கு முன் இலவச சந்தா பதிவு செய்யவும்.' : 'Please complete free subscription before submitting your score.');
       setShowSubscriberForm(true);
@@ -360,110 +300,18 @@ export const PoojaVidhiQuiz = ({ articleId, articleTitle, locale, questions, qui
         </div>
       )}
 
-      {showSubscriberForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8">
-          <div className="w-full max-w-xl rounded-3xl bg-white dark:bg-[#1a160f] border border-gray-100 dark:border-neutral-800 shadow-2xl p-6 md:p-8 relative">
-            <button
-              type="button"
-              onClick={() => setShowSubscriberForm(false)}
-              className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 text-text-muted"
-              aria-label="Close subscription form"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className="size-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                <Lock size={20} />
-              </div>
-              <div>
-                <h3 className="text-2xl font-black text-text-main dark:text-white">
-                  {locale === 'ta' ? 'தொடர இலவச சந்தா பதிவு செய்யுங்கள்' : 'Free Subscription to continue'}
-                </h3>
-                <p className="text-sm text-text-muted dark:text-gray-400">
-                  {locale === 'ta'
-                    ? `"${articleTitle}"` 
-                    : `For "${articleTitle}"`}
-                </p>
-              </div>
-            </div>
-
-            {subscriberSuccess ? (
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 px-4 py-4 text-sm font-medium">
-                  {subscriberSuccess}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowSubscriberForm(false)}
-                  className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 font-black text-black transition-all"
-                >
-                  {locale === 'ta' ? 'தொடரவும்' : 'Continue'}
-                </button>
-              </div>
-            ) : (
-              <form className="grid gap-4" onSubmit={handleSubscriberSubmit}>
-                <div>
-                  <label className="block text-sm font-bold text-text-main dark:text-white mb-2">{locale === 'ta' ? 'பெயர்' : 'Name'}</label>
-                  <input
-                    value={subscriberForm.name}
-                    onChange={(e) => setSubscriberForm((current) => ({ ...current, name: e.target.value }))}
-                    className="w-full rounded-2xl border border-gray-200 dark:border-neutral-800 bg-transparent px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder={locale === 'ta' ? 'உங்கள் பெயர்' : 'Your name'}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-text-main dark:text-white mb-2">{locale === 'ta' ? 'தொலைபேசி எண்' : 'Phone Number'}</label>
-                  <input
-                    value={subscriberForm.phone_number}
-                    onChange={(e) => setSubscriberForm((current) => ({ ...current, phone_number: e.target.value }))}
-                    className="w-full rounded-2xl border border-gray-200 dark:border-neutral-800 bg-transparent px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder={locale === 'ta' ? 'உங்கள் தொலைபேசி எண்' : 'Your phone number'}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-text-main dark:text-white mb-2">{locale === 'ta' ? 'இடம்' : 'Place'}</label>
-                  <input
-                    value={subscriberForm.place}
-                    onChange={(e) => setSubscriberForm((current) => ({ ...current, place: e.target.value }))}
-                    className="w-full rounded-2xl border border-gray-200 dark:border-neutral-800 bg-transparent px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder={locale === 'ta' ? 'உங்கள் ஊர்' : 'Your place'}
-                    required
-                  />
-                </div>
-
-                {subscriberError && (
-                  <div className="rounded-2xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm font-medium">
-                    {subscriberError}
-                  </div>
-                )}
-
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={submittingSubscriber}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-black text-black transition-all disabled:opacity-60"
-                  >
-                    {submittingSubscriber && <Loader2 size={16} className="animate-spin" />}
-                    {locale === 'ta' ? 'இலவச சந்தா பதிவு செய்யுங்கள்' : 'Subscribe Free'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowSubscriberForm(false)}
-                    className="inline-flex items-center justify-center rounded-2xl border border-gray-200 dark:border-neutral-800 px-6 py-3 font-black text-text-main dark:text-white transition-all"
-                  >
-                    {locale === 'ta' ? 'பின்னர்' : 'Later'}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
+      <SubscriberFormModal
+        open={showSubscriberForm}
+        locale={locale}
+        title={locale === 'ta' ? 'தொடர இலவச சந்தா பதிவு செய்யுங்கள்' : 'Free Subscription to continue'}
+        description={locale === 'ta' ? `"${articleTitle}"` : `For "${articleTitle}"`}
+        submitLabel={locale === 'ta' ? 'இலவச சந்தா பதிவு செய்யுங்கள்' : 'Subscribe Free'}
+        successMessage={locale === 'ta' ? 'நன்றி. உங்கள் இலவச சந்தா பதிவு சேமிக்கப்பட்டது.' : 'Thank you. Your free subscription has been saved.'}
+        continueLabel={locale === 'ta' ? 'தொடரவும்' : 'Continue'}
+        persistKey={storageKey}
+        onClose={() => setShowSubscriberForm(false)}
+        onSuccess={() => setSubscriberSaved(true)}
+      />
     </div>
   );
 };

@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '../providers/LanguageContext';
 import { useTheme } from '../providers/ThemeProvider';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { SubscriberFormModal } from '../subscribers/SubscriberFormModal';
 
 import axios from 'axios';
 import Image from 'next/image';
+import { LogIn } from 'lucide-react';
 import logo from '@/app/askharekrishnalogo.jpg';
 
 interface Story {
@@ -29,9 +32,11 @@ const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
 export function Navbar() {
   const { dictionary, locale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { navbar: t, common: c } = dictionary;
+  const { navbar: t } = dictionary;
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
   const [subscriberInitial, setSubscriberInitial] = useState<string | null>(null);
   const [subscriberName, setSubscriberName] = useState<string>('');
@@ -87,7 +92,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-[#f3efe7] dark:border-neutral-800 transition-colors duration-200">
+    <header className={`sticky top-0 ${showLoginForm ? 'z-[10000]' : 'z-50'} w-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-[#f3efe7] dark:border-neutral-800 transition-colors duration-200`}>
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -191,10 +196,31 @@ export function Navbar() {
 
           {/* Auth Actions */}
           <div className="flex items-center gap-3 shrink-0">
+            {!subscriberInitial ? (
+              <button
+                type="button"
+                onClick={() => setShowLoginForm(true)}
+                className="inline-flex items-center gap-2 rounded-xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a150c] px-4 py-2 text-sm font-bold text-text-main dark:text-white hover:text-primary hover:border-primary/30 transition-all"
+              >
+                <LogIn size={16} />
+                <span className="hidden sm:inline">{t.login}</span>
+              </button>
+            ) : null}
+
+            {subscriberInitial ? (
+              <Link
+                href="/dashboard"
+                className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary hover:bg-primary/15 transition-all"
+              >
+                <span className="material-symbols-outlined text-[18px]">dashboard</span>
+                <span>Dashboard</span>
+              </Link>
+            ) : null}
+
             {subscriberInitial ? (
               <div
                 title={subscriberName}
-                className="size-10 rounded-full bg-primary text-black font-black text-sm flex items-center justify-center border border-primary/30 shadow-sm"
+                className="size-10 rounded-full bg-primary text-black font-black text-sm flex items-center justify-center border border-primary/30 shadow-sm cursor-default"
               >
                 {subscriberInitial}
               </div>
@@ -215,6 +241,22 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      <SubscriberFormModal
+        open={showLoginForm}
+        locale={locale}
+        title={t.login}
+        description={locale === 'ta' ? 'ஏற்கனவே பதிவு செய்திருந்தால் தொலைபேசி எண்ணை மட்டும் உள்ளிட்டு உங்கள் dashboard-ஐ திறக்கவும். அனைத்து பக்கங்களும் திறந்தவையாகவே இருக்கும்.' : 'If you are already subscribed, enter only your phone number to open your dashboard. All pages remain open.'}
+        submitLabel={t.login}
+        successMessage={locale === 'ta' ? 'உங்கள் dashboard தயாராக உள்ளது.' : 'Your dashboard is ready.'}
+        continueLabel={locale === 'ta' ? 'தொடரவும்' : 'Continue'}
+        mode="phone-login"
+        onClose={() => setShowLoginForm(false)}
+        onSuccess={() => {
+          setShowLoginForm(false);
+          router.push('/dashboard');
+        }}
+      />
     </header>
   );
 }
