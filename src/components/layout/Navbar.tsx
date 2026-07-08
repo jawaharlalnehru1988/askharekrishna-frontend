@@ -11,7 +11,7 @@ import { SubscriberFormModal } from '../subscribers/SubscriberFormModal';
 
 import axios from 'axios';
 import Image from 'next/image';
-import { LogIn } from 'lucide-react';
+import { LogIn, Menu, X } from 'lucide-react';
 import logo from '@/app/askharekrishnalogo.jpg';
 
 interface Story {
@@ -137,6 +137,15 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 ml-8">
             <Link href="/" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap">{t.home}</Link>
 
+            {locale === 'ta' && (
+              <Link
+                href="/bgvideo"
+                className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
+              >
+                {t.bgvideo || 'BG வீடியோ'}
+              </Link>
+            )}
+
             {/* Courses Dropdown */}
             {roadmaps.length > 0 && (
               <div className="relative" ref={coursesDropdownRef}>
@@ -253,6 +262,15 @@ export function Navbar() {
 
           {/* Auth Actions */}
           <div className="flex items-center gap-3 shrink-0">
+            {/* Hamburger Menu Toggle (Mobile Only) */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden p-2 rounded-lg bg-gray-100 dark:bg-[#1a150c] text-text-muted hover:text-primary transition-all duration-300 flex items-center justify-center border border-[#f3efe7] dark:border-neutral-800"
+              aria-label="Toggle Menu"
+            >
+              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+
             {!subscriberInitial ? (
               <button
                 type="button"
@@ -298,6 +316,84 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-[#1a150c] border-b border-[#f3efe7] dark:border-neutral-800 shadow-xl overflow-y-auto max-h-[calc(100vh-80px)] z-40 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="p-4 flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
+              <Link 
+                href="/" 
+                onClick={() => setIsMenuOpen(false)}
+                className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
+              >
+                {t.home}
+              </Link>
+
+              {locale === 'ta' && (
+                <Link
+                  href="/bgvideo"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
+                >
+                  {t.bgvideo || 'BG வீடியோ'}
+                </Link>
+              )}
+            </div>
+
+            {/* Mobile Courses */}
+            {roadmaps.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Courses</div>
+                <div className="pl-3 border-l-2 border-primary/20 flex flex-col gap-3">
+                  {roadmaps.map((roadmap) => (
+                    <Link
+                      key={roadmap.id}
+                      href={`/courses/${roadmap.routerLink}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary"
+                    >
+                      {roadmap.mainTopic}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Stories */}
+            {topics.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">{t.stories}</div>
+                <div className="pl-3 border-l-2 border-primary/20 flex flex-col gap-4">
+                  {topics.map((topic, i) => (
+                    <div key={i} className="flex flex-col gap-2">
+                      <Link
+                        href={`/stories?topic=${encodeURIComponent(topic.name)}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="text-sm font-bold text-primary"
+                      >
+                        {topic.name}
+                      </Link>
+                      <div className="pl-3 flex flex-col gap-2 border-l border-primary/10">
+                        {topic.articleList.map((story, j) => (
+                          <Link
+                            key={`${story.id}-${j}`}
+                            href={`/stories?topic=${encodeURIComponent(topic.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="text-xs font-semibold text-text-muted dark:text-gray-400 hover:text-primary"
+                          >
+                            {story.subTopic}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <SubscriberFormModal
         open={showLoginForm}

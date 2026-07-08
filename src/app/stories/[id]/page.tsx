@@ -40,6 +40,7 @@ interface StoryArticle {
     language: string;
     audioPath: string | null;
     imagePath: string | null;
+    imageUrl?: string | null;  // computed by effective_image_path() — includes inherited image from source story
     articleImage?: string | null;
     questions?: StoryQuestion[];
     topicName?: string;
@@ -114,7 +115,7 @@ export async function generateMetadata({
     }
 
     const description = toPlainExcerpt(story.article || story.subTopic);
-    const image = toAbsoluteMediaUrl(story.imagePath || story.articleImage);
+    const image = toAbsoluteMediaUrl(story.imageUrl || story.imagePath || story.articleImage);
 
     return buildArticleMetadata({
         host,
@@ -221,10 +222,10 @@ export default async function StoryArticlePage({
                     </div>
 
                     <div className="p-6 md:p-10">
-                        {(matchedStory.imagePath || matchedStory.articleImage) && (
+                        {(matchedStory.imageUrl || matchedStory.imagePath || matchedStory.articleImage) && (
                             <div className="relative h-[300px] md:h-[500px] w-full rounded-2xl overflow-hidden mb-10 shadow-lg border border-black/5 ring-1 ring-black/5">
                                 <img
-                                    src={ensureAbsoluteUrl(matchedStory.imagePath || matchedStory.articleImage)}
+                                    src={ensureAbsoluteUrl(matchedStory.imageUrl || matchedStory.imagePath || matchedStory.articleImage)}
                                     alt={matchedStory.subTopic}
                                     className="w-full h-full object-cover"
                                 />
