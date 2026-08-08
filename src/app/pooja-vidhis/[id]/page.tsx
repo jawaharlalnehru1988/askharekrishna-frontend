@@ -66,9 +66,9 @@ function resolveLocale(headersList: Headers): Locale {
     return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
 
-async function fetchPoojaArticleById(id: string): Promise<PoojaVidhiArticle | null> {
+async function fetchPoojaArticleById(id: string, locale: string = 'en'): Promise<PoojaVidhiArticle | null> {
     try {
-        const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/`, { cache: 'no-store' });
+        const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/?language=${locale}`, { cache: 'no-store' });
         if (!res.ok) return null;
         return await res.json();
     } catch {
@@ -83,9 +83,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     const { id } = await params;
     const headersList = await headers();
+    const locale = resolveLocale(headersList);
     const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
 
-    const article = await fetchPoojaArticleById(id);
+    const article = await fetchPoojaArticleById(id, locale);
     if (!article) {
         return {
             title: 'Pooja Vidhi Not Found | Ask Hare Krishna',
@@ -113,15 +114,7 @@ export default async function PoojaVidhiArticlePage({
     const { id } = await params;
     const headersList = await headers();
     const locale = resolveLocale(headersList);
-    let matchedArticle: PoojaVidhiArticle | null = null;
-    try {
-        const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/`, { cache: 'no-store' });
-        if (res.ok) {
-            matchedArticle = await res.json();
-        }
-    } catch (e) {
-        console.error("Error fetching article", e);
-    }
+    const matchedArticle = await fetchPoojaArticleById(id, locale);
 
     if (!matchedArticle) {
         return notFound();

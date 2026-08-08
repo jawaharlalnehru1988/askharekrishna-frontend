@@ -512,5 +512,22 @@
         "title": "Pooja Vidhis & Procedures",
         "description": "Explore the systematic ways to perform daily devotional activities.",
         "viewAll": "View All"
+    },
+    "upcomingEvents": {
+        "badge": "Vaishnava Calendar",
+        "title": "Upcoming Devotional Events & Festivals",
+        "subtitle": "Important fasting dates, Ekadashis, and appearance days of avatars & acharyas.",
+        "viewAll": "View All Events",
+        "readDetails": "Read Details",
+        "ekadashi": "Ekadashi",
+        "fastingRequired": "Fasting Required",
+        "breakFastWindow": "Break Fast Window",
+        "noEventsFound": "No upcoming events found.",
+        "searchPlaceholder": "Search events, Ekadashis, or festivals...",
+        "allEvents": "All Events",
+        "ekadashisOnly": "Ekadashis Only",
+        "fastingDaysOnly": "Fasting Days Only",
+        "close": "Close",
+        "shareOnWhatsapp": "Share on WhatsApp"
     }
 }

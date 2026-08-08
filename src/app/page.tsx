@@ -8,6 +8,7 @@ import { StoriesCarousel } from '@/components/home/StoriesCarousel';
 import { DebateCarousel } from '@/components/home/DebateCarousel';
 import OtherWebsites from '@/components/categories/OtherWebsites';
 import PoojaVidhisSection from '@/components/categories/PoojaVidhisSection';
+import UpcomingEventsSection from '@/components/home/UpcomingEventsSection';
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
 
 export default async function Home() {
@@ -23,6 +24,8 @@ export default async function Home() {
       <HomeHero h={h} />
 
       <StoriesCarousel h={h} />
+
+      <UpcomingEventsSection isHomePage={true} />
 
       <PoojaVidhisSection />
 

@@ -27,13 +27,6 @@ interface StoryTopicGroup {
   articleList: Story[];
 }
 
-interface RoadmapItem {
-  id: number;
-  mainTopic: string;
-  routerLink: string;
-  intro: string;
-}
-
 const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
 
 export function Navbar() {
@@ -43,15 +36,12 @@ export function Navbar() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isStoriesOpen, setIsStoriesOpen] = useState(false);
-  const [isCoursesOpen, setIsCoursesOpen] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
-  const [roadmaps, setRoadmaps] = useState<RoadmapItem[]>([]);
   const [subscriberInitial, setSubscriberInitial] = useState<string | null>(null);
   const [subscriberName, setSubscriberName] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const storiesDropdownRef = useRef<HTMLDivElement>(null);
-  const coursesDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const syncSubscriberBadge = () => {
@@ -85,21 +75,6 @@ export function Navbar() {
     fetchStories();
   }, [locale]);
 
-  useEffect(() => {
-    const fetchRoadmaps = async () => {
-      try {
-        const response = await axios.get('https://api.askharekrishna.com/api/course-roadmap/roadmaps/');
-        const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
-        setRoadmaps(data);
-      } catch (err) {
-        console.error('Navbar roadmaps fetch failed:', err);
-      }
-    };
-    fetchRoadmaps();
-  }, []);
-
-
-
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -108,9 +83,6 @@ export function Navbar() {
       }
       if (storiesDropdownRef.current && !storiesDropdownRef.current.contains(event.target as Node)) {
         setIsStoriesOpen(false);
-      }
-      if (coursesDropdownRef.current && !coursesDropdownRef.current.contains(event.target as Node)) {
-        setIsCoursesOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -137,6 +109,13 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8 ml-8">
             <Link href="/" className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap">{t.home}</Link>
 
+            <Link
+              href="/vaishnava-calendar"
+              className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {locale === 'ta' ? 'நாட்காட்டி' : 'Calendar'}
+            </Link>
+
             {locale === 'ta' && (
               <Link
                 href="/bgvideo"
@@ -144,37 +123,6 @@ export function Navbar() {
               >
                 {t.bgvideo || 'BG வீடியோ'}
               </Link>
-            )}
-
-            {/* Courses Dropdown */}
-            {roadmaps.length > 0 && (
-              <div className="relative" ref={coursesDropdownRef}>
-                <button
-                  onClick={() => setIsCoursesOpen(!isCoursesOpen)}
-                  className={`flex items-center gap-1 text-sm font-bold transition-colors cursor-pointer ${isCoursesOpen ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}
-                >
-                  <span>Courses</span>
-                  <span className="material-symbols-outlined text-lg transition-transform" style={{ transform: isCoursesOpen ? 'rotate(180deg)' : 'rotate(0)' }}>expand_more</span>
-                </button>
-
-                {isCoursesOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-xl py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-2 mb-2 border-b border-gray-100 dark:border-neutral-800">
-                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Roadmaps</span>
-                    </div>
-                    {roadmaps.map((roadmap) => (
-                      <Link
-                        key={roadmap.id}
-                        href={`/courses/${roadmap.routerLink}`}
-                        onClick={() => setIsCoursesOpen(false)}
-                        className="block px-4 py-2.5 text-sm font-bold text-text-main dark:text-gray-200 hover:bg-primary/10 hover:text-primary transition-colors"
-                      >
-                        {roadmap.mainTopic}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
             )}
 
             {topics.length > 0 ? (
@@ -330,6 +278,14 @@ export function Navbar() {
                 {t.home}
               </Link>
 
+              <Link
+                href="/vaishnava-calendar"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
+              >
+                {locale === 'ta' ? 'வைஷ்ணவ நாட்காட்டி' : 'Vaishnava Calendar'}
+              </Link>
+
               {locale === 'ta' && (
                 <Link
                   href="/bgvideo"
@@ -340,25 +296,6 @@ export function Navbar() {
                 </Link>
               )}
             </div>
-
-            {/* Mobile Courses */}
-            {roadmaps.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Courses</div>
-                <div className="pl-3 border-l-2 border-primary/20 flex flex-col gap-3">
-                  {roadmaps.map((roadmap) => (
-                    <Link
-                      key={roadmap.id}
-                      href={`/courses/${roadmap.routerLink}`}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary"
-                    >
-                      {roadmap.mainTopic}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Mobile Stories */}
             {topics.length > 0 && (

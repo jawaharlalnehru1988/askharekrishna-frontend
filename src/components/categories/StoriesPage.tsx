@@ -35,6 +35,7 @@ interface Story {
     audioPath: string | null;
     articleImage: string;
     imagePath?: string;
+    imageUrl?: string;
     created_at: string;
     updated_at: string;
 }
@@ -316,9 +317,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         </td>
                                                         <td className="px-6 py-5">
                                                             <div className="size-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-800 shadow-sm border border-black/5">
-                                                                {(story.imagePath || story.articleImage) && (
+                                                                {(story.imageUrl || story.imagePath || story.articleImage) && (
                                                                     <img 
-                                                                        src={ensureAbsoluteUrl(story.imagePath || story.articleImage)} 
+                                                                        src={ensureAbsoluteUrl(story.imageUrl || story.imagePath || story.articleImage)} 
                                                                         alt="" 
                                                                         className="w-full h-full object-cover"
                                                                     />
@@ -330,12 +331,6 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                                 <span className="text-base font-bold text-text-main dark:text-white group-hover:text-primary transition-colors">
                                                                     {story.subTopic}
                                                                 </span>
-                                                                <div className="flex items-center gap-3 mt-1 md:hidden">
-                                                                    <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
-                                                                        <Calendar size={10} />
-                                                                        {new Date(story.created_at).toLocaleDateString()}
-                                                                    </span>
-                                                                </div>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-5 hidden md:table-cell">
@@ -365,7 +360,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                             >
                                                 <div className="relative h-48 w-full overflow-hidden">
                                                     <img 
-                                                        src={ensureAbsoluteUrl(story.imagePath || story.articleImage) || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400"} 
+                                                        src={ensureAbsoluteUrl(story.imageUrl || story.imagePath || story.articleImage) || "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=400"} 
                                                         alt={story.subTopic}
                                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                                     />
@@ -376,11 +371,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                     <h4 className="text-base font-bold mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                                                         {story.subTopic}
                                                     </h4>
-                                                    <div className="mt-auto pt-4 border-t border-gray-100 dark:border-neutral-800/50 flex items-center justify-between">
-                                                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-1.5">
-                                                            <Calendar size={12} className="text-primary/60" />
-                                                            {new Date(story.created_at).toLocaleDateString()}
-                                                        </span>
+                                                    <div className="mt-auto pt-4 border-t border-gray-100 dark:border-neutral-800/50 flex items-center justify-end">
                                                         <div className="flex items-center gap-2 group-hover:translate-x-1 transition-transform">
                                                             <span className="text-[11px] font-bold text-primary group-hover:text-text-main dark:group-hover:text-white transition-colors">
                                                                 {common.read}

@@ -63,9 +63,9 @@ function resolveLocale(headersList: Headers): Locale {
   return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
 
-async function fetchPoojaArticleById(id: string): Promise<PoojaVidhiArticle | null> {
+async function fetchPoojaArticleById(id: string, locale: string = 'en'): Promise<PoojaVidhiArticle | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/`, { cache: 'no-store' });
+    const res = await fetch(`${API_BASE_URL}/v1/pooja_vidhis/articles/${id}/?language=${locale}`, { cache: 'no-store' });
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -80,9 +80,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const headersList = await headers();
+  const locale = resolveLocale(headersList);
   const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
 
-  const article = await fetchPoojaArticleById(id);
+  const article = await fetchPoojaArticleById(id, locale);
   if (!article) {
     return {
       title: 'Pooja Vidhi Quiz Not Found | Ask Hare Krishna',
@@ -111,8 +112,7 @@ export default async function PoojaVidhiQuizOnlyPage({
   const headersList = await headers();
   const locale = resolveLocale(headersList);
 
-  let matchedArticle: PoojaVidhiArticle | null = null;
-  matchedArticle = await fetchPoojaArticleById(id);
+  const matchedArticle = await fetchPoojaArticleById(id, locale);
 
   if (!matchedArticle) {
     return notFound();
@@ -160,8 +160,8 @@ export default async function PoojaVidhiQuizOnlyPage({
               quizType="pooja_vidhi"
             />
 
-            <div className="mt-16 pt-10 border-t border-gray-100 dark:border-neutral-800 text-center">
-              <p className="text-sm font-bold text-text-muted mb-6 uppercase tracking-[0.3em]">
+            <div className="mt-12 pt-8 border-t border-gray-100 dark:border-neutral-800 text-center">
+              <p className="text-sm font-bold text-text-muted mb-4 uppercase tracking-[0.25em]">
                 {locale === 'ta' ? 'இந்த வினாடி வினாவைப் பகிரவும்' : 'Share This Quiz'}
               </p>
               <ShareButtons

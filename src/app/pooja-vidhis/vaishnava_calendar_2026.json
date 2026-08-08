@@ -1,0 +1,2780 @@
+{
+  "metadata": {
+    "title": "Vaishnava Calendar 2026",
+    "year": 2026,
+    "location": {
+      "name": "Vrindavan, India",
+      "latitude": 27.57799,
+      "longitude": 77.701241,
+      "timezone": "Asia/Calcutta (+05:30)"
+    },
+    "source": "https://iskconvrindavan.com/vaishnava-calendar",
+    "lastUpdated": "2026-07-28"
+  },
+  "months": [
+    {
+      "monthNumber": 1,
+      "monthName": "January",
+      "totalDaysWithObservances": 15,
+      "days": [
+        {
+          "date": "2026-01-01",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "07:09",
+            "endTime": "10:38",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 07:09 - 10:38 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-03",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Krsna Pusya Abhiseka",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-07",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Ramacandra Kaviraja -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srila Gopala Bhatta Gosvami -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Ksaya tithi: Caturthi -- 6 Jan 08:03 to 7 Jan 06:54 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-08",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Jayadeva Gosvami -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-09",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Locana Dasa Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-14",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": true,
+          "ekadashiName": "Sat-tila Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sat-tila Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Sat-tila Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-15",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "07:10",
+            "endTime": "10:42",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 07:10 - 10:42 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-23",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Vasanta Pancami",
+              "category": "Observance"
+            },
+            {
+              "title": "Srimati Visnupriya Devi -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srila Visvanatha Cakravarti Thakura -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Pundarika Vidyanidhi -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Raghunandana Thakura -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srila Raghunatha Dasa Gosvami -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sarasvati Puja",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-25",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Advaita Acarya -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-26",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Bhismastami",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-27",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Madhvacarya -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-28",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Ramanujacarya -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-29",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": true,
+          "ekadashiName": "Bhaimi Ekadasi",
+          "isFastDay": true,
+          "fastDetails": "(Fast today for Varahadeva)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Bhaimi Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Bhaimi Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "(Fast today for Varahadeva)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-30",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fasting is done yesterday)",
+          "breakFastWindow": {
+            "startTime": "07:06",
+            "endTime": "10:43",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 07:06 - 10:43 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Varaha Dvadasi: Appearance of Lord Varahadeva",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fasting is done yesterday)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-01-31",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Nityananda Trayodasi: Appearance of Sri Nityananda Prabhu",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 2,
+      "monthName": "February",
+      "totalDaysWithObservances": 10,
+      "days": [
+        {
+          "date": "2026-02-01",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Krsna Madhura Utsava",
+              "category": "Festival"
+            },
+            {
+              "title": "Srila Narottama Dasa Thakura -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Ksaya tithi: Caturdasi -- 31 Jan 08:27 to 1 Feb 05:54 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-06",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Bhaktisiddhanta Sarasvati Thakura -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Purusottama Das Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-13",
+          "dayOfWeek": "Friday",
+          "isEkadashi": true,
+          "ekadashiName": "Vijaya Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Vijaya Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Vijaya Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-14",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:57",
+            "endTime": "10:41",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:57 - 10:41 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Sri Isvara Puri -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-16",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Siva Ratri",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-18",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Jagannatha Dasa Babaji -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Rasikananda -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-21",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Purusottama Dasa Thakura -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-25",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Astami -- 24 Feb 07:04 to 25 Feb 04:53 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-27",
+          "dayOfWeek": "Friday",
+          "isEkadashi": true,
+          "ekadashiName": "Amalaki vrata Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Amalaki vrata Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Amalaki vrata Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-02-28",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": true,
+          "ekadashiName": "Amalaki vrata Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:44",
+            "endTime": "10:36",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Amalaki vrata Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast 06:44 - 10:36 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Sri Madhavendra Puri -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 3,
+      "monthName": "March",
+      "totalDaysWithObservances": 10,
+      "days": [
+        {
+          "date": "2026-03-03",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Gaura Purnima: Appearance of Sri Caitanya Mahaprabhu",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-04",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Festival of Jagannatha Misra",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-11",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Srivasa Pandita -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-15",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": true,
+          "ekadashiName": "Papamocani Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Papamocani Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Papamocani Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-16",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:27",
+            "endTime": "09:43",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:27 - 09:43 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Sri Govinda Ghosh -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-20",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Pratipat -- 19 Mar 06:55 to 20 Mar 04:55 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-23",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Ramanujacarya -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-27",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Rama Navami: Appearance of Lord Sri Ramacandra",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-29",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": true,
+          "ekadashiName": "Kamada Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Kamada Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Kamada Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-03-30",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:12",
+            "endTime": "07:12",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:12 - 07:12 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Damanakaropana Dvadasi",
+              "category": "Observance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 4,
+      "monthName": "April",
+      "totalDaysWithObservances": 14,
+      "days": [
+        {
+          "date": "2026-04-02",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Balarama Rasayatra",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Krsna Vasanta Rasa",
+              "category": "Observance"
+            },
+            {
+              "title": "Appearance of Radha Kunda, snana dana",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Vamsivadana Thakura -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Syamananda Prabhu -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-09",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Abhirama Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-12",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Vrndavana Dasa Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-13",
+          "dayOfWeek": "Monday",
+          "isEkadashi": true,
+          "ekadashiName": "Varuthini Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Varuthini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Varuthini Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-14",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:57",
+            "endTime": "10:11",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:57 - 10:11 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-17",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Gadadhara Pandita -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-20",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Aksaya Trtiya. Candana Yatra starts. (Continues for 21 days)",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-21",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Caturthi -- 20 Apr 07:30 to 21 Apr 04:17 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-23",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Jahnu Saptami",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-25",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srimati Sita Devi (consort of Lord Sri Rama) -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Madhu Pandita -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srimati Jahnava Devi -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-27",
+          "dayOfWeek": "Monday",
+          "isEkadashi": true,
+          "ekadashiName": "Mohini Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Mohini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Mohini Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-28",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": true,
+          "ekadashiName": "Mohini Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:42",
+            "endTime": "10:05",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Mohini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast 05:42 - 10:05 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Rukmini Dvadasi",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-29",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Jayananda Prabhu -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-04-30",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Nrsimha Caturdasi: Appearance of Lord Nrsimhadeva",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 5,
+      "monthName": "May",
+      "totalDaysWithObservances": 8,
+      "days": [
+        {
+          "date": "2026-05-01",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Krsna Phula Dola, Salila Vihara",
+              "category": "Observance"
+            },
+            {
+              "title": "Sri Sri Radha-Ramana Devaji -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Paramesvari Dasa Thakura -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Madhavendra Puri -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Srinivasa Acarya -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-07",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Ramananda Raya -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-13",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": true,
+          "ekadashiName": "Apara Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Apara Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Apara Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-14",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:31",
+            "endTime": "10:00",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:31 - 10:00 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Srila Vrndavana Dasa Thakura -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-16",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Caturdasi -- 15 May 08:33 to 16 May 05:13 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-23",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Saptami -- 22 May 06:26 to 23 May 05:06 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-27",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": true,
+          "ekadashiName": "Padmini Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Padmini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Padmini Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-05-28",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:24",
+            "endTime": "07:59",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:24 - 07:59 (LT)",
+              "category": "Parana"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 6,
+      "monthName": "June",
+      "totalDaysWithObservances": 8,
+      "days": [
+        {
+          "date": "2026-06-11",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": true,
+          "ekadashiName": "Parama Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Parama Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Parama Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-12",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:23",
+            "endTime": "10:00",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:23 - 10:00 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-16",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Pratipat -- 15 Jun 08:25 to 16 Jun 04:33 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-24",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ganga Puja",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Baladeva Vidyabhusana -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srimati Gangamata Gosvamini -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-25",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": true,
+          "ekadashiName": "Pandava Nirjala Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Pandava Nirjala Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Pandava Nirjala Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-26",
+          "dayOfWeek": "Friday",
+          "isEkadashi": true,
+          "ekadashiName": "Pandava Nirjala Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:25",
+            "endTime": "10:03",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Pandava Nirjala Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast 05:25 - 10:03 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-27",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Panihati Cida Dahi Utsava",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-06-29",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Snana Yatra",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Mukunda Datta -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Sridhara Pandita -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 7,
+      "monthName": "July",
+      "totalDaysWithObservances": 15,
+      "days": [
+        {
+          "date": "2026-07-01",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Syamananda Prabhu -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-05",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Vakresvara Pandita -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-10",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Srivasa Pandita -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-11",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": true,
+          "ekadashiName": "Yogini Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Yogini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Yogini Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Ksaya tithi: Ekadasi -- 10 Jul 08:18 to 11 Jul 05:24 (LT)",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-12",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:31",
+            "endTime": "10:07",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:31 - 10:07 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-14",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Bhaktivinoda Thakura -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Gadadhara Pandita -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-15",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Gundica Marjana",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-16",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ratha Yatra",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Svarupa Damodara Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Sivananda Sena -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-18",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Caturthi -- 17 Jul 06:29 to 18 Jul 04:44 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-19",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Vakresvara Pandita -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-20",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Hera Pancami (4 days after Ratha Yatra)",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-24",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Return Ratha (8 days after Ratha Yatra)",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-25",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": true,
+          "ekadashiName": "Sayana Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sayana Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Sayana Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-26",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:39",
+            "endTime": "10:10",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:39 - 10:10 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-07-29",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(green leafy vegetable fast for one month)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Guru (Vyasa) Purnima",
+              "category": "Festival"
+            },
+            {
+              "title": "Srila Sanatana Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "First month of Caturmasya begins [PURNIMA SYSTEM]",
+              "category": "Festival"
+            },
+            {
+              "title": "(green leafy vegetable fast for one month)",
+              "category": "Fasting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 8,
+      "monthName": "August",
+      "totalDaysWithObservances": 12,
+      "days": [
+        {
+          "date": "2026-08-03",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Gopala Bhatta Gosvami -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-06",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Lokanatha Gosvami -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-07",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "The incorporation of ISKCON in New York",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-09",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": true,
+          "ekadashiName": "Kamika Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Kamika Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Kamika Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-10",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "05:47",
+            "endTime": "08:02",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 05:47 - 08:02 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-11",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Trayodasi -- 10 Aug 08:02 to 11 Aug 04:55 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-16",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Vamsidasa Babaji -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Raghunandana Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-23",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": true,
+          "ekadashiName": "Pavitraropana Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Pavitraropana Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Pavitraropana Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Radha Govinda Jhulana Yatra begins",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-24",
+          "dayOfWeek": "Monday",
+          "isEkadashi": true,
+          "ekadashiName": "Pavitraropana Ekadasi",
+          "isFastDay": true,
+          "fastDetails": "Break fast after 10:50 (LT)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Pavitraropana Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast after 10:50 (LT)",
+              "category": "Fasting"
+            },
+            {
+              "title": "Srila Rupa Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Gauridasa Pandita -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-27",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Last day of the first Caturmasya month [PURNIMA SYSTEM]",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-28",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today); (yogurt fast for one month)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Lord Balarama -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            },
+            {
+              "title": "Jhulana Yatra ends",
+              "category": "Festival"
+            },
+            {
+              "title": "Second month of Caturmasya begins [PURNIMA SYSTEM]",
+              "category": "Festival"
+            },
+            {
+              "title": "(yogurt fast for one month)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-29",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Prabhupada's departure for the USA",
+              "category": "Observance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 9,
+      "monthName": "September",
+      "totalDaysWithObservances": 12,
+      "days": [
+        {
+          "date": "2026-09-03",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Sasti -- 2 Sep 06:14 to 3 Sep 04:27 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-04",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(Fast today)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Krsna Janmastami: Appearance of Lord Sri Krsna",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fast today)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-05",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Nandotsava",
+              "category": "Observance"
+            },
+            {
+              "title": "Srila Prabhupada -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-07",
+          "dayOfWeek": "Monday",
+          "isEkadashi": true,
+          "ekadashiName": "Annada Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Annada Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Annada Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-08",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:01",
+            "endTime": "10:11",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:01 - 10:11 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-16",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srimati Sita Thakurani (Sri Advaita's consort) -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-19",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Radhastami: Appearance of Srimati Radharani",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-22",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": true,
+          "ekadashiName": "Parsva Ekadasi",
+          "isFastDay": true,
+          "fastDetails": "(Fast today for Vamanadeva)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Parsva Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Parsva Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "(Fast today for Vamanadeva)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-23",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": true,
+          "ekadashiName": "Parsva Ekadasi",
+          "isFastDay": true,
+          "fastDetails": "(Fasting is done yesterday)",
+          "breakFastWindow": {
+            "startTime": "06:07",
+            "endTime": "10:10",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Parsva Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast 06:07 - 10:10 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Sri Vamana Dvadasi: Appearance of Lord Vamanadeva",
+              "category": "Appearance"
+            },
+            {
+              "title": "(Fasting is done yesterday)",
+              "category": "Fasting"
+            },
+            {
+              "title": "Srila Jiva Gosvami -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-24",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Bhaktivinoda Thakura -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-25",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ananta Caturdasi Vrata",
+              "category": "Observance"
+            },
+            {
+              "title": "Srila Haridasa Thakura -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Last day of the second Caturmasya month [PURNIMA SYSTEM]",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-26",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(milk fast for one month)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Visvarupa Mahotsava",
+              "category": "Observance"
+            },
+            {
+              "title": "Bhadra Purnima",
+              "category": "Festival"
+            },
+            {
+              "title": "Acceptance of sannyasa by Srila Prabhupada",
+              "category": "Observance"
+            },
+            {
+              "title": "Third month of Caturmasya begins [PURNIMA SYSTEM]",
+              "category": "Festival"
+            },
+            {
+              "title": "(milk fast for one month)",
+              "category": "Fasting"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 10,
+      "monthName": "October",
+      "totalDaysWithObservances": 12,
+      "days": [
+        {
+          "date": "2026-10-03",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Prabhupada's arrival in the USA",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-04",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Astami -- 3 Oct 08:01 to 4 Oct 05:53 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-06",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": true,
+          "ekadashiName": "Indira Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Indira Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Indira Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-07",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:16",
+            "endTime": "10:09",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:16 - 10:09 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-17",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Durga Puja",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-21",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ramacandra Vijayotsava",
+              "category": "Observance"
+            },
+            {
+              "title": "Sri Madhvacarya -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-22",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": true,
+          "ekadashiName": "Pasankusa Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Pasankusa Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Pasankusa Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-23",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:23",
+            "endTime": "10:10",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:23 - 10:10 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Srila Raghunatha Dasa Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srila Raghunatha Bhatta Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Srila Krsnadasa Kaviraja Gosvami -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-25",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Last day of the third Caturmasya month [PURNIMA SYSTEM]",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-26",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "(urad dal fast for one month)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Krsna Saradiya Rasayatra",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Murari Gupta -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Laksmi Puja",
+              "category": "Festival"
+            },
+            {
+              "title": "Fourth month of Caturmasya begins [PURNIMA SYSTEM]",
+              "category": "Festival"
+            },
+            {
+              "title": "(urad dal fast for one month)",
+              "category": "Fasting"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-28",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Dvitiya -- 27 Oct 07:02 to 28 Oct 04:08 (LT)",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-30",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Narottama Dasa Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 11,
+      "monthName": "November",
+      "totalDaysWithObservances": 16,
+      "days": [
+        {
+          "date": "2026-11-02",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Bahulastami",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-03",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Virabhadra -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-05",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": true,
+          "ekadashiName": "Rama Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Rama Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Rama Ekadasi",
+              "category": "Ekadashi"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-06",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:33",
+            "endTime": "10:12",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:33 - 10:12 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-09",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Dipa dana, Dipavali, (Kali Puja)",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Go Puja. Go Krda. Govardhana Puja.",
+              "category": "Festival"
+            },
+            {
+              "title": "Bali Daityaraja Puja",
+              "category": "Festival"
+            },
+            {
+              "title": "Sri Rasikananda -- Appearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-11",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Vasudeva Ghosh -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-13",
+          "dayOfWeek": "Friday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Prabhupada -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-17",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Gopastami, Gosthastami",
+              "category": "Observance"
+            },
+            {
+              "title": "Sri Gadadhara Dasa Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Dhananjaya Pandita -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Srinivasa Acarya -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-18",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Jagaddhatri Puja",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-21",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": true,
+          "ekadashiName": "Utthana Ekadasi",
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Utthana Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Srila Gaura Kisora Dasa Babaji -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Ksaya tithi: Ekadasi -- 20 Nov 07:16 to 21 Nov 06:32 (LT)",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "First day of Bhisma Pancaka",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-22",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:45",
+            "endTime": "10:18",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:45 - 10:18 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-23",
+          "dayOfWeek": "Monday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Bhugarbha Gosvami -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Sri Kasisvara Pandita -- Disappearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Last day of the fourth Caturmasya month [PURNIMA SYSTEM]",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-24",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Krsna Rasayatra",
+              "category": "Festival"
+            },
+            {
+              "title": "Tulasi-Saligrama Vivaha (marriage)",
+              "category": "Observance"
+            },
+            {
+              "title": "Sri Nimbarkacarya -- Appearance",
+              "category": "Appearance"
+            },
+            {
+              "title": "Last day of Bhisma Pancaka",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-25",
+          "dayOfWeek": "Wednesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Katyayani vrata begins",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-11-28",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Ksaya tithi: Caturthi -- 27 Nov 09:50 to 28 Nov 06:41 (LT)",
+              "category": "Observance"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "monthNumber": 12,
+      "monthName": "December",
+      "totalDaysWithObservances": 8,
+      "days": [
+        {
+          "date": "2026-12-04",
+          "dayOfWeek": "Friday",
+          "isEkadashi": true,
+          "ekadashiName": "Utpanna Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Utpanna Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Utpanna Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Sri Narahari Sarakara Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-05",
+          "dayOfWeek": "Saturday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "06:55",
+            "endTime": "10:24",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Break fast 06:55 - 10:24 (LT)",
+              "category": "Parana"
+            },
+            {
+              "title": "Sri Kaliya Krsnadasa -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-06",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Sri Saranga Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-15",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Odana sasthi",
+              "category": "Observance"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-20",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": true,
+          "ekadashiName": "Moksada Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Moksada Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Fasting for Moksada Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Advent of Srimad Bhagavad-gita",
+              "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-21",
+          "dayOfWeek": "Monday",
+          "isEkadashi": true,
+          "ekadashiName": "Moksada Ekadasi",
+          "isFastDay": true,
+          "fastDetails": null,
+          "breakFastWindow": {
+            "startTime": "07:05",
+            "endTime": "10:33",
+            "timezone": "LT"
+          },
+          "observances": [
+            {
+              "title": "Moksada Ekadasi",
+              "category": "Ekadashi"
+            },
+            {
+              "title": "Break fast 07:05 - 10:33 (LT)",
+              "category": "Parana"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-24",
+          "dayOfWeek": "Thursday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Katyayani vrata ends",
+              "category": "Observance"
+            },
+            {
+              "title": "Ksaya tithi: Purnima -- 23 Dec 10:48 to 24 Dec 06:59 (LT)",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-12-27",
+          "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Srila Bhaktisiddhanta Sarasvati Thakura -- Disappearance",
+              "category": "Appearance"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

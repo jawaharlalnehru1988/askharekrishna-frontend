@@ -44,7 +44,7 @@ export default function ClientAudioWrapper({
                 id: matchedStory.id,
                 category: categoryName,
                 audioPath: matchedStory.audioPath,
-                imagePath: matchedStory.imagePath || matchedStory.articleImage || null,
+                imagePath: matchedStory.imageUrl || matchedStory.imagePath || matchedStory.articleImage || null,
                 videoPath: null,
                 translations: [],
                 title: matchedStory.subTopic,

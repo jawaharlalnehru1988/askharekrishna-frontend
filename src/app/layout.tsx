@@ -3,6 +3,7 @@ import { Manrope, Noto_Sans, Inter, Lexend } from "next/font/google";
 import "./globals.css";
 
 import { headers } from "next/headers";
+import Script from "next/script";
 import { LanguageProvider } from "@/components/providers/LanguageContext";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { getDictionary, Locale } from "@/lib/dictionaries";
@@ -94,6 +95,12 @@ export default async function RootLayout({
             <WhatsAppButton />
           </ThemeProvider>
         </LanguageProvider>
+        <Script 
+          async 
+          src="https://analytics.askharekrishna.com/script.js" 
+          data-website-id="0042f7fa-56fc-474a-8c57-1fb90fa228ef" 
+          strategy="afterInteractive" 
+        />
       </body>
     </html>
   );
