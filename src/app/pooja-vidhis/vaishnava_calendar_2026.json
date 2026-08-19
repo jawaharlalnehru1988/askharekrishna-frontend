@@ -1702,6 +1702,21 @@
         {
           "date": "2026-08-23",
           "dayOfWeek": "Sunday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": false,
+          "fastDetails": null,
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Radha Govinda Jhulana Yatra begins",
+              "category": "Festival"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-24",
+          "dayOfWeek": "Monday",
           "isEkadashi": true,
           "ekadashiName": "Pavitraropana Ekadasi",
           "isFastDay": true,
@@ -1717,35 +1732,27 @@
               "category": "Ekadashi"
             },
             {
-              "title": "Radha Govinda Jhulana Yatra begins",
-              "category": "Festival"
-            }
-          ]
-        },
-        {
-          "date": "2026-08-24",
-          "dayOfWeek": "Monday",
-          "isEkadashi": true,
-          "ekadashiName": "Pavitraropana Ekadasi",
-          "isFastDay": true,
-          "fastDetails": "Break fast after 10:50 (LT)",
-          "breakFastWindow": null,
-          "observances": [
-            {
-              "title": "Pavitraropana Ekadasi",
-              "category": "Ekadashi"
-            },
-            {
-              "title": "Break fast after 10:50 (LT)",
-              "category": "Fasting"
-            },
-            {
               "title": "Srila Rupa Gosvami -- Disappearance",
               "category": "Appearance"
             },
             {
               "title": "Sri Gauridasa Pandita -- Disappearance",
               "category": "Appearance"
+            }
+          ]
+        },
+        {
+          "date": "2026-08-25",
+          "dayOfWeek": "Tuesday",
+          "isEkadashi": false,
+          "ekadashiName": null,
+          "isFastDay": true,
+          "fastDetails": "Break fast after 10:50 (LT)",
+          "breakFastWindow": null,
+          "observances": [
+            {
+              "title": "Break fast after 10:50 (LT)",
+              "category": "Fasting"
             }
           ]
         },
