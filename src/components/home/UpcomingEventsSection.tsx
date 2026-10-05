@@ -90,7 +90,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
         const fetchUpcomingEvents = async () => {
             try {
                 setLoading(true);
-                const limit = isHomePage ? 16 : 120;
+                const limit = isHomePage ? 60 : 120;
                 const response = await axios.get(`${apiBaseUrl}/vaishnava-calendar/calendar-days/upcoming/?limit=${limit}&lang=${locale}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
                 setEvents(data);
@@ -116,53 +116,64 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
         }
     };
 
-    // Flatten day observances into individual separate event cards, filtering out standalone Parana cards
+    // Flatten day observances into valid event cards, filtering out standalone Parana cards and empty calendar day placeholders
     const flatEvents = useMemo(() => {
         const items: FlatEventItem[] = [];
 
         for (const day of events) {
+            // If day has NO observances, do NOT create an empty contentless card!
             if (!day.observances || day.observances.length === 0) {
-                items.push({
-                    id: day.id,
-                    day_id: day.id,
-                    event_date: day.event_date,
-                    day_of_week: day.day_of_week,
-                    is_ekadashi: day.is_ekadashi,
-                    ekadashi_name: day.ekadashi_name,
-                    is_fast_day: day.is_fast_day,
-                    fast_details: day.fast_details,
-                    break_fast_date: day.break_fast_date || null,
-                    break_fast_day_of_week: day.break_fast_day_of_week || null,
-                    break_fast_window: day.break_fast_window || null,
-                    category: 'Observance',
-                    title: day.ekadashi_name || day.event_date,
-                    description: day.fast_details,
-                    imageUrl: null,
-                });
+                // Only include if it's an actual Ekadashi with a valid name
+                if (day.ekadashi_name && day.ekadashi_name.trim() !== '' && day.ekadashi_name !== day.event_date) {
+                    items.push({
+                        id: day.id,
+                        day_id: day.id,
+                        event_date: day.event_date,
+                        day_of_week: day.day_of_week,
+                        is_ekadashi: true,
+                        ekadashi_name: day.ekadashi_name,
+                        is_fast_day: day.is_fast_day,
+                        fast_details: day.fast_details,
+                        break_fast_date: day.break_fast_date || null,
+                        break_fast_day_of_week: day.break_fast_day_of_week || null,
+                        break_fast_window: day.break_fast_window || null,
+                        category: 'Ekadashi',
+                        title: day.ekadashi_name,
+                        description: day.fast_details,
+                        imageUrl: null,
+                    });
+                }
                 continue;
             }
 
-            const seenDescriptions = new Set<string>();
+            const seenDayTitles = new Set<string>();
+
             for (const obs of day.observances) {
-                // Filter out standalone Parana observances so they don't produce a standalone card
+                // Filter out standalone Parana observances
                 if (obs.category === 'Parana') {
                     continue;
                 }
 
-                if (obs.description) {
-                    const trimmed = obs.description.trim();
-                    if (seenDescriptions.has(trimmed)) {
-                        continue; // Deduplicate identical story article text on Ekadashis
-                    }
-                    seenDescriptions.add(trimmed);
+                const title = (obs.title || day.ekadashi_name || '').trim();
+
+                // Exclude empty titles, date strings (e.g., '2026-10-05'), or pure date format
+                if (!title || title === day.event_date || /^\d{4}-\d{2}-\d{2}$/.test(title)) {
+                    continue;
                 }
+
+                // Deduplicate identical or very similar title on the same date (e.g., 'பாபாங்குஷ ஏகாதசி' and 'பாபாங்குஷ ஏகாதசி விரதம்')
+                const normalizedTitle = title.replace(/\s*(விரதம்|fast|fasting)\s*/gi, '').trim().toLowerCase();
+                if (seenDayTitles.has(normalizedTitle)) {
+                    continue;
+                }
+                seenDayTitles.add(normalizedTitle);
 
                 items.push({
                     id: obs.id,
                     day_id: day.id,
                     event_date: day.event_date,
                     day_of_week: day.day_of_week,
-                    is_ekadashi: obs.category === 'Ekadashi',
+                    is_ekadashi: obs.category === 'Ekadashi' || day.is_ekadashi || title.toLowerCase().includes('ekadashi') || title.includes('ஏகாதசி'),
                     ekadashi_name: day.ekadashi_name,
                     is_fast_day: day.is_fast_day,
                     fast_details: day.fast_details,
@@ -170,7 +181,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                     break_fast_day_of_week: obs.break_fast_day_of_week || day.break_fast_day_of_week || null,
                     break_fast_window: obs.break_fast_window || day.break_fast_window || null,
                     category: obs.category,
-                    title: obs.title || day.ekadashi_name || day.event_date,
+                    title: title,
                     description: obs.description,
                     imageUrl: obs.imageUrl || obs.image,
                 });
@@ -222,7 +233,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
         });
     }, [flatEvents, filterCategory, searchQuery]);
 
-    const displayEvents = isHomePage ? filteredEvents.slice(0, 8) : filteredEvents;
+    const displayEvents = isHomePage ? filteredEvents.slice(0, 6) : filteredEvents;
 
     const SkeletonCard = () => (
         <div className="flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 p-6 animate-pulse shrink-0 w-[85vw] md:w-auto snap-center">
@@ -310,9 +321,13 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                 )}
 
                 {/* Grid layout */}
-                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                <div className={`flex md:grid gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 ${
+                    isHomePage
+                        ? 'md:grid-cols-2 lg:grid-cols-3'
+                        : 'md:grid-cols-2 lg:grid-cols-4'
+                }`}>
                     {loading ? (
-                        Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+                        Array.from({ length: isHomePage ? 6 : 8 }).map((_, i) => <SkeletonCard key={i} />)
                     ) : displayEvents.length > 0 ? (
                         displayEvents.map((item) => {
                             const hasArticle = Boolean(item.description);
