@@ -94,7 +94,7 @@ export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
     return (
         <>
             <div className="w-full bg-background-light dark:bg-background-dark pt-8 pb-4">
-                <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex justify-between items-end">
+                <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-4">
                     <div>
                         <span className="inline-block mb-2 text-primary font-bold uppercase tracking-[0.2em] text-xs">
                              {locale === 'ta' ? 'தர்க்கம் மற்றும் தத்துவம்' : 'Logic & Philosophy'}
@@ -106,8 +106,8 @@ export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
                             {h?.debateDesc || (locale === 'ta' ? 'வேத தர்க்கம் மற்றும் தத்துவத்தின் ஆழமான ஆய்வுகள்.' : 'Explore the systematic ways to answer challenging questions.')}
                         </p>
                     </div>
-                    <Link href="/debate" className="hidden font-bold transition-colors sm:flex text-primary hover:text-primary-dark text-sm items-center gap-2 group">
-                        {h?.viewAll || 'View All'} 
+                    <Link href="/debate" className="font-bold transition-colors inline-flex text-primary hover:text-primary-dark text-sm sm:text-base items-center gap-1.5 group shrink-0">
+                        <span>{h?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}</span> 
                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
@@ -159,6 +159,17 @@ export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
                                 </div>
                             ))
                         )}
+                    </div>
+
+                    {/* Mobile View All Debates Button */}
+                    <div className="mt-8 flex justify-center sm:hidden">
+                        <Link
+                            href="/debate"
+                            className="w-full py-3.5 px-6 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary-light font-bold text-sm flex items-center justify-center gap-2 border border-primary/25 transition-all active:scale-[0.98] shadow-xs"
+                        >
+                            <span>{h?.viewAll || (locale === 'ta' ? 'அனைத்து விவாதங்களையும் காண்க' : 'View All Debates')}</span>
+                            <ArrowRight size={16} />
+                        </Link>
                     </div>
                 </div>
             </div>
