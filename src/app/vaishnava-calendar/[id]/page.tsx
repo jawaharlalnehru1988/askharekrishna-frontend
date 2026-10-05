@@ -9,8 +9,9 @@ import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { Locale } from '@/lib/dictionaries';
-import { ShareButtons } from '@/components/categories/ShareButtons';
+import { CalendarArticleShareSection } from '@/components/calendar/CalendarArticleShareSection';
 import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
+import { ParanaGuidelines } from '@/components/calendar/ParanaGuidelines';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 export const dynamic = 'force-dynamic';
@@ -107,14 +108,23 @@ async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise
     }
 }
 
+import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
+
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+
 export async function generateMetadata({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }): Promise<Metadata> {
     const { id } = await params;
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const headersList = await headers();
-    const locale = resolveLocale(headersList);
     const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
 
     const item = await fetchCalendarItemById(id, locale);
@@ -130,7 +140,7 @@ export async function generateMetadata({
 
     return buildArticleMetadata({
         host,
-        path: `/vaishnava-calendar/${id}`,
+        path: `/vaishnava-calendar/${id}?lang=${locale}`,
         title: `${item.title} (${item.event_date}) | Ask Hare Krishna`,
         description,
         imageUrl: image,
@@ -138,22 +148,27 @@ export async function generateMetadata({
 }
 
 export default async function CalendarEventDetailPage({
-    params
+    params,
+    searchParams,
 }: {
-    params: Promise<{ id: string }>
+    params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }) {
     const { id } = await params;
-    const headersList = await headers();
-    const locale = resolveLocale(headersList);
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const item = await fetchCalendarItemById(id, locale);
 
     if (!item) {
         return notFound();
     }
 
+    const headersList = await headers();
     const host = headersList.get('host') || 'askharekrishna.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
-    const articleUrl = `${protocol}://${host}/vaishnava-calendar/${id}`;
+    const articleUrl = `${protocol}://${host}/vaishnava-calendar/${id}?lang=${locale}`;
 
     const formatDate = (dateStr: string) => {
         try {
@@ -165,16 +180,28 @@ export default async function CalendarEventDetailPage({
         }
     };
 
+    const getBackLabel = (loc: string) => {
+        switch (loc) {
+            case 'ta': return 'நாட்காட்டிக்குத் திரும்பு';
+            case 'hi': return 'कैलेंडर पर वापस जाएं';
+            case 'kn': return 'ಕ್ಯಾಲೆಂಡರ್‌ಗೆ ಹಿಂತಿರುಗಿ';
+            case 'te': return 'క్యాలెండర్‌కు తిరిగి వెళ్లండి';
+            case 'ml': return 'കലണ്ടറിലേക്ക് മടങ്ങുക';
+            default: return 'Back to Calendar';
+        }
+    };
+
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+            <ArticleUrlSync locale={locale} />
             <Navbar />
             <main className="flex-grow py-12 md:py-20 px-4 md:px-8 max-w-[1000px] mx-auto w-full">
                 <Link
-                    href="/vaishnava-calendar"
-                    className="inline-flex items-center gap-2 text-amber-600 dark:text-amber-400 hover:text-amber-500 font-bold mb-8 transition-colors"
+                    href={`/vaishnava-calendar?lang=${locale}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 font-bold text-sm mb-8 transition-all group"
                 >
-                    <ArrowLeft size={20} />
-                    {locale === 'ta' ? 'நாட்காட்டி பக்கத்திற்குத் திரும்பு' : 'Back to Calendar'}
+                    <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                    <span>{getBackLabel(locale)}</span>
                 </Link>
 
                 <div className="bg-white dark:bg-[#1a160f] rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-neutral-800">
@@ -245,40 +272,28 @@ export default async function CalendarEventDetailPage({
                             </p>
                         )}
 
-                        {/* Break Fast Window Box at Bottom of Article */}
-                        {item.break_fast_window && (
-                            <div className="mt-10 p-6 bg-gradient-to-br from-amber-500/15 via-amber-500/10 to-amber-500/5 border-2 border-amber-500/30 rounded-3xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-amber-950 dark:text-amber-100 shadow-md">
-                                <div className="flex items-center gap-4">
-                                    <div className="size-14 rounded-2xl bg-amber-500 text-black flex items-center justify-center shrink-0 shadow-lg font-black">
-                                        <Clock size={28} />
-                                    </div>
-                                    <div>
-                                        <div className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                                            {locale === 'ta' ? 'பார்ணை நேரம் (Break Fast Window)' : 'Break Fast (Parana) Window'}
-                                        </div>
-                                        <div className="text-xl md:text-2xl font-black mt-1 text-text-main dark:text-white">
-                                            {item.break_fast_date ? `${formatDate(item.break_fast_date)} (${item.break_fast_day_of_week}) — ` : ''}
-                                            <span className="text-amber-600 dark:text-amber-400">{item.break_fast_window}</span> (LT)
-                                        </div>
-                                    </div>
-                                </div>
-                                <span className="bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold text-xs px-3.5 py-1.5 rounded-full border border-amber-500/30">
-                                    {locale === 'ta' ? 'அடுத்த நாள் உபவாசம் முடித்தல்' : 'Following Day Parana'}
-                                </span>
-                            </div>
-                        )}
+                        {/* Parana (Break Fast) Guidelines & Timing Section */}
+                        <ParanaGuidelines
+                            locale={locale}
+                            breakFastWindow={item.break_fast_window}
+                            breakFastDate={item.break_fast_date}
+                            breakFastDayOfWeek={item.break_fast_day_of_week}
+                            isEkadashi={item.is_ekadashi}
+                        />
 
-                        {/* Share section */}
-                        <div className="mt-16 pt-10 border-t border-gray-100 dark:border-neutral-800 text-center">
-                            <p className="text-sm font-bold text-text-muted mb-6 uppercase tracking-[0.3em]">
-                                {locale === 'ta' ? 'இந்த நிகழ்வைப் பகிரவும்' : 'Share this Event Article'}
-                            </p>
-                            <ShareButtons 
-                                articleUrl={articleUrl} 
-                                subTopic={item.title} 
-                                messagePrefix={locale === 'ta' ? '✨ இந்த வைஷ்ணவ நிகழ்வைப் பற்றிப் படியுங்கள்:' : '✨ Read about this Vaishnava event:'}
-                            />
-                        </div>
+                        {/* Debate-Style Comprehensive Share Suite */}
+                        <CalendarArticleShareSection
+                            locale={locale}
+                            title={item.title}
+                            description={item.description}
+                            eventDate={item.event_date}
+                            dayOfWeek={item.day_of_week}
+                            articleUrl={articleUrl}
+                            isEkadashi={item.is_ekadashi}
+                            breakFastDate={item.break_fast_date}
+                            breakFastDayOfWeek={item.break_fast_day_of_week}
+                            breakFastWindow={item.break_fast_window}
+                        />
                     </div>
                 </div>
             </main>

@@ -205,7 +205,7 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     ) : displayArticles.length > 0 ? (
                         displayArticles.map((article, index) => (
                             <Link
-                                href={`/pooja-vidhis/${article.id}`}
+                                href={`/pooja-vidhis/${article.id}?lang=${locale}`}
                                 key={`${article.id}-${article.mainTopic}-${index}`}
                                 className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer shrink-0 w-[85vw] md:w-auto snap-center"
                             >

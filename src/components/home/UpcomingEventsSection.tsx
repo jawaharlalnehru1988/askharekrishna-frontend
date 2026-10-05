@@ -181,7 +181,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
     }, [events]);
 
     const handleWhatsAppShare = (item: FlatEventItem) => {
-        const pageUrl = typeof window !== 'undefined' ? `${window.location.origin}/vaishnava-calendar/${item.id}` : `https://askharekrishna.com/vaishnava-calendar/${item.id}`;
+        const pageUrl = typeof window !== 'undefined' ? `${window.location.origin}/vaishnava-calendar/${item.id}?lang=${locale}` : `https://askharekrishna.com/vaishnava-calendar/${item.id}?lang=${locale}`;
         let message = `✨ *${item.title}*\n📅 Date: ${item.event_date} (${item.day_of_week})\n`;
         if (item.is_ekadashi) {
             message += `🌕 Ekadashi Fasting\n`;
@@ -320,7 +320,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                             return (
                                 <Link
                                     key={`${item.day_id}-${item.id}`}
-                                    href={`/vaishnava-calendar/${item.id}`}
+                                    href={`/vaishnava-calendar/${item.id}?lang=${locale}`}
                                     className="group flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-amber-500/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden shrink-0 w-[85vw] md:w-auto snap-center relative cursor-pointer"
                                 >
                                     {item.imageUrl && (

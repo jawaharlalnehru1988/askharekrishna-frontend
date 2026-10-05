@@ -4,15 +4,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { ArrowRight, BookOpen, Loader2, Search, ShieldCheck, Trophy } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 import { useLanguage } from '@/components/providers/LanguageContext';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 const SUBSCRIBER_PHONE_KEY = 'askharekrishna-subscriber-phone';
+const SUBSCRIBER_EMAIL_KEY = 'askharekrishna-subscriber-email';
+const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
+const SUBSCRIBER_PICTURE_KEY = 'askharekrishna-subscriber-picture';
 
 interface SubscriberProfile {
   name: string;
-  phone_number: string;
+  email?: string;
+  phone_number?: string;
+  picture?: string;
   language: string;
   place: string;
   created_at: string;
@@ -105,29 +112,80 @@ export default function DashboardPage() {
 
     try {
       const response = await axios.get(`${API_BASE_URL}/subscriber-dashboard/`, {
-        params: { phone_number: trimmed },
+        params: { identifier: trimmed },
       });
       setDashboard(response.data as DashboardPayload);
     } catch (requestError) {
       console.error('Dashboard load failed:', requestError);
       setDashboard(null);
       setError(locale === 'ta'
-        ? 'உங்கள் dashboard தரவுகளை பெற முடியவில்லை. தயவுசெய்து சரியான தொலைபேசி எண்ணை உள்ளிடவும்.'
-        : 'Could not load your dashboard. Please enter the same phone number you used while subscribing.');
+        ? 'உங்கள் dashboard தரவுகளை பெற முடியவில்லை. தயவுசெய்து சரியான Google கணக்கு அல்லது தொலைபேசி எண்ணை உள்ளிடவும்.'
+        : 'Could not load your dashboard. Please sign in with Google or enter your registered identifier.');
     } finally {
       setLoading(false);
     }
   }, [locale]);
 
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (!credentialResponse?.credential) return;
+    setError(null);
+    setLoading(true);
+    try {
+      const decoded: any = jwtDecode(credentialResponse.credential);
+      const email = decoded.email || '';
+      const name = decoded.name || '';
+      const picture = decoded.picture || '';
+      const google_id = decoded.sub || '';
+
+      const response = await axios.post(`${API_BASE_URL}/subscribers/google-auth/`, {
+        credential: credentialResponse.credential,
+        email,
+        name,
+        picture,
+        google_id,
+        language: locale,
+      });
+
+      const subscriber = response.data;
+      if (typeof window !== 'undefined') {
+        if (email) window.localStorage.setItem(SUBSCRIBER_EMAIL_KEY, email);
+        if (name) window.localStorage.setItem(SUBSCRIBER_NAME_KEY, name);
+        if (picture) window.localStorage.setItem(SUBSCRIBER_PICTURE_KEY, picture);
+        if (subscriber?.phone_number) {
+          window.localStorage.setItem(SUBSCRIBER_PHONE_KEY, subscriber.phone_number);
+        }
+        window.dispatchEvent(new Event('subscriber-updated'));
+      }
+
+      const identifier = email || subscriber?.phone_number || '';
+      if (identifier) {
+        setPhoneNumber(identifier);
+        loadDashboard(identifier);
+      }
+    } catch (err: any) {
+      console.error('Dashboard Google login error:', err);
+      setError(
+        locale === 'ta'
+          ? 'Google உள்நுழைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.'
+          : 'Google Sign In failed. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    const savedEmail = window.localStorage.getItem(SUBSCRIBER_EMAIL_KEY) || '';
     const savedPhone = window.localStorage.getItem(SUBSCRIBER_PHONE_KEY) || '';
-    if (savedPhone) {
-      setPhoneNumber(savedPhone);
-      loadDashboard(savedPhone);
+    const identifier = savedEmail || savedPhone;
+    if (identifier) {
+      setPhoneNumber(identifier);
+      loadDashboard(identifier);
     }
   }, [loadDashboard]);
+
 
   useEffect(() => {
     const fetchQuizSuggestions = async () => {
@@ -163,7 +221,7 @@ export default function DashboardPage() {
           .map((article) => ({
             id: article.id,
             title: article.subTopic,
-            href: `/stories/${article.id}`,
+            href: `/stories/${article.id}?lang=${locale}`,
             type: 'story',
           }));
 
@@ -202,51 +260,79 @@ export default function DashboardPage() {
 
       <section className="max-w-6xl mx-auto px-4 md:px-8 py-10">
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a160f] shadow-sm p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="size-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                <Search size={20} />
+          <div className="rounded-3xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a160f] shadow-sm p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="size-11 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                  <Search size={20} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black">{locale === 'ta' ? 'உங்கள் dashboard-ஐ திறக்கவும்' : 'Open your dashboard'}</h2>
+                  <p className="text-sm text-text-muted dark:text-gray-400">
+                    {locale === 'ta'
+                      ? 'Google வழியாக அல்லது உங்கள் தொலைபேசி எண் மூலம் உள்நுழையவும்.'
+                      : 'Sign in with Google or enter your registered phone number.'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-black">{locale === 'ta' ? 'உங்கள் dashboard-ஐ திறக்கவும்' : 'Open your dashboard'}</h2>
-                <p className="text-sm text-text-muted dark:text-gray-400">
-                  {locale === 'ta'
-                    ? 'உங்கள் சந்தா போது பயன்படுத்திய அதே தொலைபேசி எண்ணை உள்ளிடவும்.'
-                    : 'Enter the same phone number you used when subscribing.'}
+
+              <div className="p-4 rounded-2xl bg-[#faf8f4] dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 flex flex-col items-center justify-center gap-3 mb-6">
+                <p className="text-xs font-semibold text-text-muted dark:text-gray-300">
+                  {locale === 'ta' ? 'Google கணக்கு மூலம் விரைவாக திறக்க:' : 'Fast access with Google:'}
                 </p>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => {
+                    setError(
+                      locale === 'ta'
+                        ? 'Google உள்நுழைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.'
+                        : 'Google Sign In failed. Please try again.',
+                    );
+                  }}
+                  theme="filled_black"
+                  shape="pill"
+                  size="large"
+                  text="signin_with"
+                />
               </div>
-            </div>
 
-            <form
-              className="flex flex-col sm:flex-row gap-3"
-              onSubmit={(event) => {
-                event.preventDefault();
-                loadDashboard(phoneNumber);
-              }}
-            >
-              <input
-                value={phoneNumber}
-                onChange={(event) => setPhoneNumber(event.target.value)}
-                className="flex-1 rounded-2xl border border-gray-200 dark:border-neutral-800 bg-transparent px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                placeholder={locale === 'ta' ? 'தொலைபேசி எண்' : 'Phone number'}
-                inputMode="tel"
-                required
-              />
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-black text-black transition-all disabled:opacity-60"
+              <div className="relative flex items-center justify-center my-4">
+                <div className="w-full border-t border-gray-200 dark:border-neutral-800"></div>
+                <span className="absolute bg-white dark:bg-[#1a160f] px-3 text-xs uppercase tracking-widest text-text-muted font-bold">
+                  {locale === 'ta' ? 'அல்லது எண் உள்ளிடவும்' : 'or enter identifier'}
+                </span>
+              </div>
+
+              <form
+                className="flex flex-col sm:flex-row gap-3 mt-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  loadDashboard(phoneNumber);
+                }}
               >
-                {loading && <Loader2 size={16} className="animate-spin" />}
-                {locale === 'ta' ? 'Dashboard Load செய்யவும்' : 'Load dashboard'}
-              </button>
-            </form>
+                <input
+                  value={phoneNumber}
+                  onChange={(event) => setPhoneNumber(event.target.value)}
+                  className="flex-1 rounded-2xl border border-gray-200 dark:border-neutral-800 bg-transparent px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder={locale === 'ta' ? 'Google மின்னஞ்சல் அல்லது எண்' : 'Email or phone number'}
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 font-black text-black transition-all disabled:opacity-60"
+                >
+                  {loading && <Loader2 size={16} className="animate-spin" />}
+                  {locale === 'ta' ? 'Load' : 'Load'}
+                </button>
+              </form>
 
-            {error && (
-              <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm font-medium">
-                {error}
-              </div>
-            )}
+              {error && (
+                <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm font-medium">
+                  {error}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="grid gap-4">
@@ -289,12 +375,27 @@ export default function DashboardPage() {
           {dashboard ? (
             <div className="rounded-3xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a160f] shadow-sm p-6 md:p-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.25em] text-primary font-black mb-2">{locale === 'ta' ? 'உறுப்பினர் விவரங்கள்' : 'Subscriber details'}</p>
-                  <h2 className="text-2xl font-black">{dashboard.subscriber.name}</h2>
-                  <p className="text-sm text-text-muted dark:text-gray-400 mt-1">
-                    {dashboard.subscriber.phone_number} • {dashboard.subscriber.place}
-                  </p>
+                <div className="flex items-center gap-4">
+                  {dashboard.subscriber.picture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={dashboard.subscriber.picture}
+                      alt={dashboard.subscriber.name}
+                      className="size-16 rounded-full object-cover border-2 border-primary/40 shadow-sm"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="size-16 rounded-full bg-primary/20 text-primary font-black text-xl flex items-center justify-center border border-primary/30">
+                      {dashboard.subscriber.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.25em] text-primary font-black mb-1">{locale === 'ta' ? 'உறுப்பினர் விவரங்கள்' : 'Subscriber details'}</p>
+                    <h2 className="text-2xl font-black">{dashboard.subscriber.name}</h2>
+                    <p className="text-sm text-text-muted dark:text-gray-400 mt-1">
+                      {dashboard.subscriber.email || dashboard.subscriber.phone_number} {dashboard.subscriber.place ? `• ${dashboard.subscriber.place}` : ''}
+                    </p>
+                  </div>
                 </div>
                 <div className="text-sm text-text-muted dark:text-gray-400">
                   <p>{locale === 'ta' ? 'பதிவு மொழி' : 'Registered language'}: {dashboard.subscriber.language}</p>
@@ -329,7 +430,7 @@ export default function DashboardPage() {
                         <span>{attempt.score}/{attempt.total_questions}</span>
                       </div>
                       <Link
-                        href={attempt.quiz_type === 'pooja_vidhi' ? `/pooja-vidhis/${attempt.article_id}/quiz` : `/stories/${attempt.article_id}`}
+                        href={attempt.quiz_type === 'pooja_vidhi' ? `/pooja-vidhis/${attempt.article_id}/quiz?lang=${locale}` : `/stories/${attempt.article_id}?lang=${locale}`}
                         className="inline-flex items-center gap-2 rounded-xl border border-primary/20 px-4 py-2 text-sm font-black text-primary hover:bg-primary/10 transition-all"
                       >
                         <span>{locale === 'ta' ? 'Quiz மீண்டும் முயற்சி' : 'Retry Quiz'}</span>

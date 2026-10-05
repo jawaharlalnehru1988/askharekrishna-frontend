@@ -103,14 +103,21 @@ export async function generateMetadata({
   });
 }
 
+import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
+
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+
 export default async function PoojaVidhiQuizOnlyPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ lang?: string; language?: string }>;
 }) {
   const { id } = await params;
-  const headersList = await headers();
-  const locale = resolveLocale(headersList);
+  const search = searchParams ? await searchParams : undefined;
+  const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+  const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
 
   const matchedArticle = await fetchPoojaArticleById(id, locale);
 
@@ -118,16 +125,18 @@ export default async function PoojaVidhiQuizOnlyPage({
     return notFound();
   }
 
+  const headersList = await headers();
   const host = headersList.get('host') || 'askharekrishna.com';
   const protocol = host.includes('localhost') ? 'http' : 'https';
-  const quizUrl = `${protocol}://${host}/pooja-vidhis/${id}/quiz`;
+  const quizUrl = `${protocol}://${host}/pooja-vidhis/${id}/quiz?lang=${locale}`;
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+      <ArticleUrlSync locale={locale} />
       <Navbar />
       <main className="flex-grow py-20 px-4 md:px-8 max-w-[1000px] mx-auto w-full">
         <Link
-          href={`/pooja-vidhis/${id}`}
+          href={`/pooja-vidhis/${id}?lang=${locale}`}
           className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-bold mb-8 transition-colors"
         >
           <ArrowLeft size={20} />

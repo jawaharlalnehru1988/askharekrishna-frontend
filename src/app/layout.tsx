@@ -59,6 +59,7 @@ export const metadata: Metadata = {
   },
 };
 
+import { GoogleAuthProvider } from "@/components/providers/GoogleAuthProvider";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 export default async function RootLayout({
@@ -89,12 +90,14 @@ export default async function RootLayout({
         ` }} />
       </head>
       <body className="antialiased">
-        <LanguageProvider locale={locale} dictionary={dictionary}>
-          <ThemeProvider>
-            {children}
-            <WhatsAppButton />
-          </ThemeProvider>
-        </LanguageProvider>
+        <GoogleAuthProvider>
+          <LanguageProvider locale={locale} dictionary={dictionary}>
+            <ThemeProvider>
+              {children}
+              <WhatsAppButton />
+            </ThemeProvider>
+          </LanguageProvider>
+        </GoogleAuthProvider>
         <Script 
           async 
           src="https://analytics.askharekrishna.com/script.js" 

@@ -96,14 +96,23 @@ async function fetchStoryArticleById(id: string, locale: Locale): Promise<StoryA
     }
 }
 
+import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
+
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+
 export async function generateMetadata({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }): Promise<Metadata> {
     const { id } = await params;
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const headersList = await headers();
-    const locale = resolveLocale(headersList);
     const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
 
     const story = await fetchStoryArticleById(id, locale);
@@ -119,7 +128,7 @@ export async function generateMetadata({
 
     return buildArticleMetadata({
         host,
-        path: `/stories/${id}`,
+        path: `/stories/${id}?lang=${locale}`,
         title: `${story.subTopic} | Ask Hare Krishna`,
         description,
         imageUrl: image,
@@ -127,13 +136,18 @@ export async function generateMetadata({
 }
 
 export default async function StoryArticlePage({
-    params
+    params,
+    searchParams,
 }: {
-    params: Promise<{ id: string }>
+    params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }) {
     const { id } = await params;
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const headersList = await headers();
-    const locale = resolveLocale(headersList);
     let matchedStory: StoryArticle | null = null;
     const allStories: StoryArticle[] = [];
     let topicName = '';
@@ -174,7 +188,7 @@ export default async function StoryArticlePage({
     // Determine absolute URL for sharing.
     const host = headersList.get('host') || 'askharekrishna.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
-    const articleUrl = `${protocol}://${host}/stories/${id}`;
+    const articleUrl = `${protocol}://${host}/stories/${id}?lang=${locale}`;
 
     // Find next and prev stories for the Audio Player if needed, or just navigation
     const currentIndex = allStories.findIndex((s) => s.id === matchedStory.id);
@@ -191,20 +205,21 @@ export default async function StoryArticlePage({
 
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+            <ArticleUrlSync locale={locale} />
             <Navbar />
             <main className="flex-grow pt-12 pb-16 px-4 md:px-8 max-w-[1000px] mx-auto w-full">
                 
                 {/* Breadcrumbs */}
                 <div className="flex flex-wrap items-center gap-4 mb-8">
-                    <Link href="/" className="flex items-center text-sm font-bold text-text-muted hover:text-primary transition-colors">
+                    <Link href={`/?lang=${locale}`} className="flex items-center text-sm font-bold text-text-muted hover:text-primary transition-colors">
                         <Home size={18} className="mr-1.5" /> Home
                     </Link>
                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
-                    <Link href="/stories" className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
+                    <Link href={`/stories?lang=${locale}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
                         Stories
                     </Link>
                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
-                    <Link href={`/stories?topic=${encodeURIComponent(topicName)}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
+                    <Link href={`/stories?topic=${encodeURIComponent(topicName)}&lang=${locale}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
                         {topicName}
                     </Link>
                 </div>
@@ -284,7 +299,7 @@ export default async function StoryArticlePage({
                 <div className="mt-12 flex flex-wrap justify-between gap-4">
                     {prevStory ? (
                         <Link
-                            href={`/stories/${prevStory.id}`}
+                            href={`/stories/${prevStory.id}?lang=${locale}`}
                             className="px-6 py-4 bg-background-light dark:bg-[#332d21] border border-border-light dark:border-neutral-800 rounded-2xl font-bold flex items-center gap-2 hover:bg-white dark:hover:bg-[#3e3729] transition-all shadow-sm"
                         >
                             <ChevronLeft size={20} />
@@ -294,7 +309,7 @@ export default async function StoryArticlePage({
                     
                     {nextStory && (
                         <Link
-                            href={`/stories/${nextStory.id}`}
+                            href={`/stories/${nextStory.id}?lang=${locale}`}
                             className="px-6 py-4 bg-primary text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm"
                         >
                             Next Story

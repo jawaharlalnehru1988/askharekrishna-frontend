@@ -47,6 +47,9 @@ interface StoryTopicGroup {
     articleList: Story[];
 }
 
+// Global in-memory cache across route navigations
+const globalStoriesCache: Record<string, StoryTopicGroup[]> = {};
+
 type ViewMode = 'topics' | 'articles';
 
 const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof getDictionary>> }) => {
@@ -55,8 +58,9 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     const searchParams = useSearchParams();
     const topicParam = searchParams.get('topic');
 
-    const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
-    const [loading, setLoading] = useState(true);
+    const cacheKey = locale || 'en';
+    const [topics, setTopics] = useState<StoryTopicGroup[]>(() => globalStoriesCache[cacheKey] || []);
+    const [loading, setLoading] = useState<boolean>(() => !globalStoriesCache[cacheKey] || globalStoriesCache[cacheKey].length === 0);
     const [error, setError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('topics');
     const [selectedTopicName, setSelectedTopicName] = useState<string | null>(null);
@@ -65,11 +69,19 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
 
 
     useEffect(() => {
+        const currentKey = locale || 'en';
+        if (globalStoriesCache[currentKey] && globalStoriesCache[currentKey].length > 0) {
+            setTopics(globalStoriesCache[currentKey]);
+            setLoading(false);
+            return;
+        }
+
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale === 'en' ? 'en' : 'ta'}`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${currentKey}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
+                globalStoriesCache[currentKey] = data;
                 setTopics(data);
                 setError(null);
             } catch (err) {
@@ -128,7 +140,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
     };
 
     const handleSubtopicClick = (story: Story) => {
-        router.push(`/stories/${story.id}`);
+        router.push(`/stories/${story.id}?lang=${locale || 'en'}`);
     };
 
     const handleBack = () => {

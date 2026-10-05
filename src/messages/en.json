@@ -28,7 +28,10 @@
         "contactUs": "Contact Us",
         "donate": "Donate",
         "privacyPolicy": "Privacy Policy",
-        "copyright": "© {year} Ask Hare Krishna. All rights reserved."
+        "copyright": "© {year} Ask Hare Krishna. All rights reserved.",
+        "queriesTitle": "For Doubts & Queries",
+        "queriesSubtitle": "For any spiritual guidance, philosophical inquiries, or doubts, feel free to contact:",
+        "counselorName": "Narasimha Dasa"
     },
     "home": {
         "hero": {

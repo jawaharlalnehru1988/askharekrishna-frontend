@@ -41,17 +41,28 @@ interface StoriesCarouselProps {
     h: any;
 }
 
+const carouselStoriesCache: Record<string, StoryTopicGroup[]> = {};
+
 export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
-    const [loading, setLoading] = useState(true);
+    const cacheKey = locale || 'en';
+    const [topics, setTopics] = useState<StoryTopicGroup[]>(() => carouselStoriesCache[cacheKey] || []);
+    const [loading, setLoading] = useState(() => !carouselStoriesCache[cacheKey] || carouselStoriesCache[cacheKey].length === 0);
 
     useEffect(() => {
+        const currentKey = locale || 'en';
+        if (carouselStoriesCache[currentKey] && carouselStoriesCache[currentKey].length > 0) {
+            setTopics(carouselStoriesCache[currentKey]);
+            setLoading(false);
+            return;
+        }
+
         const fetchStories = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${locale}`);
+                const response = await axios.get(`https://api.askharekrishna.com/api/v1/stories/articles/?language=${currentKey}`);
                 const data = Array.isArray(response.data) ? response.data : (response.data.results || []);
+                carouselStoriesCache[currentKey] = data;
                 setTopics(data);
             } catch (err) {
                 console.error('Stories fetch failed:', err);

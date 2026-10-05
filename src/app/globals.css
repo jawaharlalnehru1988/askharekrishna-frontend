@@ -160,3 +160,123 @@ details[open] summary~* {
     scroll-snap-align: none;
   }
 }
+
+/* ==========================================================================
+   Print Styles for Clean, Lightweight PDF Generation (<1MB)
+   ========================================================================== */
+@media print {
+  /* Hide non-content elements */
+  nav,
+  footer,
+  header,
+  aside,
+  #sidebar,
+  .no-print,
+  [aria-label="Back to top"],
+  button,
+  iframe,
+  audio,
+  .print-hidden,
+  .stories-topic-strip {
+    display: none !important;
+  }
+
+  /* Reset document for crisp black-and-white printing */
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    line-height: 1.65 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Force light theme colors on all elements in print */
+  * {
+    background-color: transparent !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #e5e7eb !important;
+  }
+
+  .dark {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Typography enhancements */
+  h1 {
+    font-size: 20pt !important;
+    font-weight: 800 !important;
+    color: #000000 !important;
+    margin-bottom: 12pt !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h2 {
+    font-size: 15pt !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
+    margin-top: 16pt !important;
+    margin-bottom: 8pt !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h3, h4 {
+    font-size: 13pt !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-top: 12pt !important;
+    margin-bottom: 6pt !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  p, li {
+    font-size: 11pt !important;
+    line-height: 1.65 !important;
+    color: #1f2937 !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  blockquote {
+    border-left: 3pt solid #eead2b !important;
+    padding-left: 12pt !important;
+    margin: 12pt 0 !important;
+    font-style: italic !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Ensure links are readable */
+  a {
+    color: #1f2937 !important;
+    text-decoration: underline !important;
+  }
+
+  /* Ensure images in articles don't blow up page or file size */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Full width container */
+  .article-print-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

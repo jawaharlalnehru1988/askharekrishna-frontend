@@ -1,12 +1,12 @@
 import React from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import UpcomingEventsSection from '@/components/home/UpcomingEventsSection';
+import InteractiveCalendarView from '@/components/calendar/InteractiveCalendarView';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Vaishnava Calendar & Upcoming Devotional Events | Ask Hare Krishna',
-  description: 'Explore upcoming Ekadashi dates, fasting rules, appearance days of Lord Krishna avatars and Acharyas on Ask Hare Krishna.',
+  description: 'Explore interactive monthly calendar, Ekadashi dates, fasting rules, appearance days of Lord Krishna avatars and Acharyas on Ask Hare Krishna.',
 };
 
 export default function VaishnavaCalendarPage() {
@@ -15,7 +15,7 @@ export default function VaishnavaCalendarPage() {
       <Navbar />
 
       <main className="flex-grow">
-        <UpcomingEventsSection isHomePage={false} />
+        <InteractiveCalendarView />
       </main>
 
       <Footer />

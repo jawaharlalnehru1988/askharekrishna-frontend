@@ -8,10 +8,11 @@ import { useTheme } from '../providers/ThemeProvider';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SubscriberFormModal } from '../subscribers/SubscriberFormModal';
+import { NavbarSearch } from './NavbarSearch';
 
 import axios from 'axios';
 import Image from 'next/image';
-import { LogIn, Menu, X } from 'lucide-react';
+import { Menu, User, X } from 'lucide-react';
 import logo from '@/app/askharekrishnalogo.jpg';
 
 interface Story {
@@ -28,6 +29,8 @@ interface StoryTopicGroup {
 }
 
 const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
+const SUBSCRIBER_PICTURE_KEY = 'askharekrishna-subscriber-picture';
+const SUBSCRIBER_EMAIL_KEY = 'askharekrishna-subscriber-email';
 
 export function Navbar() {
   const { dictionary, locale } = useLanguage();
@@ -40,15 +43,19 @@ export function Navbar() {
   const [topics, setTopics] = useState<StoryTopicGroup[]>([]);
   const [subscriberInitial, setSubscriberInitial] = useState<string | null>(null);
   const [subscriberName, setSubscriberName] = useState<string>('');
+  const [subscriberPicture, setSubscriberPicture] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const storiesDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const syncSubscriberBadge = () => {
       const savedName = window.localStorage.getItem(SUBSCRIBER_NAME_KEY) || '';
-      const trimmedName = savedName.trim();
+      const savedEmail = window.localStorage.getItem(SUBSCRIBER_EMAIL_KEY) || '';
+      const savedPicture = window.localStorage.getItem(SUBSCRIBER_PICTURE_KEY) || '';
+      const trimmedName = (savedName || savedEmail).trim();
       const firstLetter = trimmedName ? trimmedName.charAt(0).toUpperCase() : null;
-      setSubscriberName(trimmedName);
+      setSubscriberName(savedName || savedEmail);
+      setSubscriberPicture(savedPicture);
       setSubscriberInitial(firstLetter);
     };
 
@@ -92,10 +99,10 @@ export function Navbar() {
   return (
     <header className={`sticky top-0 ${showLoginForm ? 'z-[10000]' : 'z-50'} w-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-[#f3efe7] dark:border-neutral-800 transition-colors duration-200`}>
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 cursor-pointer group shrink-0">
-            <div className="size-14 transition-transform group-hover:scale-105 overflow-hidden rounded-full border-2 border-primary/10 shadow-sm">
+            <div className="size-11 sm:size-14 transition-transform group-hover:scale-105 overflow-hidden rounded-full border-2 border-primary/10 shadow-sm">
               <Image 
                 src={logo} 
                 alt="Ask Hare Krishna" 
@@ -208,8 +215,13 @@ export function Navbar() {
             )}
           </nav>
 
+          {/* Desktop Search Bar */}
+          <div className="hidden lg:block flex-1 max-w-xs xl:max-w-sm mx-4">
+            <NavbarSearch topics={topics} locale={locale} />
+          </div>
+
           {/* Auth Actions */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Hamburger Menu Toggle (Mobile Only) */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -223,9 +235,9 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setShowLoginForm(true)}
-                className="inline-flex items-center gap-2 rounded-xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a150c] px-4 py-2 text-sm font-bold text-text-main dark:text-white hover:text-primary hover:border-primary/30 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl border border-[#f3efe7] dark:border-neutral-800 bg-white dark:bg-[#1a150c] px-3 sm:px-4 py-2 text-sm font-bold text-text-main dark:text-white hover:text-primary hover:border-primary/30 transition-all"
               >
-                <LogIn size={16} />
+                <User size={16} />
                 <span className="hidden sm:inline">{t.login}</span>
               </button>
             ) : null}
@@ -241,12 +253,23 @@ export function Navbar() {
             ) : null}
 
             {subscriberInitial ? (
-              <div
+              <Link
+                href="/dashboard"
                 title={subscriberName}
-                className="size-10 rounded-full bg-primary text-black font-black text-sm flex items-center justify-center border border-primary/30 shadow-sm cursor-default"
+                className="size-9 sm:size-10 rounded-full bg-primary text-black font-black text-sm flex items-center justify-center border border-primary/30 shadow-sm overflow-hidden hover:opacity-90 transition-opacity"
               >
-                {subscriberInitial}
-              </div>
+                {subscriberPicture ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={subscriberPicture}
+                    alt={subscriberName}
+                    className="size-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  subscriberInitial
+                )}
+              </Link>
             ) : null}
 
             <LanguageSwitcher />
@@ -262,6 +285,16 @@ export function Navbar() {
             </button>
 
           </div>
+        </div>
+
+        {/* Mobile Search Row (Row 2 on Mobile screens) */}
+        <div className="lg:hidden pb-3 pt-0.5">
+          <NavbarSearch
+            topics={topics}
+            locale={locale}
+            isMobile
+            onNavigate={() => setIsMenuOpen(false)}
+          />
         </div>
       </div>
 

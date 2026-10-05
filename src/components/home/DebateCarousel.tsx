@@ -34,20 +34,32 @@ interface DebateCarouselProps {
     h: any;
 }
 
+// Module-level in-memory cache
+const carouselDebateCache: Record<string, DebateCategory[]> = {};
+
 export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
     const { locale } = useLanguage();
-    const [categories, setCategories] = useState<DebateCategory[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<DebateCategory[]>(() => {
+        return carouselDebateCache[locale] || [];
+    });
+    const [loading, setLoading] = useState(() => {
+        return !carouselDebateCache[locale] || carouselDebateCache[locale].length === 0;
+    });
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchDebates = async () => {
             const normalizeResponse = (payload: any): DebateCategory[] => {
                 if (Array.isArray(payload)) return payload;
                 return payload?.results || [];
             };
 
-            try {
+            if (!carouselDebateCache[locale] || carouselDebateCache[locale].length === 0) {
                 setLoading(true);
+            }
+
+            try {
                 const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale}`);
                 let data = normalizeResponse(response.data);
 
@@ -58,14 +70,23 @@ export const DebateCarousel: React.FC<DebateCarouselProps> = ({ h }) => {
                     data = normalizeResponse(fallbackResponse.data);
                 }
 
-                setCategories(data);
+                carouselDebateCache[locale] = data;
+                if (isMounted) {
+                    setCategories(data);
+                }
             } catch (err) {
                 console.error('Debate fetch failed:', err);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
         fetchDebates();
+
+        return () => {
+            isMounted = false;
+        };
     }, [locale]);
 
 

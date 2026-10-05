@@ -4,15 +4,6 @@ import React from 'react';
 import { useLanguage } from '../providers/LanguageContext';
 import { Locale } from '@/lib/dictionaries';
 
-const LOCALE_TO_SUBDOMAIN: Record<Locale, string> = {
-    en: '',
-    ta: 'tamil',
-    hi: 'hindi',
-    kn: 'kannada',
-    te: 'telugu',
-    ml: 'malayalam',
-};
-
 export function LanguageSwitcher() {
     const { locale } = useLanguage();
     const [isNavigating, setIsNavigating] = React.useState(false);
@@ -21,41 +12,22 @@ export function LanguageSwitcher() {
         if (isNavigating) return;
         if (nextLocale === locale) return;
         setIsNavigating(true);
-        const hostname = window.location.hostname;
-        const protocol = window.location.protocol;
-        const port = window.location.port;
 
-        // Strip 'www.' if present to avoid 'tamil.www' issues
-        let cleanHostname = hostname;
-        if (hostname.startsWith('www.')) {
-            cleanHostname = hostname.substring(4);
+        // 1. Set cookie for persistent language selection across sessions
+        document.cookie = `askharekrishna-locale=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
+
+        // 2. Build target URL preserving current pathname and existing params
+        const url = new URL(window.location.href);
+
+        // If currently on a language subdomain (e.g. tamil.askharekrishna.com), consolidate to askharekrishna.com
+        if (url.hostname.includes('askharekrishna.com')) {
+            url.hostname = 'askharekrishna.com';
         }
 
-        let baseDomain = cleanHostname;
+        // Update the ?lang query parameter to reload with the new language
+        url.searchParams.set('lang', nextLocale);
 
-        // If we are on a subdomain (e.g., tamil.localhost or tamil.askharekrishna.com)
-        // we want to extract the base domain
-        if (cleanHostname.includes('.')) {
-            const parts = cleanHostname.split('.');
-            if (parts.length > 1) {
-                // If the first part is a known locale prefix, remove it
-                if (['tamil', 'ta', 'hindi', 'hi', 'kannada', 'kn', 'telugu', 'te', 'malayalam', 'ml', 'english', 'en'].includes(parts[0])) {
-                    baseDomain = parts.slice(1).join('.');
-                }
-            }
-        }
-
-        const localeSubdomain = LOCALE_TO_SUBDOMAIN[nextLocale];
-        const newHostname = localeSubdomain ? `${localeSubdomain}.${baseDomain}` : baseDomain;
-
-        // Redirect to home page if not already there, to avoid missing translations/articles
-        const isHomePage = window.location.pathname === '/';
-        const destinationPath = '/';
-        const destinationSearch = isHomePage ? window.location.search : '';
-
-        const newUrl = `${protocol}//${newHostname}${port ? `:${port}` : ''}${destinationPath}${destinationSearch}`;
-
-        window.location.href = newUrl;
+        window.location.href = url.toString();
     };
 
     return (

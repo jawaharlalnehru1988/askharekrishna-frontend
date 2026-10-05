@@ -24,20 +24,33 @@ interface DebateCategory {
     articleList: DebateArticle[];
 }
 
+// Module-level in-memory cache for instant zero-delay back-navigation
+const debateCatalogCache: Record<string, DebateCategory[]> = {};
+
 const DebateSection = () => {
     const { locale } = useLanguage();
-    const [categories, setCategories] = useState<DebateCategory[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState<DebateCategory[]>(() => {
+        return debateCatalogCache[locale] || [];
+    });
+    const [loading, setLoading] = useState(() => {
+        return !debateCatalogCache[locale] || debateCatalogCache[locale].length === 0;
+    });
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchDebates = async () => {
             const normalizeResponse = (payload: any): DebateCategory[] => {
                 if (Array.isArray(payload)) return payload;
                 return payload?.results || [];
             };
 
-            try {
+            // If not cached, show loading state; if cached, silently update in background
+            if (!debateCatalogCache[locale] || debateCatalogCache[locale].length === 0) {
                 setLoading(true);
+            }
+
+            try {
                 const response = await axios.get(`https://api.askharekrishna.com/api/v1/debate/articles/?language=${locale}`);
                 let data = normalizeResponse(response.data);
 
@@ -47,16 +60,48 @@ const DebateSection = () => {
                     data = normalizeResponse(fallbackResponse.data);
                 }
 
-                setCategories(data);
+                debateCatalogCache[locale] = data;
+                if (isMounted) {
+                    setCategories(data);
+                }
             } catch (err) {
                 console.error('Debate fetch failed:', err);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchDebates();
+
+        return () => {
+            isMounted = false;
+        };
     }, [locale]);
+
+    // Smooth auto-scroll to target category if returning from an article
+    useEffect(() => {
+        if (typeof window !== 'undefined' && categories.length > 0) {
+            const params = new URLSearchParams(window.location.search);
+            const targetCat = params.get('category');
+            if (targetCat) {
+                // Try decoding or direct match
+                const decodedCat = decodeURIComponent(targetCat);
+                const el = document.getElementById(`cat-${encodeURIComponent(decodedCat)}`) ||
+                           document.getElementById(`cat-${encodeURIComponent(targetCat)}`);
+                if (el) {
+                    setTimeout(() => {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.add('ring-2', 'ring-primary', 'shadow-2xl');
+                        setTimeout(() => {
+                            el.classList.remove('ring-2', 'ring-primary', 'shadow-2xl');
+                        }, 2500);
+                    }, 100);
+                }
+            }
+        }
+    }, [categories]);
 
     if (loading && categories.length === 0) {
         return (
@@ -104,6 +149,7 @@ const DebateSection = () => {
                         categories.map((category) => (
                             <div
                                 key={category.name}
+                                id={`cat-${encodeURIComponent(category.name)}`}
                                 className="rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
                             >
                                 <div className="w-full flex items-center gap-4 p-6 text-left">
@@ -129,7 +175,7 @@ const DebateSection = () => {
                                         {(category.articleList || []).map((article) => (
                                             <li key={article.slug}>
                                                 <Link
-                                                    href={`/debate/${article.slug}`}
+                                                    href={`/debate/${article.slug}?lang=${locale}`}
                                                     className="group flex items-center justify-between gap-3 text-sm text-text-main dark:text-gray-200 hover:text-primary py-2"
                                                 >
                                                     <span className="line-clamp-2">{article.subTopic}</span>

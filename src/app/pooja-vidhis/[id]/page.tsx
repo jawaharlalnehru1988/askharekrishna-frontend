@@ -76,14 +76,23 @@ async function fetchPoojaArticleById(id: string, locale: string = 'en'): Promise
     }
 }
 
+import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
+
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+
 export async function generateMetadata({
     params,
+    searchParams,
 }: {
     params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }): Promise<Metadata> {
     const { id } = await params;
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const headersList = await headers();
-    const locale = resolveLocale(headersList);
     const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
 
     const article = await fetchPoojaArticleById(id, locale);
@@ -99,7 +108,7 @@ export async function generateMetadata({
 
     return buildArticleMetadata({
         host,
-        path: `/pooja-vidhis/${id}`,
+        path: `/pooja-vidhis/${id}?lang=${locale}`,
         title: `${article.subTopic} | Ask Hare Krishna`,
         description,
         imageUrl: image,
@@ -107,30 +116,36 @@ export async function generateMetadata({
 }
 
 export default async function PoojaVidhiArticlePage({
-    params
+    params,
+    searchParams,
 }: {
-    params: Promise<{ id: string }>
+    params: Promise<{ id: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
 }) {
     const { id } = await params;
-    const headersList = await headers();
-    const locale = resolveLocale(headersList);
+    const search = searchParams ? await searchParams : undefined;
+    const queryLang = (search?.lang || search?.language || '').toLowerCase() as Locale;
+    const locale: Locale = queryLang && VALID_LOCALES.includes(queryLang) ? queryLang : 'en';
+
     const matchedArticle = await fetchPoojaArticleById(id, locale);
 
     if (!matchedArticle) {
         return notFound();
     }
 
+    const headersList = await headers();
     const host = headersList.get('host') || 'askharekrishna.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
-    const articleUrl = `${protocol}://${host}/pooja-vidhis/${id}`;
-    const quizUrl = `${protocol}://${host}/pooja-vidhis/${id}/quiz`;
+    const articleUrl = `${protocol}://${host}/pooja-vidhis/${id}?lang=${locale}`;
+    const quizUrl = `${protocol}://${host}/pooja-vidhis/${id}/quiz?lang=${locale}`;
 
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+            <ArticleUrlSync locale={locale} />
             <Navbar />
             <main className="flex-grow py-20 px-4 md:px-8 max-w-[1000px] mx-auto w-full">
                 <Link
-                    href="/pooja-vidhis"
+                    href={`/pooja-vidhis?lang=${locale}`}
                     className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-bold mb-8 transition-colors"
                 >
                     <ArrowLeft size={20} />
@@ -203,7 +218,7 @@ export default async function PoojaVidhiArticlePage({
                                         </p>
                                     </div>
                                     <Link
-                                        href={`/pooja-vidhis/${id}/quiz`}
+                                        href={`/pooja-vidhis/${id}/quiz?lang=${locale}`}
                                         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 font-black text-black transition-all hover:brightness-95"
                                     >
                                         <Link2 size={16} />
