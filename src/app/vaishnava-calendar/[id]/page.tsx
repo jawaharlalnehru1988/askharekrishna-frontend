@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { Calendar as CalendarIcon, ArrowLeft, Clock, Sparkles } from 'lucide-react';
+import { Calendar as CalendarIcon, ArrowLeft, Clock, Sparkles, Moon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
@@ -16,6 +16,33 @@ import { ParanaGuidelines } from '@/components/calendar/ParanaGuidelines';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
+const LUNAR_CALENDAR_NOTES: Record<string, { title: string; desc: string }> = {
+    ta: {
+        title: "🌙 சந்திரமான (Lunar) மாதக் கணக்கீடு பற்றிய முக்கிய குறிப்பு:",
+        desc: "புராணங்களிலும் சாஸ்திரங்களிலும் வரும் ஏகாதசி திவ்ய சரித்திரங்களில் குறிப்பிடப்படும் மாதங்கள், சந்திரனின் இயக்கத்தை அடிப்படையாகக் கொண்ட சந்திரமான (Lunar Calendar) மாதங்களாகும். தமிழ்நாட்டில் பொதுவாக சூரியனின் இயக்கத்தை அடிப்படையாகக் கொண்ட சூரியமான (Solar Calendar - சித்திரை, வைகாசி, புரட்டாசி, ஐப்பசி...) மாதங்களே நடைமுறையில் உள்ளன. எனவே, சாஸ்திரங்களில் குறிப்பிடப்படும் சந்திர மாதத்தைக் கொண்டு, தமிழகத்தில் வழக்கிலுள்ள சூரிய மாதக் கணக்கீட்டுடன் குழப்பிக் கொள்ள வேண்டாம் என்று அன்புடன் கேட்டுக்கொள்கிறோம்.",
+    },
+    en: {
+        title: "🌙 Important Note on Lunar (Chandra Mana) Calendar:",
+        desc: "The months referenced in sacred Purana Ekadashi pastimes are based on the Lunar Calendar (Chandra Mana), following the moon's celestial transit. In regions like Tamil Nadu, civil months follow the Solar Calendar (Soura Mana). Devotees are kindly advised not to confuse the scriptural lunar month references with regional solar calendar months.",
+    },
+    hi: {
+        title: "🌙 चंद्र मास (Lunar Calendar) गणना के विषय में महत्वपूर्ण सूचना:",
+        desc: "शास्त्रों एवं पुराणों में वर्णित पावन एकादशी कथाओं के मास चंद्रमा की गति पर आधारित चंद्र मास (Lunar Calendar) होते हैं। कृपया इसे स्थानीय सौर मास (Solar Calendar) गणना के साथ भ्रमित न करें।",
+    },
+    kn: {
+        title: "🌙 ಚಾಂದ್ರಮಾನ (Lunar Calendar) ಮಾಸ ಗಣನೆಯ ಬಗ್ಗೆ ಮುಖ್ಯ ಸೂಚನೆ:",
+        desc: "ಪುರಾಣಗಳಲ್ಲಿ ಉಲ್ಲೇಖಿಸಲಾದ ಪವಿತ್ರ ಏಕಾದಶಿ ಕಥೆಗಳ ತಿಂಗಳುಗಳು ಚಂದ್ರನ ಚಲನೆಯನ್ನು ಆಧರಿಸಿದ ಚಾಂದ್ರಮಾನ (Lunar Calendar) ಮಾಸಗಳಾಗಿವೆ. ಇವುಗಳನ್ನು ಸೌರಮಾನ ಮಾಸಗಳೊಂದಿಗೆ ಗೊಂದಲ ಮಾಡಿಕೊಳ್ಳಬೇಡಿ.",
+    },
+    te: {
+        title: "🌙 చాంద్రమాన (Lunar Calendar) మాస గణనపై ముఖ్య గమనిక:",
+        desc: "పురాణాలలో పేర్కొన్న పవిత్ర ఏకాదశి చరిత్రలలోని మాసాలు చంద్రుని గమనాన్ని బట్టి లెక్కించే చాంద్రమాన (Lunar Calendar) మాసాలు. వీటిని సౌరమాన మాసాలతో గందరగోళం చెందవద్దు.",
+    },
+    ml: {
+        title: "🌙 ചാന്ദ്രമാന (Lunar Calendar) മാസ കണക്കുകൂട്ടലിനെക്കുറിച്ചുള്ള പ്രധാന കുറിപ്പ്:",
+        desc: "പുരാണങ്ങളിലെ ഏകാദശി ചരിത്രങ്ങളിൽ പരാമർശിച്ചിരിക്കുന്ന മാസങ്ങൾ ചന്ദ്രന്റെ ചലനത്തെ അടിസ്ഥാനമാക്കിയുള്ള ചാന്ദ്ര മാസങ്ങളാണ് (Lunar Calendar). ഇവയെ പ്രാദേശിക സൗര മാസങ്ങളുമായി ആശയക്കുഴപ്പമുണ്ടാക്കരുത്.",
+    },
+};
 
 export interface SingleEventDetail {
     id: number;
@@ -191,6 +218,18 @@ export default async function CalendarEventDetailPage({
         }
     };
 
+    const isEkadashiEvent = Boolean(
+        item.is_ekadashi ||
+        (item.title && (
+            item.title.toLowerCase().includes('ekadashi') ||
+            item.title.includes('ஏகாதசி') ||
+            item.title.includes('एकादशी') ||
+            item.title.includes('ಏಕಾದಶಿ') ||
+            item.title.includes('ఏకాదశి') ||
+            item.title.includes('ഏകാദശി')
+        ))
+    );
+
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
             <ArticleUrlSync locale={locale} />
@@ -213,7 +252,7 @@ export default async function CalendarEventDetailPage({
                                 <span>{formatDate(item.event_date)} ({item.day_of_week})</span>
                             </span>
 
-                            {item.is_ekadashi && (
+                            {isEkadashiEvent && (
                                 <span className="bg-amber-500 text-black text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
                                     🌕 Ekadashi
                                 </span>
@@ -254,17 +293,36 @@ export default async function CalendarEventDetailPage({
 
                         {/* Article Content */}
                         {item.description ? (
-                            <div className="prose prose-stone dark:prose-invert max-w-none 
-                                prose-headings:font-black prose-headings:tracking-tight
-                                prose-h1:text-3xl prose-h1:mb-6
-                                prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
-                                prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
-                                prose-p:text-lg prose-p:leading-relaxed prose-p:text-text-main dark:prose-p:text-gray-300
-                                prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-500/5 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:italic
-                                prose-strong:text-amber-600 dark:prose-strong:text-amber-400 prose-strong:font-bold">
-                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                                    {item.description}
-                                </ReactMarkdown>
+                            <div className="space-y-8">
+                                {/* Lunar Calendar (Chandra Mana) vs Solar Calendar (Soura Mana) Note */}
+                                {isEkadashiEvent && (
+                                    <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-950/20 border-2 border-amber-500/30 text-amber-950 dark:text-amber-100 flex items-start gap-4 shadow-sm not-prose">
+                                        <div className="size-10 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                                            <Moon size={22} />
+                                        </div>
+                                        <div className="text-sm leading-relaxed">
+                                            <h4 className="font-extrabold text-amber-900 dark:text-amber-300 text-sm sm:text-base mb-1.5 flex items-center gap-2">
+                                                <span>{LUNAR_CALENDAR_NOTES[locale]?.title || LUNAR_CALENDAR_NOTES.en.title}</span>
+                                            </h4>
+                                            <p className="text-amber-950/90 dark:text-amber-100/90 font-medium leading-relaxed">
+                                                {LUNAR_CALENDAR_NOTES[locale]?.desc || LUNAR_CALENDAR_NOTES.en.desc}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="prose prose-stone dark:prose-invert max-w-none 
+                                    prose-headings:font-black prose-headings:tracking-tight
+                                    prose-h1:text-3xl prose-h1:mb-6
+                                    prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
+                                    prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+                                    prose-p:text-lg prose-p:leading-relaxed prose-p:text-text-main dark:prose-p:text-gray-300
+                                    prose-blockquote:border-l-4 prose-blockquote:border-amber-500 prose-blockquote:bg-amber-500/5 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:italic
+                                    prose-strong:text-amber-600 dark:prose-strong:text-amber-400 prose-strong:font-bold">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {item.description}
+                                    </ReactMarkdown>
+                                </div>
                             </div>
                         ) : (
                             <p className="text-text-muted italic text-center py-10">

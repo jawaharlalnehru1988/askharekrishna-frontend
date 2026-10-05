@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { ScrollText, ArrowLeft, Home, ChevronLeft, Calendar } from 'lucide-react';
+import { ScrollText, ArrowLeft, Home, ChevronLeft, Calendar, Moon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
@@ -14,6 +14,33 @@ import AudioPlayer from '@/components/audio/AudioPlayer';
 import ClientAudioWrapper from '@/components/stories/ClientAudioWrapper'; // We'll create this to handle client-side audio state
 import { PoojaVidhiQuiz } from '@/components/pooja-vidhis/PoojaVidhiQuiz';
 import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
+
+const LUNAR_CALENDAR_NOTES: Record<string, { title: string; desc: string }> = {
+    ta: {
+        title: "🌙 சந்திரமான (Lunar) மாதக் கணக்கீடு பற்றிய முக்கிய குறிப்பு:",
+        desc: "புராணங்களிலும் சாஸ்திரங்களிலும் வரும் ஏகாதசி திவ்ய சரித்திரங்களில் குறிப்பிடப்படும் மாதங்கள், சந்திரனின் இயக்கத்தை அடிப்படையாகக் கொண்ட சந்திரமான (Lunar Calendar) மாதங்களாகும். தமிழ்நாட்டில் பொதுவாக சூரியனின் இயக்கத்தை அடிப்படையாகக் கொண்ட சூரியமான (Solar Calendar - சித்திரை, வைகாசி, புரட்டாசி, ஐப்பசி...) மாதங்களே நடைமுறையில் உள்ளன. எனவே, சாஸ்திரங்களில் குறிப்பிடப்படும் சந்திர மாதத்தைக் கொண்டு, தமிழகத்தில் வழக்கிலுள்ள சூரிய மாதக் கணக்கீட்டுடன் குழப்பிக் கொள்ள வேண்டாம் என்று அன்புடன் கேட்டுக்கொள்கிறோம்.",
+    },
+    en: {
+        title: "🌙 Important Note on Lunar (Chandra Mana) Calendar:",
+        desc: "The months referenced in sacred Purana Ekadashi pastimes are based on the Lunar Calendar (Chandra Mana), following the moon's celestial transit. In regions like Tamil Nadu, civil months follow the Solar Calendar (Soura Mana). Devotees are kindly advised not to confuse the scriptural lunar month references with regional solar calendar months.",
+    },
+    hi: {
+        title: "🌙 चंद्र मास (Lunar Calendar) गणना के विषय में महत्वपूर्ण सूचना:",
+        desc: "शास्त्रों एवं पुराणों में वर्णित पावन एकादशी कथाओं के मास चंद्रमा की गति पर आधारित चंद्र मास (Lunar Calendar) होते हैं। कृपया इसे स्थानीय सौर मास (Solar Calendar) गणना के साथ भ्रमित न करें।",
+    },
+    kn: {
+        title: "🌙 ಚಾಂದ್ರಮಾನ (Lunar Calendar) ಮಾಸ ಗಣನೆಯ ಬಗ್ಗೆ ಮುಖ್ಯ ಸೂಚನೆ:",
+        desc: "ಪುರಾಣಗಳಲ್ಲಿ ಉಲ್ಲೇಖಿಸಲಾದ ಪವಿತ್ರ ಏಕಾದಶಿ ಕಥೆಗಳ ತಿಂಗಳುಗಳು ಚಂದ್ರನ ಚಲನೆಯನ್ನು ಆಧರಿಸಿದ ಚಾಂದ್ರಮಾನ (Lunar Calendar) ಮಾಸಗಳಾಗಿವೆ. ಇವುಗಳನ್ನು ಸೌರಮಾನ ಮಾಸಗಳೊಂದಿಗೆ ಗೊಂದಲ ಮಾಡಿಕೊಳ್ಳಬೇಡಿ.",
+    },
+    te: {
+        title: "🌙 చాంద్రమాన (Lunar Calendar) మాస గణనపై ముఖ్య గమనిక:",
+        desc: "పురాణాలలో పేర్కొన్న పవిత్ర ఏకాదశి చరిత్రలలోని మాసాలు చంద్రుని గమనాన్ని బట్టి లెక్కించే చాంద్రమాన (Lunar Calendar) మాసాలు. వీటిని సౌరమాన మాసాలతో గందరగోళం చెందవద్దు.",
+    },
+    ml: {
+        title: "🌙 ചാന്ദ്രമാന (Lunar Calendar) മാസ കണക്കുകൂട്ടലിനെക്കുറിച്ചുള്ള പ്രധാന കുറിപ്പ്:",
+        desc: "പുരാണങ്ങളിലെ ഏകാദശി ചരിത്രങ്ങളിൽ പരാമർശിച്ചിരിക്കുന്ന മാസങ്ങൾ ചന്ദ്രന്റെ ചലനത്തെ അടിസ്ഥാനമാക്കിയുള്ള ചാന്ദ്ര മാസങ്ങളാണ് (Lunar Calendar). ഇവയെ പ്രാദേശിക സൗര മാസങ്ങളുമായി ആശയക്കുഴപ്പമുണ്ടാക്കരുത്.",
+    },
+};
 
 interface StoryQuestionOption {
     id: number;
@@ -256,6 +283,40 @@ export default async function StoryArticlePage({
                                     nextStoryId={nextStory?.id}
                                     prevStoryId={prevStory?.id}
                                 />
+                            </div>
+                        )}
+
+                        {/* Lunar Calendar Note for Ekadashi Stories */}
+                        {Boolean(
+                            (matchedStory.subTopic && (
+                                matchedStory.subTopic.toLowerCase().includes('ekadashi') ||
+                                matchedStory.subTopic.includes('ஏகாதசி') ||
+                                matchedStory.subTopic.includes('एकादशी') ||
+                                matchedStory.subTopic.includes('ಏಕಾದಶಿ') ||
+                                matchedStory.subTopic.includes('ఏకాదశి') ||
+                                matchedStory.subTopic.includes('ഏകാദശി')
+                            )) ||
+                            (topicName && (
+                                topicName.toLowerCase().includes('ekadashi') ||
+                                topicName.includes('ஏகாதசி') ||
+                                topicName.includes('एकादशी') ||
+                                topicName.includes('ಏಕಾದಶಿ') ||
+                                topicName.includes('ఏకాదశి') ||
+                                topicName.includes('ഏകാദശി')
+                            ))
+                        ) && (
+                            <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-amber-500/10 dark:bg-amber-950/20 border-2 border-amber-500/30 text-amber-950 dark:text-amber-100 flex items-start gap-4 shadow-sm not-prose">
+                                <div className="size-10 rounded-xl bg-amber-500/20 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                                    <Moon size={22} />
+                                </div>
+                                <div className="text-sm leading-relaxed">
+                                    <h4 className="font-extrabold text-amber-900 dark:text-amber-300 text-sm sm:text-base mb-1.5 flex items-center gap-2">
+                                        <span>{LUNAR_CALENDAR_NOTES[locale]?.title || LUNAR_CALENDAR_NOTES.en.title}</span>
+                                    </h4>
+                                    <p className="text-amber-950/90 dark:text-amber-100/90 font-medium leading-relaxed">
+                                        {LUNAR_CALENDAR_NOTES[locale]?.desc || LUNAR_CALENDAR_NOTES.en.desc}
+                                    </p>
+                                </div>
                             </div>
                         )}
 
