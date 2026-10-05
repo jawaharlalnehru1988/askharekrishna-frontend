@@ -1,15 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle, Check } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageContext';
 
 export function Footer() {
     const { dictionary, locale } = useLanguage();
     const { footer: f } = dictionary;
     const currentYear = new Date().getFullYear();
+    const [copiedPhone, setCopiedPhone] = useState(false);
+
+    const handlePhoneClick = (e: React.MouseEvent) => {
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+            navigator.clipboard.writeText('+916382043976');
+            setCopiedPhone(true);
+            setTimeout(() => setCopiedPhone(false), 2500);
+        }
+    };
+
+    const counselorDisplayName = locale === 'en' ? 'Narasimha Dasa' : (f?.counselorName || 'நரசிம்ம தாச');
 
     return (
         <footer className="w-full bg-white dark:bg-[#1a150c] border-t border-[#f3efe7] dark:border-neutral-800 py-12 transition-colors duration-200">
@@ -36,7 +47,7 @@ export function Footer() {
                     </div>
 
                     {/* Right Column: Narasimha Dasa Counselor Card */}
-                    <div className="w-full lg:w-auto">
+                    <div className="w-full lg:w-auto relative z-20">
                         <div className="relative group overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-amber-100/40 dark:from-[#241c13] dark:via-[#1e170f] dark:to-[#17120a] p-5 sm:p-6 border border-amber-200/70 dark:border-amber-900/50 shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                                 {/* Devotee Photo */}
@@ -44,7 +55,7 @@ export function Footer() {
                                     <div className="relative size-20 sm:size-24 rounded-2xl overflow-hidden border-2 border-primary/30 dark:border-primary/50 shadow-md group-hover:border-primary transition-colors">
                                         <Image
                                             src="/narasimha-dasa.jpg"
-                                            alt="Narasimha Dasa"
+                                            alt={counselorDisplayName}
                                             fill
                                             unoptimized
                                             className="object-cover object-top"
@@ -64,31 +75,40 @@ export function Footer() {
                                         <span>{f?.queriesTitle || 'For Doubts & Queries'}</span>
                                     </div>
                                     <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white tracking-tight flex items-center justify-center sm:justify-start gap-2">
-                                        <span>Narasimha Dasa</span>
-                                        {locale !== 'en' && f?.counselorName && (
-                                            <span className="text-xs font-medium text-primary">({f.counselorName})</span>
-                                        )}
+                                        <span>{counselorDisplayName}</span>
                                     </h3>
                                     <p className="text-xs text-text-muted dark:text-gray-400 mt-1 mb-3.5 max-w-xs leading-relaxed">
                                         {f?.queriesSubtitle || 'For any spiritual guidance, philosophical inquiries, or doubts, feel free to contact:'}
                                     </p>
 
-                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 relative z-10">
                                         <a
                                             href="tel:+916382043976"
-                                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-neutral-800 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white text-gray-800 dark:text-gray-200 text-xs font-semibold rounded-lg border border-amber-200/80 dark:border-neutral-700 shadow-sm transition-all duration-200 group/call"
+                                            onClick={handlePhoneClick}
+                                            title="Call +91 6382043976 (Click to copy)"
+                                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white dark:bg-neutral-800 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white text-gray-800 dark:text-gray-200 text-xs font-semibold rounded-lg border border-amber-200/80 dark:border-neutral-700 shadow-sm transition-all duration-200 group/call cursor-pointer active:scale-95"
                                         >
-                                            <Phone className="size-3.5 text-primary group-hover/call:text-white transition-colors" />
-                                            <span>+91 6382043976</span>
+                                            {copiedPhone ? (
+                                                <>
+                                                    <Check className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+                                                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">{f?.copied || 'Copied!'}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Phone className="size-3.5 text-primary group-hover/call:text-white transition-colors" />
+                                                    <span>+91 6382043976</span>
+                                                </>
+                                            )}
                                         </a>
                                         <a
                                             href="https://wa.me/916382043976?text=Hare%20Krishna%20Prabhu%2C%20I%20have%20a%20doubt%2Fquery%20regarding%20AskHareKrishna"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#25D366]/15 hover:bg-[#25D366] text-[#128C7E] dark:text-[#25D366] hover:text-white dark:hover:text-white text-xs font-semibold rounded-lg border border-[#25D366]/30 shadow-sm transition-all duration-200"
+                                            title="Chat on WhatsApp"
+                                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#25D366]/15 hover:bg-[#25D366] text-[#128C7E] dark:text-[#25D366] hover:text-white dark:hover:text-white text-xs font-semibold rounded-lg border border-[#25D366]/30 shadow-sm transition-all duration-200 cursor-pointer active:scale-95"
                                         >
                                             <MessageCircle className="size-3.5 fill-current" />
-                                            <span>WhatsApp</span>
+                                            <span>{f?.whatsapp || 'WhatsApp'}</span>
                                         </a>
                                     </div>
                                 </div>

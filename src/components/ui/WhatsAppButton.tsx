@@ -64,18 +64,18 @@ export const WhatsAppButton = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4" ref={menuRef}>
+    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4 pointer-events-none" ref={menuRef}>
       {/* Options Menu */}
       <div 
         className={`flex flex-col gap-3 transition-all duration-300 origin-bottom-right ${
-          isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-0 opacity-0 translate-y-10 pointer-events-none'
+          isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-0 opacity-0 translate-y-10 pointer-events-none hidden'
         }`}
       >
         {/* Share Article Option */}
         {isArticlePage && (
           <button
             onClick={handleShareClick}
-            className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap text-left"
+            className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap text-left cursor-pointer pointer-events-auto"
           >
             <div className="size-10 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <Share2 size={20} />
@@ -92,7 +92,7 @@ export const WhatsAppButton = () => {
           href={communityChannelUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap"
+          className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap cursor-pointer pointer-events-auto"
         >
           <div className="size-10 bg-[#25D366]/10 text-[#25D366] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
             <Users size={20} />
@@ -108,7 +108,7 @@ export const WhatsAppButton = () => {
           href="https://wa.me/916382043976"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap"
+          className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap cursor-pointer pointer-events-auto"
         >
           <div className="size-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
             <MessageSquare size={20} />
@@ -123,7 +123,7 @@ export const WhatsAppButton = () => {
       {/* Main Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-center size-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 group relative ${
+        className={`pointer-events-auto cursor-pointer flex items-center justify-center size-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 group relative ${
           isOpen ? 'rotate-90 !bg-red-500' : ''
         }`}
         aria-label="Toggle WhatsApp Options"
