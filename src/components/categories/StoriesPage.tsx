@@ -158,7 +158,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
         return (
             <div className="flex-grow flex flex-col items-center justify-center min-h-[60vh]">
                 <Loader2 size={48} className="text-primary animate-spin mb-4" />
-                <p className="text-text-muted animate-pulse">Loading Divine Stories...</p>
+                <p className="text-text-muted animate-pulse">{s?.loadingStories || (locale === 'ta' ? "தெய்வீகக் கதைகள் ஏற்றப்படுகின்றன..." : "Loading Divine Stories...")}</p>
             </div>
         );
     }
@@ -262,10 +262,10 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                 {topic.name}
                                             </h3>
                                             <p className="text-text-muted dark:text-gray-400 text-sm leading-relaxed flex-grow line-clamp-2">
-                                                {topic.description || `${topic.count} stories to explore`}
+                                                {topic.description || (s?.storiesToExplore ? s.storiesToExplore.replace('{count}', String(topic.count)) : (locale === 'ta' ? `${topic.count} கதைகள் உள்ளன` : `${topic.count} stories to explore`))}
                                             </p>
                                             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800 flex items-center text-sm font-bold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                                                View Topics <ArrowRight size={16} className="ml-1" />
+                                                {s?.viewTopics || (locale === 'ta' ? "தலைப்புகளைக் காண்க" : "View Topics")} <ArrowRight size={16} className="ml-1" />
                                             </div>
                                         </div>
                                     </button>
@@ -311,10 +311,10 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                             <thead>
                                                 <tr className="border-b border-gray-100 dark:border-neutral-800 bg-gray-50/50 dark:bg-black/10">
                                                     <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">#</th>
-                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Image</th>
-                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">Title</th>
-                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">Category</th>
-                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">Action</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">{s?.tableHeaders?.image || (locale === 'ta' ? "படம்" : "Image")}</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted">{s?.tableHeaders?.title || (locale === 'ta' ? "தலைப்பு" : "Title")}</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted hidden md:table-cell">{s?.tableHeaders?.category || (locale === 'ta' ? "பிரிவு" : "Category")}</th>
+                                                    <th className="px-6 py-4 text-xs font-black uppercase tracking-widest text-text-muted text-right">{s?.tableHeaders?.action || (locale === 'ta' ? "செயல்" : "Action")}</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50 dark:divide-neutral-800/50">
@@ -352,7 +352,7 @@ const DevotionalStories = ({ dictionary }: { dictionary: Awaited<ReturnType<type
                                                         </td>
                                                         <td className="px-6 py-5 text-right">
                                                             <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white rounded-xl text-xs font-bold transition-all transform active:scale-95">
-                                                                <span>Read</span>
+                                                                <span>{common?.read || (locale === 'ta' ? "படியுங்கள்" : "Read")}</span>
                                                                 {story.audioPath && <Play size={12} fill="currentColor" />}
                                                                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                                             </button>

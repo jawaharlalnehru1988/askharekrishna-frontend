@@ -34,7 +34,7 @@ async function fetchDebateArticleBySlug(slug: string, locale: string) {
             const categories: DebateCategoryApiItem[] = Array.isArray(data) ? data : (data.results || []);
             for (const cat of categories) {
                 if (cat.articleList && Array.isArray(cat.articleList)) {
-                    const match = cat.articleList.find((a) => a.slug === slug && a.article && a.article.trim());
+                    const match = cat.articleList.find((a) => (a.slug === slug || a.id?.toString() === slug) && a.article && a.article.trim());
                     if (match) {
                         return {
                             article: match,
@@ -60,7 +60,7 @@ async function fetchDebateArticleBySlug(slug: string, locale: string) {
                 const categories: DebateCategoryApiItem[] = Array.isArray(data) ? data : (data.results || []);
                 for (const cat of categories) {
                     if (cat.articleList && Array.isArray(cat.articleList)) {
-                        const match = cat.articleList.find((a) => a.slug === slug);
+                        const match = cat.articleList.find((a) => a.slug === slug || a.id?.toString() === slug);
                         if (match) {
                             return {
                                 article: match,
@@ -125,7 +125,7 @@ export async function generateMetadata({
     const { article, categoryImage } = result;
     const description = toPlainExcerpt(article.article || article.subTopic);
     const image = toAbsoluteMediaUrl(article.articleImage || categoryImage);
-    const path = search?.lang ? `/debate/${slug}?lang=${locale}` : `/debate/${slug}`;
+    const path = search?.lang ? `/debate/${article.id || slug}?lang=${locale}` : `/debate/${article.id || slug}`;
 
     return buildArticleMetadata({
         host,
@@ -144,11 +144,63 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
     </div>
 );
 
-export default async function DebateArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function DebateArticlePage({ 
+    params,
+    searchParams,
+}: { 
+    params: Promise<{ slug: string }>;
+    searchParams?: Promise<{ lang?: string; language?: string }>;
+}) {
     const { slug } = await params;
+    const search = searchParams ? await searchParams : undefined;
+    const locale = (search?.lang || search?.language || 'en').toLowerCase();
     
+    const result = await fetchDebateArticleBySlug(slug, locale);
+    
+    const jsonLd = result ? {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Article",
+                "headline": result.article.subTopic,
+                "description": toPlainExcerpt(result.article.article || result.article.subTopic, 160),
+                "image": toAbsoluteMediaUrl(result.article.articleImage || result.categoryImage) || "https://askharekrishna.com/askharekrishnalogo.jpg",
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Ask Hare Krishna",
+                    "url": "https://askharekrishna.com",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://askharekrishna.com/askharekrishnalogo.jpg"
+                    }
+                },
+                "inLanguage": locale
+            },
+            {
+                "@type": "QAPage",
+                "mainEntity": {
+                    "@type": "Question",
+                    "name": result.article.subTopic,
+                    "text": result.article.subTopic,
+                    "answerCount": 1,
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": toPlainExcerpt(result.article.article, 500),
+                        "url": `https://askharekrishna.com/debate/${result.article.id || slug}?lang=${locale}`
+                    }
+                }
+            }
+        ]
+    } : null;
+
     return (
         <Layout>
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+            )}
             <DebateArticleDetail slug={slug} />
         </Layout>
     );

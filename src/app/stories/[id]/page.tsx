@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Link from 'next/link';
 import { headers } from 'next/headers';
-import { Locale } from '@/lib/dictionaries';
+import { Locale, getDictionary } from '@/lib/dictionaries';
 import { ShareButtons } from '@/components/categories/ShareButtons';
 import AudioPlayer from '@/components/audio/AudioPlayer';
 import ClientAudioWrapper from '@/components/stories/ClientAudioWrapper'; // We'll create this to handle client-side audio state
@@ -88,6 +88,8 @@ function resolveLocale(headersList: Headers): Locale {
         derivedLocale = 'te';
     } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
         derivedLocale = 'ml';
+    } else if (lowerHost.startsWith('bengali.') || lowerHost.startsWith('bn.')) {
+        derivedLocale = 'bn';
     }
     return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
@@ -125,7 +127,7 @@ async function fetchStoryArticleById(id: string, locale: Locale): Promise<StoryA
 
 import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
 
-const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml', 'bn'];
 
 export async function generateMetadata({
     params,
@@ -212,6 +214,9 @@ export default async function StoryArticlePage({
         return notFound();
     }
 
+    const dictionary = await getDictionary(locale);
+    const { common, navbar, stories: s } = dictionary;
+
     // Determine absolute URL for sharing.
     const host = headersList.get('host') || 'askharekrishna.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
@@ -239,11 +244,11 @@ export default async function StoryArticlePage({
                 {/* Breadcrumbs */}
                 <div className="flex flex-wrap items-center gap-4 mb-8">
                     <Link href={`/?lang=${locale}`} className="flex items-center text-sm font-bold text-text-muted hover:text-primary transition-colors">
-                        <Home size={18} className="mr-1.5" /> Home
+                        <Home size={18} className="mr-1.5" /> {common?.home || "Home"}
                     </Link>
                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
                     <Link href={`/stories?lang=${locale}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
-                        Stories
+                        {navbar?.stories || "Stories"}
                     </Link>
                     <div className="size-1 rounded-full bg-border-light dark:bg-border-dark" />
                     <Link href={`/stories?topic=${encodeURIComponent(topicName)}&lang=${locale}`} className="text-sm font-bold text-text-muted hover:text-primary transition-colors">
@@ -345,12 +350,12 @@ export default async function StoryArticlePage({
 
                         <div className="mt-16 pt-10 border-t border-gray-100 dark:border-neutral-800 text-center">
                             <p className="text-sm font-bold text-text-muted mb-6 uppercase tracking-[0.3em]">
-                                {locale === 'ta' ? 'இந்த கதையைப் பகிரவும்' : 'Share this Story'}
+                                {s?.shareStory || (locale === 'ta' ? 'இந்த கதையைப் பகிரவும்' : 'Share this Story')}
                             </p>
                             <ShareButtons 
                                 articleUrl={articleUrl} 
                                 subTopic={matchedStory.subTopic} 
-                                messagePrefix="Check out this devotional story:"
+                                messagePrefix={s?.checkOutStory || "Check out this devotional story:"}
                             />
                         </div>
                     </div>
@@ -364,7 +369,7 @@ export default async function StoryArticlePage({
                             className="px-6 py-4 bg-background-light dark:bg-[#332d21] border border-border-light dark:border-neutral-800 rounded-2xl font-bold flex items-center gap-2 hover:bg-white dark:hover:bg-[#3e3729] transition-all shadow-sm"
                         >
                             <ChevronLeft size={20} />
-                            Previous
+                            {s?.prevStory || (locale === 'ta' ? 'முந்தைய கதை' : 'Previous')}
                         </Link>
                     ) : <div />}
                     
@@ -373,7 +378,7 @@ export default async function StoryArticlePage({
                             href={`/stories/${nextStory.id}?lang=${locale}`}
                             className="px-6 py-4 bg-primary text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm"
                         >
-                            Next Story
+                            {s?.nextStory || (locale === 'ta' ? 'அடுத்த கதை' : 'Next Story')}
                             <ChevronLeft size={20} className="rotate-180" />
                         </Link>
                     )}

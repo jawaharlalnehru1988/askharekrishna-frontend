@@ -4,8 +4,11 @@ import { Footer } from '@/components/layout/Footer';
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
 import { HomeHero } from '@/components/home/HomeHero';
+import LanguageSelectorBanner from '@/components/home/LanguageSelectorBanner';
+import TopicCategoriesSection from '@/components/home/TopicCategoriesSection';
 import { StoriesCarousel } from '@/components/home/StoriesCarousel';
 import { DebateCarousel } from '@/components/home/DebateCarousel';
+import { RitvikCarousel } from '@/components/home/RitvikCarousel';
 import OtherWebsites from '@/components/categories/OtherWebsites';
 import PoojaVidhisSection from '@/components/categories/PoojaVidhisSection';
 import UpcomingEventsSection from '@/components/home/UpcomingEventsSection';
@@ -23,13 +26,19 @@ export default async function Home() {
 
       <HomeHero h={h} />
 
+      <LanguageSelectorBanner />
+
+      <TopicCategoriesSection />
+
+      {FEATURE_FLAGS.DEBATE_SECTION && <DebateCarousel h={h} />}
+
       <StoriesCarousel h={h} />
 
       <UpcomingEventsSection isHomePage={true} />
 
       <PoojaVidhisSection />
 
-      {FEATURE_FLAGS.DEBATE_SECTION && <DebateCarousel h={h} />}
+      <RitvikCarousel />
 
       <OtherWebsites />
 

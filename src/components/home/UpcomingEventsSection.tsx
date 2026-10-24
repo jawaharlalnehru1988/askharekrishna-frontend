@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import {
@@ -13,7 +13,9 @@ import {
     CheckCircle2,
     Search,
     Filter,
-    ChevronDown
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageContext';
 
@@ -85,6 +87,18 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState<string>('all');
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const container = scrollContainerRef.current;
+            const scrollAmount = container.clientWidth * 0.8;
+            container.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     useEffect(() => {
         const fetchUpcomingEvents = async () => {
@@ -233,10 +247,10 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
         });
     }, [flatEvents, filterCategory, searchQuery]);
 
-    const displayEvents = isHomePage ? filteredEvents.slice(0, 6) : filteredEvents;
+    const displayEvents = isHomePage ? filteredEvents.slice(0, 12) : filteredEvents;
 
     const SkeletonCard = () => (
-        <div className="flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 p-6 animate-pulse shrink-0 w-[85vw] md:w-auto snap-center">
+        <div className="flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 p-6 animate-pulse shrink-0 w-[85vw] sm:w-[340px] lg:w-[370px] snap-center sm:snap-start">
             <div className="h-4 w-28 bg-gray-200 dark:bg-neutral-800 rounded mb-4" />
             <div className="h-6 w-3/4 bg-gray-200 dark:bg-neutral-800 rounded mb-3" />
             <div className="h-4 w-1/2 bg-gray-100 dark:bg-neutral-800 rounded mb-6" />
@@ -270,10 +284,30 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                     </div>
 
                     {isHomePage && (
-                        <div className="shrink-0">
+                        <div className="shrink-0 flex items-center gap-2 sm:gap-3">
+                            {/* Navigation Arrows for desktop/tablet */}
+                            <div className="hidden sm:flex items-center gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => scroll('left')}
+                                    aria-label="Previous events"
+                                    className="size-9 rounded-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-[#1f1910] flex items-center justify-center text-text-main dark:text-white hover:bg-amber-500/10 hover:border-amber-500/40 hover:text-amber-500 transition-all shadow-xs cursor-pointer active:scale-95"
+                                >
+                                    <ChevronLeft size={18} />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => scroll('right')}
+                                    aria-label="Next events"
+                                    className="size-9 rounded-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-[#1f1910] flex items-center justify-center text-text-main dark:text-white hover:bg-amber-500/10 hover:border-amber-500/40 hover:text-amber-500 transition-all shadow-xs cursor-pointer active:scale-95"
+                                >
+                                    <ChevronRight size={18} />
+                                </button>
+                            </div>
+
                             <Link
                                 href="/vaishnava-calendar"
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-black font-bold rounded-xl transition-all border border-amber-500/30 hover:border-transparent shadow-sm active:scale-95 whitespace-nowrap"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-black font-bold rounded-xl transition-all border border-amber-500/30 hover:border-transparent shadow-sm active:scale-95 whitespace-nowrap text-xs sm:text-sm md:text-base"
                             >
                                 <span>{u.viewAll || (locale === 'ta' ? 'அனைத்து நிகழ்வுகளையும் காண்க' : 'View All Events')}</span>
                                 <ArrowRight size={18} />
@@ -320,12 +354,11 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                     </div>
                 )}
 
-                {/* Grid layout */}
-                <div className={`flex md:grid gap-6 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 ${
-                    isHomePage
-                        ? 'md:grid-cols-2 lg:grid-cols-3'
-                        : 'md:grid-cols-2 lg:grid-cols-4'
-                }`}>
+                {/* Horizontal scrollable cards container for both desktop and mobile */}
+                <div
+                    ref={scrollContainerRef}
+                    className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth"
+                >
                     {loading ? (
                         Array.from({ length: isHomePage ? 6 : 8 }).map((_, i) => <SkeletonCard key={i} />)
                     ) : displayEvents.length > 0 ? (
@@ -336,7 +369,7 @@ const UpcomingEventsSection = ({ isHomePage = true }: { isHomePage?: boolean }) 
                                 <Link
                                     key={`${item.day_id}-${item.id}`}
                                     href={`/vaishnava-calendar/${item.id}?lang=${locale}`}
-                                    className="group flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-amber-500/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden shrink-0 w-[85vw] md:w-auto snap-center relative cursor-pointer"
+                                    className="group flex flex-col bg-white dark:bg-[#1f1910] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-amber-500/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden shrink-0 w-[85vw] sm:w-[340px] lg:w-[370px] snap-center sm:snap-start relative cursor-pointer"
                                 >
                                     {item.imageUrl && (
                                         <div className="h-40 w-full relative overflow-hidden bg-neutral-900">

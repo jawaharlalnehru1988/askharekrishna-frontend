@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const VALID_LOCALES = ['ta', 'en', 'hi', 'kn', 'te', 'ml'] as const;
+const VALID_LOCALES = ['ta', 'en', 'hi', 'kn', 'te', 'ml', 'bn'] as const;
 type ValidLocale = typeof VALID_LOCALES[number];
 
 const SUBDOMAIN_MAP: Record<string, ValidLocale> = {
@@ -15,6 +15,8 @@ const SUBDOMAIN_MAP: Record<string, ValidLocale> = {
     te: 'te',
     malayalam: 'ml',
     ml: 'ml',
+    bengali: 'bn',
+    bn: 'bn',
     english: 'en',
     en: 'en',
 };

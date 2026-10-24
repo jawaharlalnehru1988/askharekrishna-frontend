@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Phone, MessageCircle, Check } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageContext';
+import { FooterSubscriberSection } from '../subscribers/FooterSubscriberSection';
 
 export function Footer() {
     const { dictionary, locale } = useLanguage();
@@ -25,12 +26,20 @@ export function Footer() {
     return (
         <footer className="w-full bg-white dark:bg-[#1a150c] border-t border-[#f3efe7] dark:border-neutral-800 py-12 transition-colors duration-200">
             <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+                {/* Free Subscriber Invitation Section */}
+                <FooterSubscriberSection />
+
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
-                    {/* Left Column: Brand & Mission */}
                     <div className="flex flex-col gap-4 max-w-md">
                         <Link href="/" className="flex items-center gap-3 text-text-main dark:text-white group">
-                            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110 shadow-sm border border-primary/20">
-                                <span className="material-symbols-outlined text-2xl">temple_hindu</span>
+                            <div className="size-11 rounded-full overflow-hidden border-2 border-primary/20 shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                                <Image
+                                    src="/askharekrishnalogo.jpg"
+                                    alt="Ask Hare Krishna Logo"
+                                    width={44}
+                                    height={44}
+                                    className="h-full w-full object-cover"
+                                />
                             </div>
                             <div>
                                 <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">askharekrishna.com</h2>

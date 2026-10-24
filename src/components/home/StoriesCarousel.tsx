@@ -140,7 +140,7 @@ export const StoriesCarousel: React.FC<StoriesCarouselProps> = ({ h }) => {
                                             {category.description}
                                         </p>
                                         <p className="mt-2 text-xs font-bold uppercase tracking-wider text-primary/90">
-                                            {category.articleCount} {locale === 'ta' ? 'கட்டுரைகள்' : locale === 'hi' ? 'लेख' : locale === 'kn' ? 'ಲೇಖನಗಳು' : locale === 'te' ? 'వ్యాసాలు' : locale === 'ml' ? 'ലേഖനങ്ങൾ' : 'Articles'}
+                                            {category.articleCount} {locale === 'ta' ? 'கட்டுரைகள்' : locale === 'hi' ? 'लेख' : locale === 'kn' ? 'ಲೇಖನಗಳು' : locale === 'te' ? 'వ్యాసాలు' : locale === 'ml' ? 'ലേഖനങ്ങൾ' : locale === 'bn' ? 'প্রবন্ধ' : 'Articles'}
                                         </p>
                                     </div>
                                 </Link>

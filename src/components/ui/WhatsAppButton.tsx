@@ -21,6 +21,7 @@ function resolveLocaleFromHostname(hostname: string): Locale | null {
   if (lowerHost.startsWith('kannada.') || lowerHost.startsWith('kn.')) return 'kn';
   if (lowerHost.startsWith('telugu.') || lowerHost.startsWith('te.')) return 'te';
   if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) return 'ml';
+  if (lowerHost.startsWith('bengali.') || lowerHost.startsWith('bn.')) return 'bn';
   if (lowerHost.startsWith('english.') || lowerHost.startsWith('en.')) return 'en';
 
   return 'en';
@@ -33,7 +34,13 @@ export const WhatsAppButton = () => {
   const pathname = usePathname();
   const { locale, dictionary } = useLanguage();
 
-  const isArticlePage = pathname?.startsWith('/stories/') && pathname.split('/').length === 3;
+  const isDebatePage = Boolean(pathname?.startsWith('/debate/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isStoriesPage = Boolean(pathname?.startsWith('/stories/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isRitvikPage = Boolean(pathname?.startsWith('/ritvik-system/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isPoojaPage = Boolean(pathname?.startsWith('/pooja-vidhis/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isCalendarPage = Boolean(pathname?.startsWith('/vaishnava-calendar/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isArticlePage = isDebatePage || isStoriesPage || isRitvikPage || isPoojaPage || isCalendarPage;
+
   const effectiveLocale = hostnameLocale || locale;
   const communityChannelUrl = WHATSAPP_COMMUNITY_CHANNELS[effectiveLocale] || DEFAULT_WHATSAPP_COMMUNITY_CHANNEL;
 
@@ -44,9 +51,15 @@ export const WhatsAppButton = () => {
 
   const handleShareClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    const title = document.querySelector('h1')?.textContent || 'this article';
-    const url = window.location.href;
-    const readText = dictionary?.common?.read || 'Read';
+    const title = document.querySelector('h1')?.textContent?.trim() || 'this article';
+    let url = typeof window !== 'undefined' ? window.location.href : '';
+    if (typeof document !== 'undefined') {
+      const canonical = (document.querySelector('link[rel="canonical"]') as HTMLLinkElement)?.href;
+      if (canonical) {
+        url = canonical.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/, window.location.origin);
+      }
+    }
+    const readText = dictionary?.common?.read || (locale === 'ta' ? 'படிக்க:' : 'Read');
     const text = `${readText} ${title}: \n${url}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
@@ -71,22 +84,6 @@ export const WhatsAppButton = () => {
           isOpen ? 'scale-100 opacity-100 translate-y-0 pointer-events-auto' : 'scale-0 opacity-0 translate-y-10 pointer-events-none hidden'
         }`}
       >
-        {/* Share Article Option */}
-        {isArticlePage && (
-          <button
-            onClick={handleShareClick}
-            className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap text-left cursor-pointer pointer-events-auto"
-          >
-            <div className="size-10 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Share2 size={20} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold">Share this article</span>
-              <span className="text-[10px] text-text-muted opacity-60 font-medium">Send via WhatsApp</span>
-            </div>
-          </button>
-        )}
-
         {/* Join Community Option */}
         <a
           href={communityChannelUrl}
@@ -118,6 +115,22 @@ export const WhatsAppButton = () => {
             <span className="text-[10px] text-text-muted opacity-60 font-medium">Chat directly with us</span>
           </div>
         </a>
+
+        {/* Share Article Option (Third Option) */}
+        {isArticlePage && (
+          <button
+            onClick={handleShareClick}
+            className="flex items-center gap-3 px-5 py-3 bg-white dark:bg-[#1a150c] text-text-main dark:text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all border border-[#f3efe7] dark:border-neutral-800 group whitespace-nowrap text-left cursor-pointer pointer-events-auto"
+          >
+            <div className="size-10 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Share2 size={20} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold">Share this article</span>
+              <span className="text-[10px] text-text-muted opacity-60 font-medium">Send via WhatsApp</span>
+            </div>
+          </button>
+        )}
       </div>
 
       {/* Main Toggle Button */}

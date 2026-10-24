@@ -199,6 +199,13 @@ export function CalendarArticleShareSection({
                         `📖 ഏകാദശി വ്രതം എങ്ങനെ അനുഷ്ഠിക്കാം എന്നതിനുള്ള സമഗ്രമായ മാർഗ്ഗരേഖ ഉൾപ്പെടുന്നു\n\n` +
                         `🔗 പൂർണ്ണമായി ഇവിടെ വായിക്കുക:\n${articleUrl}\n\n` +
                         `— ആസ്ക് ഹരേ കൃഷ്ണ (askharekrishna.com)`;
+                case 'bn':
+                    return `🌸 *${title}* (${eventDate})\n\n` +
+                        `✨ সম্পূর্ণ একাদশী ইতিহাস ও মাহাত্ম্য\n` +
+                        `⏰ দ্বাদশী পারণ সময় (Break Fast Window): ${paranaTimingText}\n` +
+                        `📖 একাদশী ব্রত পালনের সম্পূর্ণ নির্দেশিকা অন্তর্ভুক্ত\n\n` +
+                        `🔗 সম্পূর্ণ প্রবন্ধটি এখানে পড়ুন:\n${articleUrl}\n\n` +
+                        `— আস্ক হরে কৃষ্ণ (askharekrishna.com)`;
                 default:
                     return `🌸 *${title}* (${eventDate})\n\n` +
                         `✨ Complete Pastime Story & Glories\n` +
@@ -221,6 +228,8 @@ export function CalendarArticleShareSection({
                 return `✨ *${title}* (${eventDate})\n\nఈ దివ్య వైష్ణవ చరిత్రను ఆస్క్ హరే కృష్ణలో చదవండి:\n${articleUrl}`;
             case 'ml':
                 return `✨ *${title}* (${eventDate})\n\nഈ പവിത്ര വൈഷ്ണവ സംഭവം ആസ്ക് ഹരേ കൃഷ്ണയിൽ വായിക്കുക:\n${articleUrl}`;
+            case 'bn':
+                return `✨ *${title}* (${eventDate})\n\nএই পবিত্র বৈষ্ণব ঘটনাটি আস্ক হরে কৃষ্ণ-তে পড়ুন:\n${articleUrl}`;
             default:
                 return `✨ *${title}* (${eventDate})\n\nRead about this sacred Vaishnava event on Ask Hare Krishna:\n${articleUrl}`;
         }
@@ -404,53 +413,6 @@ export function CalendarArticleShareSection({
                     <span>WhatsApp</span>
                 </button>
 
-                {/* X (Twitter) */}
-                <button
-                    onClick={() => handleDirectShare('twitter')}
-                    title="X (Twitter)"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-text-main dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                >
-                    <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                    <span>X</span>
-                </button>
-
-                {/* Facebook */}
-                <button
-                    onClick={() => handleDirectShare('facebook')}
-                    title="Facebook"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2] text-[#1877F2] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                >
-                    <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                    </svg>
-                    <span>Facebook</span>
-                </button>
-
-                {/* Telegram */}
-                <button
-                    onClick={() => handleDirectShare('telegram')}
-                    title="Telegram"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9] text-[#229ED9] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                >
-                    <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.94z" />
-                    </svg>
-                    <span>Telegram</span>
-                </button>
-
-                {/* LinkedIn */}
-                <button
-                    onClick={() => handleDirectShare('linkedin')}
-                    title="LinkedIn"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0A66C2]/10 hover:bg-[#0A66C2] text-[#0A66C2] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                >
-                    <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z" />
-                    </svg>
-                    <span>LinkedIn</span>
-                </button>
 
                 {/* Copy Link */}
                 <button
@@ -514,45 +476,7 @@ export function CalendarArticleShareSection({
                                 <span>WhatsApp</span>
                             </button>
 
-                            <button
-                                onClick={() => { handleDirectShare('twitter'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                </svg>
-                                <span>X (Twitter)</span>
-                            </button>
 
-                            <button
-                                onClick={() => { handleDirectShare('facebook'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2] text-[#1877F2] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                                </svg>
-                                <span>Facebook</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('telegram'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9] text-[#229ED9] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.94z" />
-                                </svg>
-                                <span>Telegram</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('linkedin'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#0A66C2]/10 hover:bg-[#0A66C2] text-[#0A66C2] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z" />
-                                </svg>
-                                <span>LinkedIn</span>
-                            </button>
 
                             <button
                                 onClick={handleCopyLink}

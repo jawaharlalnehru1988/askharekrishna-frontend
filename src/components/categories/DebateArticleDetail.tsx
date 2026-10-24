@@ -8,14 +8,19 @@ import remarkGfm from 'remark-gfm';
 import { useLanguage } from '../providers/LanguageContext';
 import Link from 'next/link';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
+import { RelatedDebates } from './RelatedDebates';
+import { UpNextBar } from './UpNextBar';
+import { SpiritualEcosystemSection } from './SpiritualEcosystemSection';
 
 interface DebateArticleNav {
+    id?: number;
     slug: string;
     subTopic: string;
     order?: number;
 }
 
 interface DebateArticle {
+    id?: number;
     subTopic: string;
     article: string;
     slug: string;
@@ -46,13 +51,14 @@ const navLabels: Record<string, { prev: string; next: string }> = {
 
 const tocLabels: Record<string, string> = {
     en: 'Table of Contents',
-    ta: 'பொருளடக்கம் (Table of Contents)',
-    hi: 'विषय-सूची (Table of Contents)',
-    kn: 'ಪರಿವಿಡಿ (Table of Contents)',
-    te: 'విషయ సూచిక (Table of Contents)',
-    ml: 'ഉള്ളടക്കം (Table of Contents)',
-    bn: 'সূচিপত্র (Table of Contents)',
+    ta: 'பொருளடக்கம்',
+    hi: 'विषय-सूची',
+    kn: 'ಪರಿವಿಡಿ',
+    te: 'విషయ సూచిక',
+    ml: 'ഉള്ളടക്കം',
+    bn: 'সূচিপত্র',
 };
+
 
 const actionLabels: Record<string, {
     sectionTitle: string;
@@ -76,7 +82,7 @@ const actionLabels: Record<string, {
         sectionDesc: 'இந்த விவாதத்தின் கருத்துக்களை உரையாகவோ, ஆஃப்லைன் PDF-ஆகவோ (<1MB) அல்லது சமூக ஊடகங்களிலோ பகிருங்கள்.',
         copyText: 'உரையாக நகலெடு',
         copiedText: 'உரை நகலெடுக்கப்பட்டது!',
-        copyTextDesc: 'முழு உரை (Plain Text)',
+        copyTextDesc: 'முழு உரை',
         downloadPdf: 'PDF பதிவிறக்கம்',
         downloadPdfDesc: 'இலகுவானது (<1MB) • அச்சு வடிவம்',
         shareMedia: 'ஊடகங்களில் பகிரவும்',
@@ -110,7 +116,7 @@ const actionLabels: Record<string, {
         sectionDesc: 'इस लेख को टेक्स्ट के रूप में कॉपी करें, लाइटवेट PDF (<1MB) डाउनलोड करें या किसी भी माध्यम पर साझा करें।',
         copyText: 'टेक्स्ट कॉपी करें',
         copiedText: 'टेक्स्ट कॉपी हो गया!',
-        copyTextDesc: 'पूरा लेख (सादा टेक्स्ट)',
+        copyTextDesc: 'पूरा लेख',
         downloadPdf: 'PDF डाउनलोड करें',
         downloadPdfDesc: 'हल्का (<1MB) • प्रिंट के लिए तैयार',
         shareMedia: 'किसी भी माध्यम पर साझा करें',
@@ -127,7 +133,7 @@ const actionLabels: Record<string, {
         sectionDesc: 'ಈ ಲೇಖನವನ್ನು ಪಠ್ಯವಾಗಿ ನಕಲಿಸಿ, ಹಗುರವಾದ PDF (<1MB) ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ ಅಥವಾ ಹಂಚಿಕೊಳ್ಳಿ.',
         copyText: 'ಪಠ್ಯವಾಗಿ ನಕಲಿಸಿ',
         copiedText: 'ಪಠ್ಯ ನಕಲಿಸಲಾಗಿದೆ!',
-        copyTextDesc: 'ಸಂಪೂರ್ಣ ಲೇಖನ (ಪ್ಲೇನ್ ಟೆಕ್ಸ್ಟ್)',
+        copyTextDesc: 'ಸಂಪೂರ್ಣ ಲೇಖನ',
         downloadPdf: 'PDF ಡೌನ್‌ಲೋಡ್',
         downloadPdfDesc: 'ಹಗುರವಾದದ್ದು (<1MB) • ಪ್ರಿಂಟ್ ರೆಡಿ',
         shareMedia: 'ಯಾವುದೇ ಮಾಧ್ಯಮಕ್ಕೆ ಹಂಚಿಕೊಳ್ಳಿ',
@@ -144,7 +150,7 @@ const actionLabels: Record<string, {
         sectionDesc: 'ఈ వ్యాసాన్ని టెక్స్ట్‌గా కాపీ చేయండి, తేలికైన PDF (<1MB) డౌన్‌లోడ్ చేయండి లేదా పంచుకోండి.',
         copyText: 'టెక్స్ట్‌గా కాపీ చేయండి',
         copiedText: 'టెక్స్ట్ కాపీ చేయబడింది!',
-        copyTextDesc: 'పూర్తి వ్యాసం (ప్లెయిన్ టెక్స్ట్)',
+        copyTextDesc: 'పూర్తి వ్యాసం',
         downloadPdf: 'PDF డౌన్‌లోడ్',
         downloadPdfDesc: 'తేలికైనది (<1MB) • ప్రింట్ సిద్ధం',
         shareMedia: 'ఏ మాధ్యమంలోనైనా పంచుకోండి',
@@ -161,7 +167,7 @@ const actionLabels: Record<string, {
         sectionDesc: 'ഈ ലേഖനം ടെക്സ്റ്റായി പകർത്തുക, ഭാരം കുറഞ്ഞ PDF (<1MB) ഡൗൺലോഡ് ചെയ്യുക അല്ലെങ്കിൽ പങ്കിടുക.',
         copyText: 'ടെക്സ്റ്റായി പകർത്തുക',
         copiedText: 'ടെക്സ്റ്റ് പകർത്തി!',
-        copyTextDesc: 'മുഴുവൻ ലേഖനം (പ്ലെയിൻ ടെക്സ്റ്റ്)',
+        copyTextDesc: 'മുഴുവൻ ലേഖനം',
         downloadPdf: 'PDF ഡൗൺലോഡ്',
         downloadPdfDesc: 'ഭാരം കുറഞ്ഞത് (<1MB) • പ്രിന്റ് റെഡി',
         shareMedia: 'ഏത് മാധ്യമത്തിലും പങ്കിടുക',
@@ -178,7 +184,8 @@ const actionLabels: Record<string, {
         sectionDesc: 'এই অন্তর্দৃষ্টি টেক্সট হিসেবে কপি করুন, হালকা PDF (<1MB) ডাউনলোড করুন বা শেয়ার করুন।',
         copyText: 'টেক্সট হিসেবে কপি করুন',
         copiedText: 'টেক্সট কপি হয়েছে!',
-        copyTextDesc: 'সম্পূর্ণ প্রবন্ধ (প্লেন টেক্সট)',
+        copyTextDesc: 'সম্পূর্ণ প্রবন্ধ',
+
         downloadPdf: 'PDF ডাউনলোড',
         downloadPdfDesc: 'হালকা (<1MB) • প্রিন্ট প্রস্তুত',
         shareMedia: 'যেকোনো মাধ্যমে শেয়ার করুন',
@@ -211,6 +218,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
     const [article, setArticle] = useState<DebateArticle | null>(null);
     const [categoryName, setCategoryName] = useState<string>('');
     const [categoryImage, setCategoryImage] = useState<string | null>(null);
+    const [categoryId, setCategoryId] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [copiedText, setCopiedText] = useState(false);
@@ -240,14 +248,16 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                 let foundArticle = null;
                 let foundCatName = '';
                 let foundCatImage = null;
+                let foundCatId: number | null = null;
 
                 for (const cat of data) {
                     if (cat.articleList && cat.articleList.length > 0) {
-                        const match = cat.articleList.find((a: any) => a.slug === slug && a.article && a.article.trim());
+                        const match = cat.articleList.find((a: any) => (a.slug === slug || a.id?.toString() === slug) && a.article && a.article.trim());
                         if (match) {
                             foundArticle = match;
                             foundCatName = cat.name || '';
                             foundCatImage = cat.image || null;
+                            foundCatId = cat.id || null;
                             break;
                         }
                     }
@@ -258,11 +268,12 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                     const fallbackData = Array.isArray(fallbackResponse.data) ? fallbackResponse.data : (fallbackResponse.data.results || []);
                     for (const cat of fallbackData) {
                         if (cat.articleList && cat.articleList.length > 0) {
-                            const match = cat.articleList.find((a: any) => a.slug === slug && a.article && a.article.trim());
+                            const match = cat.articleList.find((a: any) => (a.slug === slug || a.id?.toString() === slug) && a.article && a.article.trim());
                             if (match) {
                                 foundArticle = match;
                                 foundCatName = cat.name || '';
                                 foundCatImage = cat.image || null;
+                                foundCatId = cat.id || null;
                                 break;
                             }
                         }
@@ -272,6 +283,23 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                 setArticle(foundArticle);
                 setCategoryName(foundCatName);
                 setCategoryImage(foundCatImage);
+                setCategoryId(foundCatId);
+
+                if (foundArticle && typeof window !== 'undefined') {
+                    try {
+                        const targetPath = `/debate/${foundArticle.id}`;
+                        const currentUrl = new URL(window.location.href);
+                        if (currentUrl.pathname !== targetPath) {
+                            currentUrl.pathname = targetPath;
+                            if (!currentUrl.searchParams.has('lang')) {
+                                currentUrl.searchParams.set('lang', locale || 'en');
+                            }
+                            window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search);
+                        }
+                    } catch {
+                        // Ignore url sync errors
+                    }
+                }
             } catch (err) {
                 console.error('Error fetching debate article:', err);
             } finally {
@@ -306,6 +334,13 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
         return items;
     }, [article?.article]);
 
+    const getShareUrl = () => {
+        if (typeof window === 'undefined') return '';
+        const origin = window.location.origin;
+        const debateNumber = article?.id || slug;
+        return `${origin}/debate/${debateNumber}?lang=${locale}`;
+    };
+
     const handleCopyText = async () => {
         if (!article) return;
         try {
@@ -318,7 +353,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                 .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
                 .trim();
 
-            const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+            const currentUrl = getShareUrl();
             const fullText = `${article.subTopic.toUpperCase()}\n${categoryName ? `[${categoryName}]\n` : ''}\n${cleanedText}\n\n---\nSource: ${currentUrl}\nAsk Hare Krishna (askharekrishna.com)`;
 
             await navigator.clipboard.writeText(fullText);
@@ -335,7 +370,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
 
     const handleShareToMedia = async () => {
         if (!article) return;
-        const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+        const currentUrl = getShareUrl();
         const shareData = {
             title: article.subTopic,
             text: `${article.subTopic}\n\nRead this debate on Ask Hare Krishna:\n`,
@@ -355,7 +390,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
 
     const handleDirectShare = (platform: 'whatsapp' | 'twitter' | 'facebook' | 'telegram' | 'linkedin') => {
         if (!article) return;
-        const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+        const currentUrl = getShareUrl();
         const text = encodeURIComponent(`*${article.subTopic}*\n\nRead here: ${currentUrl}`);
         const rawUrl = encodeURIComponent(currentUrl);
 
@@ -385,7 +420,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
 
     const handleCopyLink = async () => {
         try {
-            const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+            const currentUrl = getShareUrl();
             await navigator.clipboard.writeText(currentUrl);
             setCopiedLink(true);
             setTimeout(() => setCopiedLink(false), 3000);
@@ -432,20 +467,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
         <section id="article-top" className="bg-background-light dark:bg-background-dark min-h-screen pt-12 pb-24 scroll-mt-24">
             <ArticleUrlSync locale={locale} />
             <div className="max-w-4xl mx-auto px-4 md:px-8">
-                {/* Print-only Editorial Header */}
-                <div className="hidden print:block mb-8 pb-4 border-b-2 border-primary/50">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h2 className="text-xl font-black text-black tracking-tight">Ask Hare Krishna</h2>
-                            <p className="text-xs text-gray-600">Transcendental Knowledge & Philosophical Answers • askharekrishna.com</p>
-                        </div>
-                        {categoryName && (
-                            <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 bg-gray-100 rounded text-gray-800 border border-gray-200">
-                                {categoryName}
-                            </span>
-                        )}
-                    </div>
-                </div>
+
                 {/* Back button and Category breadcrumb */}
                 <div className="mb-8 flex items-center gap-4 no-print">
                     <Link href={`/debate?category=${encodeURIComponent(categoryName)}&lang=${locale}`} className="inline-flex items-center text-text-muted hover:text-primary transition-colors">
@@ -453,7 +475,9 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                         {locale === 'ta' ? 'திரும்புக' : 'Back'}
                     </Link>
                     <span className="text-gray-300 dark:text-gray-700">|</span>
-                    <span className="text-xs font-bold text-primary uppercase tracking-widest">{categoryName}</span>
+                    <Link href={`/debate?category=${encodeURIComponent(categoryName)}&lang=${locale}`} className="text-xs font-bold text-primary hover:underline uppercase tracking-widest">
+                        {categoryName}
+                    </Link>
                 </div>
 
                 {/* Header */}
@@ -464,7 +488,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                 </div>
 
                 {/* Hero Image */}
-                <div className="relative h-64 md:h-[400px] w-full rounded-3xl overflow-hidden mb-12 shadow-2xl">
+                <div className="relative h-64 md:h-[400px] w-full rounded-3xl overflow-hidden mb-12 shadow-2xl no-print">
                     <img 
                         src={article.articleImage || categoryImage || 'https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=1200'} 
                         alt={article.subTopic}
@@ -634,7 +658,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                     <nav aria-label="Article Navigation" className="mt-14 pt-8 border-t border-[#e7dfcf] dark:border-neutral-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {article.previousArticle ? (
                             <Link 
-                                href={`/debate/${article.previousArticle.slug}?lang=${locale}`}
+                                href={`/debate/${article.previousArticle.id || article.previousArticle.slug}?lang=${locale}`}
                                 className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary/60 dark:hover:border-primary/60 shadow-sm hover:shadow-md transition-all duration-200 text-left active:scale-[0.99]"
                             >
                                 <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-text-muted group-hover:text-primary transition-colors mb-2">
@@ -651,7 +675,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
 
                         {article.nextArticle ? (
                             <Link 
-                                href={`/debate/${article.nextArticle.slug}?lang=${locale}`}
+                                href={`/debate/${article.nextArticle.id || article.nextArticle.slug}?lang=${locale}`}
                                 className="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#2a2418] border border-[#e7dfcf] dark:border-neutral-800 hover:border-primary/60 dark:hover:border-primary/60 shadow-sm hover:shadow-md transition-all duration-200 text-right sm:col-start-2 active:scale-[0.99]"
                             >
                                 <div className="flex items-center justify-end gap-1.5 text-xs font-bold uppercase tracking-wider text-text-muted group-hover:text-primary transition-colors mb-2">
@@ -667,6 +691,17 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                         )}
                     </nav>
                 )}
+
+                {/* Related Debates Recommendation Section */}
+                <RelatedDebates
+                    currentSlug={slug}
+                    categoryId={categoryId}
+                    categoryName={categoryName}
+                    categoryImage={categoryImage}
+                />
+
+                {/* Spiritual Ecosystem Cross-Promotion */}
+                <SpiritualEcosystemSection />
                 
                 {/* Actions & Sharing Section */}
                 <div className="mt-16 pt-10 border-t border-gray-200 dark:border-neutral-800 no-print">
@@ -758,53 +793,7 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                             <span>WhatsApp</span>
                         </button>
 
-                        {/* X / Twitter */}
-                        <button
-                            onClick={() => handleDirectShare('twitter')}
-                            title="X (Twitter)"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-text-main dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                        >
-                            <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                            </svg>
-                            <span>X</span>
-                        </button>
 
-                        {/* Facebook */}
-                        <button
-                            onClick={() => handleDirectShare('facebook')}
-                            title="Facebook"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2] text-[#1877F2] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                        >
-                            <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                            </svg>
-                            <span>Facebook</span>
-                        </button>
-
-                        {/* Telegram */}
-                        <button
-                            onClick={() => handleDirectShare('telegram')}
-                            title="Telegram"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9] text-[#229ED9] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                        >
-                            <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.94z" />
-                            </svg>
-                            <span>Telegram</span>
-                        </button>
-
-                        {/* LinkedIn */}
-                        <button
-                            onClick={() => handleDirectShare('linkedin')}
-                            title="LinkedIn"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0A66C2]/10 hover:bg-[#0A66C2] text-[#0A66C2] hover:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer"
-                        >
-                            <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z" />
-                            </svg>
-                            <span>LinkedIn</span>
-                        </button>
 
                         {/* Copy Link */}
                         <button
@@ -823,9 +812,9 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                 </div>
 
                 {/* Print-only Footer */}
-                <div className="hidden print:flex items-center justify-between mt-12 pt-4 border-t border-gray-300 text-xs text-gray-500">
-                    <span>© Ask Hare Krishna • askharekrishna.com</span>
-                    <span>{typeof window !== 'undefined' ? window.location.href : ''}</span>
+                <div className="hidden print:flex flex-col items-center justify-center text-center mt-12 pt-6 border-t border-gray-300 text-xs text-gray-600 gap-1">
+                    <span className="font-bold text-sm text-gray-800">Ask Hare Krishna</span>
+                    <span className="text-[11px] text-gray-500">Transcendental Knowledge & Philosophical Answers • askharekrishna.com</span>
                 </div>
             </div>
 
@@ -866,56 +855,16 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                             {actionLabels[locale]?.shareModalDesc || actionLabels.en.shareModalDesc}
                         </p>
 
-                        {/* Social Buttons Grid */}
-                        <div className="grid grid-cols-2 gap-2.5 mb-5">
+                        {/* Social Buttons */}
+                        <div className="mb-5">
                             <button
                                 onClick={() => { handleDirectShare('whatsapp'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366] text-[#25D366] hover:text-white font-bold text-xs transition-colors cursor-pointer"
+                                className="w-full flex items-center justify-center gap-2.5 p-3 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366] text-[#25D366] hover:text-white font-bold text-xs transition-colors cursor-pointer"
                             >
                                 <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                                 </svg>
                                 <span>WhatsApp</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('twitter'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                                </svg>
-                                <span>X (Twitter)</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('facebook'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2] text-[#1877F2] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                                </svg>
-                                <span>Facebook</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('telegram'); setIsShareModalOpen(false); }}
-                                className="flex items-center gap-2.5 p-3 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9] text-[#229ED9] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.458c.538-.196 1.006.128.832.94z" />
-                                </svg>
-                                <span>Telegram</span>
-                            </button>
-
-                            <button
-                                onClick={() => { handleDirectShare('linkedin'); setIsShareModalOpen(false); }}
-                                className="col-span-2 flex items-center justify-center gap-2.5 p-3 rounded-xl bg-[#0A66C2]/10 hover:bg-[#0A66C2] text-[#0A66C2] hover:text-white font-bold text-xs transition-colors cursor-pointer"
-                            >
-                                <svg className="size-4" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.73C24 .774 23.205 0 22.225 0z" />
-                                </svg>
-                                <span>LinkedIn</span>
                             </button>
                         </div>
 
@@ -941,6 +890,9 @@ export default function DebateArticleDetail({ slug }: { slug: string }) {
                     </div>
                 </div>
             )}
+
+            {/* Up Next Floating Recommendation Bar */}
+            <UpNextBar nextArticle={article?.nextArticle || null} />
 
             {/* Floating Back to Top Button */}
             {showScrollTop && (

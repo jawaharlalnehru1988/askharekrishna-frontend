@@ -62,6 +62,8 @@ function resolveLocale(headersList: Headers): Locale {
         derivedLocale = 'te';
     } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
         derivedLocale = 'ml';
+    } else if (lowerHost.startsWith('bengali.') || lowerHost.startsWith('bn.')) {
+        derivedLocale = 'bn';
     }
     return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
@@ -78,7 +80,7 @@ async function fetchPoojaArticleById(id: string, locale: string = 'en'): Promise
 
 import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
 
-const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml', 'bn'];
 
 export async function generateMetadata({
     params,

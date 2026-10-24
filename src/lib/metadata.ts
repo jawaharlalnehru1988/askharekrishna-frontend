@@ -38,14 +38,26 @@ export function toAbsoluteMediaUrl(path?: string | null): string | null {
 }
 
 export function buildArticleMetadata(input: ArticleMetadataInput): Metadata {
-    const host = input.host || siteMetadata.defaultHost;
+    const rawHost = input.host || siteMetadata.defaultHost;
+    // Always use public domain askharekrishna.com for Open Graph canonical and image URLs
+    // to prevent local internal proxy addresses (like 127.0.0.1:3002) from leaking into metadata
+    const host = (rawHost.includes('127.0.0.1') || rawHost.includes('localhost') || !rawHost) ? 'askharekrishna.com' : rawHost;
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
     const canonicalUrl = `${baseUrl}${input.path}`;
-    const image = input.imageUrl || `${baseUrl}${siteMetadata.defaultImage}`;
+
+    // Route article image through /api/og optimizer to ensure image is < 300KB JPEG (1200x630)
+    // which is strictly required for WhatsApp link preview thumbnail cards
+    let ogImageUrl: string;
+    if (input.imageUrl) {
+        const fullImageUrl = input.imageUrl.startsWith('/') ? `https://askharekrishna.com${input.imageUrl}` : input.imageUrl;
+        ogImageUrl = `https://askharekrishna.com/api/og?url=${encodeURIComponent(fullImageUrl)}`;
+    } else {
+        ogImageUrl = `https://askharekrishna.com${siteMetadata.defaultImage}`;
+    }
 
     return {
-        metadataBase: new URL(baseUrl),
+        metadataBase: new URL(`https://askharekrishna.com`),
         title: input.title,
         description: input.description,
         alternates: {
@@ -58,9 +70,11 @@ export function buildArticleMetadata(input: ArticleMetadataInput): Metadata {
             url: canonicalUrl,
             images: [
                 {
-                    url: image,
+                    url: ogImageUrl,
+                    secureUrl: ogImageUrl,
                     width: 1200,
                     height: 630,
+                    type: 'image/jpeg',
                     alt: input.title,
                 },
             ],
@@ -69,7 +83,7 @@ export function buildArticleMetadata(input: ArticleMetadataInput): Metadata {
             card: 'summary_large_image',
             title: input.title,
             description: input.description,
-            images: [image],
+            images: [ogImageUrl],
         },
     };
 }

@@ -6,4 +6,5 @@ export const categories = [
     "bhagavad-gita",
     "stories",
     "debate",
+    "vaishnava-etiquettes",
 ];

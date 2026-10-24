@@ -54,6 +54,7 @@ export function LanguageSwitcher() {
                 <option value="kn" className="text-black bg-white">ಕನ್ನಡ</option>
                 <option value="te" className="text-black bg-white">తెలుగు</option>
                 <option value="ml" className="text-black bg-white">മലയാളം</option>
+                <option value="bn" className="text-black bg-white">বাংলা</option>
             </select>
         </div>
     );

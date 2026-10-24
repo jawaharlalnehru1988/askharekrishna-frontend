@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import {
     ArrowRight,
@@ -8,7 +8,9 @@ import {
     ScrollText,
     Calendar,
     Share2,
-    X
+    X,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -49,6 +51,18 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string>('All');
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const container = scrollContainerRef.current;
+            const scrollAmount = container.clientWidth * 0.8;
+            container.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     useEffect(() => {
         const fetchArticles = async () => {
@@ -103,11 +117,15 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
         return matchesSearch && matchesCategory;
     });
 
-    const displayArticles = isHomePage ? filteredArticles.slice(0, 8) : filteredArticles;
+    const displayArticles = isHomePage ? filteredArticles.slice(0, 12) : filteredArticles;
     const availableCategories = ['All', ...categories.map(cat => cat.name)];
 
     const SkeletonCard = () => (
-        <div className="flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 overflow-hidden animate-pulse shrink-0 w-[85vw] md:w-auto snap-center">
+        <div className={`flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 overflow-hidden animate-pulse ${
+            isHomePage
+                ? "shrink-0 w-[85vw] sm:w-[320px] lg:w-[350px] snap-center sm:snap-start"
+                : "shrink-0 w-[85vw] md:w-auto snap-center"
+        }`}>
             <div className="h-56 w-full bg-gray-200 dark:bg-neutral-800" />
             <div className="p-6">
                 <div className="h-4 w-24 bg-gray-100 dark:bg-neutral-800 rounded mb-3" />
@@ -151,13 +169,33 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                             {p?.description || (locale === 'ta' ? 'தினசரி பக்தி செயல்பாடுகளைச் செய்வதற்கான முறையான வழிகளை ஆராயுங்கள்.' : 'Explore the systematic ways to perform daily devotional activities.')}
                         </p>
                     </div>
-                    {isHomePage && allArticles.length > 8 && (
-                        <div className="shrink-0">
+                    {isHomePage && allArticles.length > 0 && (
+                        <div className="shrink-0 flex items-center gap-2 sm:gap-3">
+                            {/* Navigation Arrows for desktop/tablet */}
+                            <div className="hidden sm:flex items-center gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => scroll('left')}
+                                    aria-label="Previous vidhis"
+                                    className="size-9 rounded-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-[#2a2418] flex items-center justify-center text-text-main dark:text-white hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-all shadow-xs cursor-pointer active:scale-95"
+                                >
+                                    <ChevronLeft size={18} />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => scroll('right')}
+                                    aria-label="Next vidhis"
+                                    className="size-9 rounded-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-[#2a2418] flex items-center justify-center text-text-main dark:text-white hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-all shadow-xs cursor-pointer active:scale-95"
+                                >
+                                    <ChevronRight size={18} />
+                                </button>
+                            </div>
+
                             <Link
                                 href="/pooja-vidhis"
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 hover:bg-primary text-primary hover:text-black font-bold rounded-xl transition-all border border-primary/20 hover:border-transparent active:scale-95 whitespace-nowrap"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-primary/10 hover:bg-primary text-primary hover:text-black font-bold rounded-xl transition-all border border-primary/20 hover:border-transparent active:scale-95 whitespace-nowrap text-xs sm:text-sm md:text-base"
                             >
-                                {p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}
+                                <span>{p?.viewAll || (locale === 'ta' ? 'அனைத்தையும் காண்க' : 'View All')}</span>
                                 <ArrowRight size={18} />
                             </Link>
                         </div>
@@ -199,7 +237,14 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                     </div>
                 )}
 
-                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+                <div
+                    ref={scrollContainerRef}
+                    className={
+                        isHomePage
+                            ? "flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory no-scrollbar scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth"
+                            : "flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+                    }
+                >
                     {loading ? (
                         Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
                     ) : displayArticles.length > 0 ? (
@@ -207,7 +252,11 @@ const PoojaVidhisSection = ({ isHomePage = true }: { isHomePage?: boolean }) => 
                             <Link
                                 href={`/pooja-vidhis/${article.id}?lang=${locale}`}
                                 key={`${article.id}-${article.mainTopic}-${index}`}
-                                className="group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer shrink-0 w-[85vw] md:w-auto snap-center"
+                                className={`group flex flex-col bg-white dark:bg-[#2a2418] rounded-2xl border border-[#f3efe7] dark:border-neutral-800 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer ${
+                                    isHomePage
+                                        ? "shrink-0 w-[85vw] sm:w-[320px] lg:w-[350px] snap-center sm:snap-start"
+                                        : "shrink-0 w-[85vw] md:w-auto snap-center"
+                                }`}
                             >
                                 <div className="relative h-56 w-full overflow-hidden">
                                     <img

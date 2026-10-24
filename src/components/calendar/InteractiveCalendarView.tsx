@@ -155,6 +155,39 @@ export default function InteractiveCalendarView() {
         }
     }, [selectedDate, locale]);
 
+    // Deduplicate observances for the selected date (e.g. 'பாபாங்குஷ ஏகாதசி' and 'பாபாங்குஷ ஏகாதசி விரதம்')
+    const displayObservances = useMemo(() => {
+        if (!selectedDayData?.observances) return [];
+
+        const seen = new Set<string>();
+        const result: ObservanceItem[] = [];
+
+        for (const obs of selectedDayData.observances) {
+            if (obs.category === 'Parana') {
+                continue;
+            }
+
+            const title = (obs.title || '').trim();
+            if (!title) continue;
+
+            const normalizedTitle = title
+                .replace(/\b(fasting\s+for|fasting|fast)\b/gi, '')
+                .replace(/\s*(விரதம்|vrata|vratham|vrat|ವ್ರತ|వ్రతం)\s*/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+
+            const key = obs.category === 'Ekadashi' ? 'Ekadashi' : `${obs.category}:${normalizedTitle}`;
+            if (seen.has(key)) {
+                continue;
+            }
+            seen.add(key);
+            result.push(obs);
+        }
+
+        return result;
+    }, [selectedDayData]);
+
     return (
         <div className="w-full min-h-screen pb-24">
             {/* Top Hero Banner */}
@@ -466,10 +499,10 @@ export default function InteractiveCalendarView() {
                                 {/* Observances List */}
                                 <div className="space-y-3">
                                     <h5 className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-                                        Observances & Festivals ({selectedDayData?.observances?.length || 0})
+                                        Observances & Festivals ({displayObservances.length})
                                     </h5>
 
-                                    {(!selectedDayData || selectedDayData.observances.length === 0) ? (
+                                    {displayObservances.length === 0 ? (
                                         <div className="text-center py-8 bg-neutral-50 dark:bg-neutral-800/40 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800">
                                             <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                                                 Regular devotional day.
@@ -479,7 +512,7 @@ export default function InteractiveCalendarView() {
                                             </p>
                                         </div>
                                     ) : (
-                                        selectedDayData.observances.map((obs) => {
+                                        displayObservances.map((obs) => {
                                             const hasStory = Boolean(obs.description);
                                             const cardContent = (
                                                 <>

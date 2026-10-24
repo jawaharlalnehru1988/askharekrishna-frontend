@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'ta' | 'hi' | 'kn' | 'te' | 'ml';
+export type Locale = 'en' | 'ta' | 'hi' | 'kn' | 'te' | 'ml' | 'bn';
 
 const dictionaries = {
     en: () => import('@/messages/en.json').then((module) => module.default),
@@ -7,6 +7,7 @@ const dictionaries = {
     kn: () => import('@/messages/kn.json').then((module) => module.default),
     te: () => import('@/messages/te.json').then((module) => module.default),
     ml: () => import('@/messages/ml.json').then((module) => module.default),
+    bn: () => import('@/messages/bn.json').then((module) => module.default),
 };
 
 export const getDictionary = async (locale: Locale) => dictionaries[locale]();

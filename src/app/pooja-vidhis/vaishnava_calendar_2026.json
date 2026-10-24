@@ -2148,21 +2148,6 @@
           ]
         },
         {
-          "date": "2026-10-17",
-          "dayOfWeek": "Saturday",
-          "isEkadashi": false,
-          "ekadashiName": null,
-          "isFastDay": false,
-          "fastDetails": null,
-          "breakFastWindow": null,
-          "observances": [
-            {
-              "title": "Durga Puja",
-              "category": "Festival"
-            }
-          ]
-        },
-        {
           "date": "2026-10-21",
           "dayOfWeek": "Wednesday",
           "isEkadashi": false,

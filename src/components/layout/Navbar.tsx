@@ -123,6 +123,13 @@ export function Navbar() {
               {locale === 'ta' ? 'நாட்காட்டி' : 'Calendar'}
             </Link>
 
+            <Link
+              href="/ritvik-system"
+              className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {locale === 'ta' ? 'தீட்சை முறை' : 'Diksha Process'}
+            </Link>
+
             {locale === 'ta' && (
               <Link
                 href="/bgvideo"
@@ -146,7 +153,7 @@ export function Navbar() {
                   {isStoriesOpen && (
                     <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-[#1a150c] border border-[#f3efe7] dark:border-neutral-800 rounded-xl shadow-xl py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                       <div className="px-4 py-2 mb-2 border-b border-gray-100 dark:border-neutral-800">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">Categories</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">{t.categories || 'Categories'}</span>
                       </div>
                       {topics.map((topic, i) => (
                         <div key={i} className="group/cat relative">
@@ -319,6 +326,14 @@ export function Navbar() {
                 {locale === 'ta' ? 'வைஷ்ணவ நாட்காட்டி' : 'Vaishnava Calendar'}
               </Link>
 
+              <Link
+                href="/ritvik-system"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
+              >
+                {locale === 'ta' ? 'இஸ்கானில் தீட்சை முறை' : 'The Process of Diksha'}
+              </Link>
+
               {locale === 'ta' && (
                 <Link
                   href="/bgvideo"
@@ -334,29 +349,17 @@ export function Navbar() {
             {topics.length > 0 && (
               <div className="flex flex-col gap-3">
                 <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">{t.stories}</div>
-                <div className="pl-3 border-l-2 border-primary/20 flex flex-col gap-4">
+                <div className="pl-3 border-l-2 border-primary/20 flex flex-col gap-2.5">
                   {topics.map((topic, i) => (
-                    <div key={i} className="flex flex-col gap-2">
-                      <Link
-                        href={`/stories?topic=${encodeURIComponent(topic.name)}`}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="text-sm font-bold text-primary"
-                      >
-                        {topic.name}
-                      </Link>
-                      <div className="pl-3 flex flex-col gap-2 border-l border-primary/10">
-                        {topic.articleList.map((story, j) => (
-                          <Link
-                            key={`${story.id}-${j}`}
-                            href={`/stories?topic=${encodeURIComponent(topic.name)}&story=${encodeURIComponent(story.slug || story.id.toString())}`}
-                            onClick={() => setIsMenuOpen(false)}
-                            className="text-xs font-semibold text-text-muted dark:text-gray-400 hover:text-primary"
-                          >
-                            {story.subTopic}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+                    <Link
+                      key={i}
+                      href={`/stories?topic=${encodeURIComponent(topic.name)}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors py-1 flex items-center justify-between"
+                    >
+                      <span>{topic.name}</span>
+                      <span className="material-symbols-outlined text-base opacity-40">chevron_right</span>
+                    </Link>
                   ))}
                 </div>
               </div>

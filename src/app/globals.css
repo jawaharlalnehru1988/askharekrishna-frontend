@@ -131,10 +131,12 @@ details[open] summary~* {
 }
 
 @layer utilities {
-  .scrollbar-hide::-webkit-scrollbar {
+  .scrollbar-hide::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
-  .scrollbar-hide {
+  .scrollbar-hide,
+  .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
@@ -165,6 +167,18 @@ details[open] summary~* {
    Print Styles for Clean, Lightweight PDF Generation (<1MB)
    ========================================================================== */
 @media print {
+  @page {
+    size: auto;
+    margin: 1cm; /* Uniform 1cm margin across top, bottom, left, and right on every page */
+
+    @top-left { content: none; }
+    @top-center { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
   /* Hide non-content elements */
   nav,
   footer,
@@ -181,7 +195,7 @@ details[open] summary~* {
     display: none !important;
   }
 
-  /* Reset document for crisp black-and-white printing */
+  /* Reset document for crisp black-and-white printing using the @page 1cm margins */
   html, body {
     background: #ffffff !important;
     color: #111827 !important;
@@ -191,6 +205,27 @@ details[open] summary~* {
     padding: 0 !important;
     box-shadow: none !important;
     text-shadow: none !important;
+  }
+
+  /* Reset page wrapper containers so they don't add extra offsets or large side spaces */
+  section#article-top,
+  main,
+  article {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+  }
+
+  section#article-top > div,
+  .max-w-4xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   /* Force light theme colors on all elements in print */
@@ -217,6 +252,7 @@ details[open] summary~* {
     font-weight: 800 !important;
     color: #000000 !important;
     margin-bottom: 12pt !important;
+    text-align: left !important;
     page-break-after: avoid;
     break-after: avoid;
   }
@@ -227,6 +263,7 @@ details[open] summary~* {
     color: #1f2937 !important;
     margin-top: 16pt !important;
     margin-bottom: 8pt !important;
+    text-align: left !important;
     page-break-after: avoid;
     break-after: avoid;
   }
@@ -237,16 +274,26 @@ details[open] summary~* {
     color: #374151 !important;
     margin-top: 12pt !important;
     margin-bottom: 6pt !important;
+    text-align: left !important;
     page-break-after: avoid;
     break-after: avoid;
   }
 
-  p, li {
+  p, li, dd {
     font-size: 11pt !important;
     line-height: 1.65 !important;
     color: #1f2937 !important;
+    text-align: justify !important;
+    text-justify: inter-word !important;
     orphans: 3;
     widows: 3;
+  }
+
+  .prose p,
+  .prose li,
+  .prose blockquote {
+    text-align: justify !important;
+    text-justify: inter-word !important;
   }
 
   blockquote {
@@ -254,6 +301,8 @@ details[open] summary~* {
     padding-left: 12pt !important;
     margin: 12pt 0 !important;
     font-style: italic !important;
+    text-align: justify !important;
+    text-justify: inter-word !important;
     page-break-inside: avoid;
     break-inside: avoid;
   }
@@ -279,4 +328,35 @@ details[open] summary~* {
     margin: 0 !important;
     padding: 0 !important;
   }
+}
+
+/* Active continuous animations for AskHareKrishna */
+@keyframes shimmerText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-shimmer-text {
+  background-size: 200% auto;
+  animation: shimmerText 5s ease-in-out infinite;
+}
+
+@keyframes buttonShine {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  25%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+.animate-button-shine {
+  animation: buttonShine 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

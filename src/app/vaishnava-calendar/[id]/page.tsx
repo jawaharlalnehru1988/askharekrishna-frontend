@@ -12,6 +12,7 @@ import { Locale } from '@/lib/dictionaries';
 import { CalendarArticleShareSection } from '@/components/calendar/CalendarArticleShareSection';
 import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
 import { ParanaGuidelines } from '@/components/calendar/ParanaGuidelines';
+import { RelatedEventsSection, RelatedEventItem } from '@/components/calendar/RelatedEventsSection';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 export const dynamic = 'force-dynamic';
@@ -76,6 +77,8 @@ function resolveLocale(headersList: Headers): Locale {
         derivedLocale = 'te';
     } else if (lowerHost.startsWith('malayalam.') || lowerHost.startsWith('ml.')) {
         derivedLocale = 'ml';
+    } else if (lowerHost.startsWith('bengali.') || lowerHost.startsWith('bn.')) {
+        derivedLocale = 'bn';
     }
     return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
@@ -135,9 +138,69 @@ async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise
     }
 }
 
+async function fetchSameDayEvents(eventDate: string, currentId: string, locale: string = 'en'): Promise<RelatedEventItem[]> {
+    try {
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/?day__event_date=${eventDate}&lang=${locale}`, { cache: 'no-store' });
+        if (!res.ok) return [];
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : (data.results || []);
+        return list
+            .filter((o: any) => String(o.id) !== String(currentId))
+            .map((o: any) => ({
+                id: o.id,
+                title: o.title,
+                event_date: o.event_date || eventDate,
+                day_of_week: o.day_of_week || '',
+                category: o.category || 'Observance',
+                imageUrl: o.imageUrl || o.image || null,
+                is_ekadashi: Boolean(o.is_ekadashi),
+                is_fast_day: Boolean(o.is_fast_day),
+                description: o.description || null,
+            }));
+    } catch {
+        return [];
+    }
+}
+
+async function fetchUpcomingEvents(eventDate: string, currentId: string, locale: string = 'en'): Promise<RelatedEventItem[]> {
+    try {
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/?start_date=${eventDate}&lang=${locale}`, { cache: 'no-store' });
+        if (!res.ok) return [];
+        const data = await res.json();
+        const days = Array.isArray(data) ? data : (data.results || []);
+        const upcoming: RelatedEventItem[] = [];
+
+        for (const day of days) {
+            // Strictly subsequent dates
+            if (day.event_date <= eventDate) continue;
+
+            for (const o of (day.observances || [])) {
+                if (String(o.id) === String(currentId)) continue;
+                upcoming.push({
+                    id: o.id,
+                    title: o.title,
+                    event_date: day.event_date,
+                    day_of_week: day.day_of_week,
+                    category: o.category || 'Observance',
+                    imageUrl: o.imageUrl || o.image || null,
+                    is_ekadashi: Boolean(day.is_ekadashi),
+                    is_fast_day: Boolean(day.is_fast_day),
+                    description: o.description || null,
+                });
+                if (upcoming.length >= 6) break;
+            }
+            if (upcoming.length >= 6) break;
+        }
+
+        return upcoming;
+    } catch {
+        return [];
+    }
+}
+
 import { ArticleUrlSync } from '@/components/layout/ArticleUrlSync';
 
-const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml'];
+const VALID_LOCALES: Locale[] = ['ta', 'en', 'hi', 'kn', 'te', 'ml', 'bn'];
 
 export async function generateMetadata({
     params,
@@ -192,6 +255,11 @@ export default async function CalendarEventDetailPage({
         return notFound();
     }
 
+    const [sameDayEvents, upcomingEvents] = await Promise.all([
+        fetchSameDayEvents(item.event_date, id, locale),
+        fetchUpcomingEvents(item.event_date, id, locale),
+    ]);
+
     const headersList = await headers();
     const host = headersList.get('host') || 'askharekrishna.com';
     const protocol = host.includes('localhost') ? 'http' : 'https';
@@ -214,6 +282,7 @@ export default async function CalendarEventDetailPage({
             case 'kn': return 'ಕ್ಯಾಲೆಂಡರ್‌ಗೆ ಹಿಂತಿರುಗಿ';
             case 'te': return 'క్యాలెండర్‌కు తిరిగి వెళ్లండి';
             case 'ml': return 'കലണ്ടറിലേക്ക് മടങ്ങുക';
+            case 'bn': return 'পঞ্জিকায় ফিরে যান';
             default: return 'Back to Calendar';
         }
     };
@@ -337,6 +406,15 @@ export default async function CalendarEventDetailPage({
                             breakFastDate={item.break_fast_date}
                             breakFastDayOfWeek={item.break_fast_day_of_week}
                             isEkadashi={item.is_ekadashi}
+                        />
+
+                        {/* Same-Day and Next Upcoming Events Section */}
+                        <RelatedEventsSection
+                            locale={locale}
+                            currentEventId={item.id}
+                            currentEventDate={item.event_date}
+                            sameDayEvents={sameDayEvents}
+                            upcomingEvents={upcomingEvents}
                         />
 
                         {/* Debate-Style Comprehensive Share Suite */}
