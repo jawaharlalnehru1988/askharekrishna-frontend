@@ -66,6 +66,7 @@ export function buildArticleMetadata(input: ArticleMetadataInput): Metadata {
         openGraph: {
             title: input.title,
             description: input.description,
+            siteName: 'Ask Hare Krishna',
             type: 'article',
             url: canonicalUrl,
             images: [

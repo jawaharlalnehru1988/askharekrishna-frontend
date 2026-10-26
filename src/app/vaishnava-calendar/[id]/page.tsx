@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
@@ -13,10 +13,11 @@ import { CalendarArticleShareSection } from '@/components/calendar/CalendarArtic
 import { buildArticleMetadata, toAbsoluteMediaUrl, toPlainExcerpt } from '@/lib/metadata';
 import { ParanaGuidelines } from '@/components/calendar/ParanaGuidelines';
 import { RelatedEventsSection, RelatedEventItem } from '@/components/calendar/RelatedEventsSection';
+import ClientCalendarAudioWrapper from '@/components/calendar/ClientCalendarAudioWrapper';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.askharekrishna.com/api';
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 const LUNAR_CALENDAR_NOTES: Record<string, { title: string; desc: string }> = {
     ta: {
@@ -61,6 +62,7 @@ export interface SingleEventDetail {
     title: string;
     description: string | null;
     imageUrl: string | null;
+    audioUrl: string | null;
 }
 
 function resolveLocale(headersList: Headers): Locale {
@@ -83,10 +85,10 @@ function resolveLocale(headersList: Headers): Locale {
     return (headersList.get('x-locale') as Locale) || derivedLocale;
 }
 
-async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise<SingleEventDetail | null> {
+const fetchCalendarItemById = cache(async (id: string, locale: string = 'en'): Promise<SingleEventDetail | null> => {
     try {
         // First try fetching single observance by ID
-        const obsRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/${id}/?lang=${locale}`, { cache: 'no-store' });
+        const obsRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/${id}/?lang=${locale}`, { next: { revalidate: 3600 } });
         if (obsRes.ok) {
             const obsData = await obsRes.json();
             return {
@@ -105,11 +107,12 @@ async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise
                 title: obsData.title || obsData.ekadashi_name || obsData.event_date,
                 description: obsData.description,
                 imageUrl: obsData.imageUrl || obsData.image,
+                audioUrl: obsData.audioUrl || obsData.audio_file || null,
             };
         }
 
         // Fallback: try fetching day by ID (for legacy day links)
-        const dayRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/${id}/?lang=${locale}`, { cache: 'no-store' });
+        const dayRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/${id}/?lang=${locale}`, { next: { revalidate: 3600 } });
         if (dayRes.ok) {
             const dayData = await dayRes.json();
             const mainObs = dayData.observances?.[0];
@@ -129,6 +132,7 @@ async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise
                 title: mainObs?.title || dayData.ekadashi_name || dayData.event_date,
                 description: mainObs?.description || dayData.fast_details,
                 imageUrl: mainObs?.imageUrl || mainObs?.image,
+                audioUrl: mainObs?.audioUrl || mainObs?.audio_file || null,
             };
         }
 
@@ -136,11 +140,11 @@ async function fetchCalendarItemById(id: string, locale: string = 'en'): Promise
     } catch {
         return null;
     }
-}
+});
 
 async function fetchSameDayEvents(eventDate: string, currentId: string, locale: string = 'en'): Promise<RelatedEventItem[]> {
     try {
-        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/?day__event_date=${eventDate}&lang=${locale}`, { cache: 'no-store' });
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/?day__event_date=${eventDate}&lang=${locale}`, { next: { revalidate: 3600 } });
         if (!res.ok) return [];
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data.results || []);
@@ -164,7 +168,12 @@ async function fetchSameDayEvents(eventDate: string, currentId: string, locale: 
 
 async function fetchUpcomingEvents(eventDate: string, currentId: string, locale: string = 'en'): Promise<RelatedEventItem[]> {
     try {
-        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/?start_date=${eventDate}&lang=${locale}`, { cache: 'no-store' });
+        const startDate = new Date(eventDate);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 45);
+        const endDateStr = endDate.toISOString().split('T')[0];
+
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/?start_date=${eventDate}&end_date=${endDateStr}&lang=${locale}`, { next: { revalidate: 3600 } });
         if (!res.ok) return [];
         const data = await res.json();
         const days = Array.isArray(data) ? data : (data.results || []);
@@ -358,6 +367,16 @@ export default async function CalendarEventDetailPage({
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                             </div>
+                        )}
+
+                        {/* Audio Player if available */}
+                        {item.audioUrl && (
+                            <ClientCalendarAudioWrapper
+                                id={item.id}
+                                title={item.title}
+                                audioUrl={item.audioUrl}
+                                imageUrl={item.imageUrl}
+                            />
                         )}
 
                         {/* Article Content */}
