@@ -12,6 +12,14 @@ interface ClientAudioWrapperProps {
     prevStoryId?: number;
 }
 
+function toAbsoluteAudioUrl(path: string | null | undefined): string | null {
+    if (!path) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    const clean = path.startsWith('/') ? path : `/${path}`;
+    const mediaPath = clean.startsWith('/media/') ? clean : `/media${clean}`;
+    return `https://api.askharekrishna.com${mediaPath}`;
+}
+
 export default function ClientAudioWrapper({
     matchedStory,
     categoryName,
@@ -21,6 +29,8 @@ export default function ClientAudioWrapper({
     const [isPlaying, setIsPlaying] = useState(false);
     const router = useRouter();
     const { locale } = useLanguage();
+
+    const audioUrl = toAbsoluteAudioUrl(matchedStory.audioPath);
 
     const handleNextStory = () => {
         if (nextStoryId) {
@@ -34,9 +44,11 @@ export default function ClientAudioWrapper({
         }
     };
 
+    if (!audioUrl) return null;
+
     return (
         <AudioPlayer
-            url={matchedStory.audioPath}
+            url={audioUrl}
             title={matchedStory.subTopic}
             playing={isPlaying}
             setPlaying={setIsPlaying}
@@ -45,7 +57,7 @@ export default function ClientAudioWrapper({
             resource={{
                 id: matchedStory.id,
                 category: categoryName,
-                audioPath: matchedStory.audioPath,
+                audioPath: audioUrl,
                 imagePath: matchedStory.imageUrl || matchedStory.imagePath || matchedStory.articleImage || null,
                 videoPath: null,
                 translations: [],

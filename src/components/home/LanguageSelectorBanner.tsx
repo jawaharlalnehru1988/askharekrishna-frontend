@@ -94,6 +94,24 @@ export default function LanguageSelectorBanner() {
             url.hostname = 'askharekrishna.com';
         }
 
+        // If viewing a category in debate or etiquettes, translate the category parameter to nextLocale
+        const currentCategory = url.searchParams.get('category');
+        if (currentCategory && typeof window !== 'undefined') {
+            try {
+                const mapStr = sessionStorage.getItem('askharekrishna_category_translations');
+                const map = (window as any).__categoryTranslations || (mapStr ? JSON.parse(mapStr) : null);
+                if (map) {
+                    const cleanParam = decodeURIComponent(currentCategory).replace(/\+/g, ' ').trim();
+                    const transObj = map[cleanParam] || map[cleanParam.toLowerCase()];
+                    if (transObj && transObj[nextLocale]) {
+                        url.searchParams.set('category', transObj[nextLocale]);
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
         // Update ?lang query parameter to reload with the new language
         url.searchParams.set('lang', nextLocale);
 

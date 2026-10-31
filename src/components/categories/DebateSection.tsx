@@ -25,10 +25,13 @@ interface DebateArticle {
 }
 
 interface DebateCategory {
+    id?: number;
     name: string;
     description: string;
     image: string | null;
     articleList: DebateArticle[];
+    translations?: Record<string, string>;
+    all_names?: string[];
 }
 
 const ensureAbsoluteUrl = (path: string | null | undefined): string => {
@@ -240,6 +243,41 @@ const DebateSectionInner = () => {
                 }
 
                 debateCatalogCache[locale] = data;
+
+                // Cache translations to sessionStorage and window for seamless Navbar language switching
+                if (typeof window !== 'undefined') {
+                    try {
+                        const existingStr = sessionStorage.getItem('askharekrishna_category_translations');
+                        const map = existingStr ? JSON.parse(existingStr) : {};
+                        data.forEach((cat) => {
+                            if (cat.translations) {
+                                Object.values(cat.translations).forEach((name) => {
+                                    if (name) {
+                                        map[name.trim()] = cat.translations;
+                                        map[name.trim().toLowerCase()] = cat.translations;
+                                    }
+                                });
+                                if (cat.name) {
+                                    map[cat.name.trim()] = cat.translations;
+                                    map[cat.name.trim().toLowerCase()] = cat.translations;
+                                }
+                            }
+                            if (cat.all_names) {
+                                cat.all_names.forEach((name) => {
+                                    if (name && cat.translations) {
+                                        map[name.trim()] = cat.translations;
+                                        map[name.trim().toLowerCase()] = cat.translations;
+                                    }
+                                });
+                            }
+                        });
+                        (window as any).__categoryTranslations = map;
+                        sessionStorage.setItem('askharekrishna_category_translations', JSON.stringify(map));
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+
                 if (isMounted) {
                     setCategories(data);
                 }
@@ -259,15 +297,64 @@ const DebateSectionInner = () => {
         };
     }, [locale]);
 
+    // Helper to normalize strings for comparison (handles + vs space, accents, trimming, and casing)
+    const normalizeCatString = (s: string | null | undefined): string => {
+        if (!s) return '';
+        return decodeURIComponent(s)
+            .replace(/\+/g, ' ')
+            .trim()
+            .toLowerCase();
+    };
+
     // Find the currently selected category if categoryParam is present in the URL
     const selectedCategory = useMemo(() => {
         if (!categoryParam || categories.length === 0) return null;
-        const decodedParam = decodeURIComponent(categoryParam).trim().toLowerCase();
-        return categories.find((cat) => {
-            const catNameLower = cat.name.trim().toLowerCase();
-            return catNameLower === decodedParam || cat.name.trim() === categoryParam.trim();
-        }) || null;
+        const target = normalizeCatString(categoryParam);
+
+        // 1. Direct match on current category name
+        let match = categories.find((cat) => {
+            return normalizeCatString(cat.name) === target;
+        });
+
+        // 2. Cross-language / alias match
+        if (!match) {
+            match = categories.find((cat) => {
+                // Check all translations
+                if (cat.translations) {
+                    const transMatches = Object.values(cat.translations).some(
+                        (t) => normalizeCatString(t) === target
+                    );
+                    if (transMatches) return true;
+                }
+                // Check all_names
+                if (cat.all_names) {
+                    const aliasMatches = cat.all_names.some(
+                        (n) => normalizeCatString(n) === target
+                    );
+                    if (aliasMatches) return true;
+                }
+                // Check ID if numeric
+                if (cat.id && String(cat.id) === target) {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        return match || null;
     }, [categoryParam, categories]);
+
+    // Keep URL category query parameter in sync with the current locale's category name
+    useEffect(() => {
+        if (selectedCategory && categoryParam && typeof window !== 'undefined') {
+            const rawParam = decodeURIComponent(categoryParam).replace(/\+/g, ' ').trim();
+            if (rawParam !== selectedCategory.name.trim()) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('category', selectedCategory.name);
+                window.history.replaceState(null, '', url.pathname + url.search);
+            }
+        }
+    }, [selectedCategory, categoryParam]);
 
     // Filtered articles when viewing a single category
     const filteredArticles = useMemo(() => {

@@ -18,8 +18,9 @@ function toAbsoluteAudioUrl(path: string | null): string | null {
         }
         return path;
     }
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `https://api.askharekrishna.com${cleanPath}`;
+    const clean = path.startsWith('/') ? path : `/${path}`;
+    const mediaPath = clean.startsWith('/media/') ? clean : `/media${clean}`;
+    return `https://api.askharekrishna.com${mediaPath}`;
 }
 
 export default function ClientCalendarAudioWrapper({

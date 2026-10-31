@@ -93,6 +93,17 @@ export default async function RootLayout({
               document.documentElement.classList.toggle('dark', theme === 'dark');
               document.documentElement.style.colorScheme = theme;
             } catch (e) {}
+
+            // Unregister obsolete or rogue service workers to prevent stalled media range requests
+            try {
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for (var i = 0; i < registrations.length; i++) {
+                    registrations[i].unregister();
+                  }
+                }).catch(function() {});
+              }
+            } catch (e) {}
           })();
         ` }} />
       </head>

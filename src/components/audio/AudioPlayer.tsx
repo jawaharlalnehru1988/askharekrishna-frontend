@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Download, Volume2, RotateCcw, Repeat, SkipBack, SkipForward } from 'lucide-react';
 
@@ -68,13 +67,14 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
     const ensureAbsoluteUrl = (path: string | null | undefined) => {
         if (!path) return "";
-        if (path.startsWith('http')) return path;
+        if (path.startsWith('http://') || path.startsWith('https://')) return path;
         const apiBase = "https://api.askharekrishna.com";
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
-        return `${apiBase}${cleanPath}`;
+        const mediaPath = cleanPath.startsWith('/media/') ? cleanPath : `/media${cleanPath}`;
+        return `${apiBase}${mediaPath}`;
     };
 
-    const activeUrl = currentTrack?.audioUrl || url || "";
+    const activeUrl = ensureAbsoluteUrl(currentTrack?.audioUrl || url || "");
     const activeTitle = currentTrack?.title || title || resource?.title || "Devotional Articles / Audio";
     const activeImage = ensureAbsoluteUrl(currentTrack?.coverImage || resource?.imagePath);
 
@@ -83,48 +83,73 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const [played, setPlayed] = useState(0);
     const [seeking, setSeeking] = useState(false);
     const [volume, setVolume] = useState(0.8);
-    const [loading, setLoading] = useState(true);
+    const [isBuffering, setIsBuffering] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement>(null);
-    // Track the URL whose saved position we should restore once metadata loads.
-    // We capture it at the moment the URL changes so onLoadedMetadata can read it.
     const pendingRestoreUrlRef = useRef<string>('');
+    const stallTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const positionSaveThrottleRef = useRef<number>(0);
 
+    // Reset progress and timers whenever the active audio URL changes
     useEffect(() => {
-        setLoading(true);
+        const audio = audioRef.current;
+        if (audio && !audio.paused) {
+            audio.pause();
+        }
+        setIsBuffering(false);
         setPlayed(0);
+        setDuration(0);
         pendingRestoreUrlRef.current = activeUrl;
-        // Do NOT auto-play on mount — wait for an explicit user gesture
+        if (stallTimerRef.current) {
+            clearTimeout(stallTimerRef.current);
+            stallTimerRef.current = null;
+        }
     }, [activeUrl]);
 
+    // Volume control
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume;
         }
     }, [volume]);
 
-    // Playback state persistence
+    // Cleanup stall timer on unmount
     useEffect(() => {
-        sessionStorage.setItem('kirtan_isPlaying', playing.toString());
-    }, [playing]);
+        return () => {
+            if (stallTimerRef.current) {
+                clearTimeout(stallTimerRef.current);
+                stallTimerRef.current = null;
+            }
+        };
+    }, []);
 
+    // Synchronize prop-level play/pause (e.g. from parent or external controls)
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (playing && audio.paused) {
-            // Only call play() when the element is actually paused to avoid
-            // redundant calls that can interfere with in-flight promises.
-            audio.play().catch(err => {
-                console.warn("Playback blocked:", err);
-                setPlaying(false);
-            });
-        } else if (!playing && !audio.paused) {
-            audio.pause();
+        if (playing) {
+            if (audio.paused) {
+                setIsBuffering(true);
+                const p = audio.play();
+                if (p !== undefined) {
+                    p.then(() => setIsBuffering(false)).catch((err: any) => {
+                        if (err?.name === 'AbortError') return;
+                        console.warn("[AudioPlayer] Playback blocked:", err);
+                        setIsBuffering(false);
+                        setPlaying(false);
+                    });
+                }
+            }
+        } else {
+            if (!audio.paused) {
+                audio.pause();
+            }
+            setIsBuffering(false);
         }
-    }, [playing, activeUrl]);
+    }, [playing]);
 
-    // Media Session API Support
+    // Media Session API Support (lockscreen / notification media controls)
     useEffect(() => {
         if (!('mediaSession' in navigator)) return;
 
@@ -137,8 +162,12 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             ]
         });
 
-        navigator.mediaSession.setActionHandler('play', () => setPlaying(true));
-        navigator.mediaSession.setActionHandler('pause', () => setPlaying(false));
+        navigator.mediaSession.setActionHandler('play', () => handlePlayPause());
+        navigator.mediaSession.setActionHandler('pause', () => {
+            if (audioRef.current) audioRef.current.pause();
+            setPlaying(false);
+            setIsBuffering(false);
+        });
         navigator.mediaSession.setActionHandler('previoustrack', () => onPrevious?.());
         navigator.mediaSession.setActionHandler('nexttrack', () => onNext?.() || onEnded?.());
 
@@ -150,36 +179,61 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         };
     }, [activeUrl, activeTitle, activeImage, onEnded, onNext, onPrevious]);
 
-    const requestPlayingChange = async (nextPlaying: boolean) => {
+    // Direct synchronous user interaction handler for mobile & desktop
+    const handlePlayPause = () => {
         const audio = audioRef.current;
-        if (!audio) {
-            setPlaying(nextPlaying);
-            return;
-        }
+        if (!audio) return;
 
-        if (nextPlaying) {
-            try {
-                await audio.play();
-                setPlaying(true);
-            } catch (err) {
-                console.warn('Playback blocked:', err);
-                setPlaying(false);
-            }
-        } else {
+        if (playing) {
             audio.pause();
             setPlaying(false);
+            setIsBuffering(false);
+            if (stallTimerRef.current) {
+                clearTimeout(stallTimerRef.current);
+                stallTimerRef.current = null;
+            }
+        } else {
+            setIsBuffering(true);
+            setPlaying(true);
+
+            // Restore saved position if available
+            const savedTime = localStorage.getItem(`audio_pos_${activeUrl}`);
+            if (savedTime && audio.currentTime === 0) {
+                const t = parseFloat(savedTime);
+                if (!isNaN(t) && t > 0) {
+                    try {
+                        audio.currentTime = t;
+                    } catch (_) {}
+                }
+            }
+
+            // Invoked synchronously in the direct user-gesture event context
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        setIsBuffering(false);
+                    })
+                    .catch((err: any) => {
+                        if (err?.name === 'AbortError') return;
+                        console.warn("[AudioPlayer] Direct play error:", err);
+                        setIsBuffering(false);
+                        setPlaying(false);
+                    });
+            }
         }
     };
-
-    const handlePlayPause = () => requestPlayingChange(!playing);
 
     const onTimeUpdate = () => {
         if (!seeking && audioRef.current) {
             const current = audioRef.current.currentTime;
             const total = audioRef.current.duration;
-            if (total > 0) {
+            if (isFinite(total) && total > 0) {
                 setPlayed(current / total);
-                if (Math.floor(current) % 5 === 0) {
+                // Save progress every 3 seconds
+                const now = Date.now();
+                if (now - positionSaveThrottleRef.current > 3000) {
+                    positionSaveThrottleRef.current = now;
                     localStorage.setItem(`audio_pos_${activeUrl}`, current.toString());
                 }
             }
@@ -189,23 +243,79 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const onLoadedMetadata = () => {
         const audio = audioRef.current;
         if (!audio) return;
-        setDuration(audio.duration);
-        setLoading(false);
+        const dur = audio.duration;
+        if (isFinite(dur) && dur > 0) {
+            setDuration(dur);
+        }
+        setIsBuffering(false);
 
-        // Restore saved position NOW that metadata (and duration) is available.
-        // Doing this earlier (before metadata loads) aborts the network request.
+        // Restore saved position safely
         const url = pendingRestoreUrlRef.current;
         if (url) {
             const savedTime = localStorage.getItem(`audio_pos_${url}`);
             if (savedTime) {
                 const time = parseFloat(savedTime);
-                if (!isNaN(time) && time > 0 && time < audio.duration - 5) {
-                    audio.currentTime = time;
-                    setPlayed(time / audio.duration);
+                if (!isNaN(time) && time > 0 && (!isFinite(dur) || dur <= 0 || time < dur - 5)) {
+                    try {
+                        audio.currentTime = time;
+                        if (isFinite(dur) && dur > 0) {
+                            setPlayed(time / dur);
+                        }
+                    } catch (e) {
+                        console.warn("[AudioPlayer] Could not restore saved position:", e);
+                    }
                 }
             }
             pendingRestoreUrlRef.current = '';
         }
+    };
+
+    const onCanPlay = () => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        setIsBuffering(false);
+        if (isFinite(audio.duration) && audio.duration > 0 && duration === 0) {
+            setDuration(audio.duration);
+        }
+    };
+
+    const onWaiting = () => {
+        if (playing) {
+            setIsBuffering(true);
+        }
+    };
+
+    const onPlaying = () => {
+        setIsBuffering(false);
+        setPlaying(true);
+        if (stallTimerRef.current) {
+            clearTimeout(stallTimerRef.current);
+            stallTimerRef.current = null;
+        }
+    };
+
+    // Spotify-like automatic stall recovery
+    const handleStalled = () => {
+        if (!playing) return;
+        setIsBuffering(true);
+        if (stallTimerRef.current) clearTimeout(stallTimerRef.current);
+
+        // If buffer is stuck for 3.5s while playing, reconnect the stream seamlessly
+        stallTimerRef.current = setTimeout(() => {
+            const audio = audioRef.current;
+            if (audio && playing) {
+                console.log("[AudioPlayer] Stream stalled, auto-recovering...");
+                const currentPos = audio.currentTime;
+                audio.load();
+                audio.currentTime = currentPos;
+                audio.play().catch(console.warn);
+            }
+        }, 3500);
+    };
+
+    const onError = (e: any) => {
+        console.warn("[AudioPlayer] Audio playback element error:", e);
+        setIsBuffering(false);
     };
 
     const handleSeekMouseDown = () => setSeeking(true);
@@ -214,8 +324,11 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         setSeeking(false);
         const value = parseFloat(e.target.value);
         if (audioRef.current && !isNaN(value)) {
-            audioRef.current.currentTime = value * audioRef.current.duration;
-            setPlayed(value);
+            const targetTime = value * audioRef.current.duration;
+            if (isFinite(targetTime)) {
+                audioRef.current.currentTime = targetTime;
+                setPlayed(value);
+            }
         }
     };
 
@@ -223,17 +336,18 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         localStorage.removeItem(`audio_pos_${activeUrl}`);
         if (isRepeat && audioRef.current) {
             audioRef.current.currentTime = 0;
-            audioRef.current.play();
+            audioRef.current.play().catch(console.warn);
         } else if (onNext) {
             onNext();
         } else {
             setPlaying(false);
+            setIsBuffering(false);
             if (onEnded) onEnded();
         }
     };
 
     const formatTime = (seconds: number) => {
-        if (typeof seconds !== 'number' || isNaN(seconds)) return '0:00';
+        if (typeof seconds !== 'number' || isNaN(seconds) || !isFinite(seconds) || seconds <= 0) return '0:00';
         const mm = Math.floor(seconds / 60);
         const ss = Math.floor(seconds % 60).toString().padStart(2, '0');
         return `${mm}:${ss}`;
@@ -245,7 +359,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
             const blob = await response.blob();
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = `${activeTitle}.m4a`;
+            link.download = `${activeTitle}.mp3`;
             link.click();
         } catch (error) {
             window.open(activeUrl, '_blank');
@@ -265,20 +379,27 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </div>
             )}
 
-            {loading && (
+            {/* Buffering Shimmer Indicator */}
+            {isBuffering && (
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-shimmer"></div>
             )}
 
+            {/* Native HTML5 Audio with Spotify-grade mobile streaming support */}
             <audio
                 ref={audioRef}
                 src={activeUrl}
+                preload="metadata"
+                playsInline
+                crossOrigin="anonymous"
                 onTimeUpdate={onTimeUpdate}
                 onLoadedMetadata={onLoadedMetadata}
+                onCanPlay={onCanPlay}
+                onWaiting={onWaiting}
+                onPlaying={onPlaying}
+                onPause={() => setIsBuffering(false)}
+                onStalled={handleStalled}
                 onEnded={handleAudioEnded}
-                onError={() => setLoading(false)}
-                onWaiting={() => setLoading(true)}
-                onPlaying={() => setLoading(false)}
-                preload="auto"
+                onError={onError}
             />
 
             <div className="flex flex-col gap-6 relative z-10">
@@ -305,6 +426,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                             step="any"
                             value={played || 0}
                             onMouseDown={handleSeekMouseDown}
+                            onTouchStart={handleSeekMouseDown}
                             onChange={handleSeekChange}
                             onMouseUp={handleSeekMouseUp}
                             onTouchEnd={handleSeekMouseUp}
@@ -328,7 +450,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                     <div className="flex items-center gap-4 sm:gap-8">
                         <button
                             onClick={() => { if (audioRef.current) audioRef.current.currentTime = 0; setPlayed(0); }}
-                            className="p-2 text-stone-400 hover:text-white transition-colors"
+                            className="p-2 text-stone-400 hover:text-white transition-colors cursor-pointer"
+                            aria-label="Restart"
                         >
                             <RotateCcw size={20} />
                         </button>
@@ -336,17 +459,19 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                         <button
                             onClick={onPrevious}
                             disabled={!onPrevious}
-                            className="p-2 text-stone-400 hover:text-white transition-colors disabled:opacity-20"
+                            className="p-2 text-stone-400 hover:text-white transition-colors disabled:opacity-20 cursor-pointer"
+                            aria-label="Previous Track"
                         >
                             <SkipBack size={24} fill="currentColor" />
                         </button>
 
+                        {/* Always-interactive Play/Pause button (never deadlocked/disabled) */}
                         <button
                             onClick={handlePlayPause}
-                            className="w-16 h-16 sm:w-20 sm:h-20 bg-orange-600 hover:bg-orange-500 text-white rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-xl shadow-orange-900/40"
-                            disabled={loading && played === 0}
+                            className="w-16 h-16 sm:w-20 sm:h-20 bg-orange-600 hover:bg-orange-500 text-white rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-xl shadow-orange-900/40 relative cursor-pointer"
+                            aria-label={playing ? "Pause" : "Play"}
                         >
-                            {loading && played === 0 ? (
+                            {isBuffering && playing ? (
                                 <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             ) : playing ? (
                                 <Pause fill="white" size={32} />
@@ -358,14 +483,16 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                         <button
                             onClick={onNext}
                             disabled={!onNext}
-                            className="p-2 text-stone-400 hover:text-white transition-colors disabled:opacity-20"
+                            className="p-2 text-stone-400 hover:text-white transition-colors disabled:opacity-20 cursor-pointer"
+                            aria-label="Next Track"
                         >
                             <SkipForward size={24} fill="currentColor" />
                         </button>
 
                         <button
                             onClick={() => setIsRepeat(!isRepeat)}
-                            className={`p-2 transition-colors ${isRepeat ? 'text-orange-500' : 'text-stone-400 hover:text-white'}`}
+                            className={`p-2 transition-colors cursor-pointer ${isRepeat ? 'text-orange-500' : 'text-stone-400 hover:text-white'}`}
+                            aria-label="Toggle Repeat"
                         >
                             <Repeat size={20} />
                         </button>
@@ -395,7 +522,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
                         <button
                             onClick={handleDownload}
-                            className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all border border-white/10 active:scale-95"
+                            className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all border border-white/10 active:scale-95 cursor-pointer"
+                            aria-label="Download Audio"
                         >
                             <Download size={16} />
                         </button>

@@ -21,8 +21,9 @@ interface ClientPoojaAudioWrapperProps {
 function toAbsoluteAudioUrl(path: string | null): string | null {
     if (!path) return null;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `https://api.askharekrishna.com${cleanPath}`;
+    const clean = path.startsWith('/') ? path : `/${path}`;
+    const mediaPath = clean.startsWith('/media/') ? clean : `/media${clean}`;
+    return `https://api.askharekrishna.com${mediaPath}`;
 }
 
 export default function ClientPoojaAudioWrapper({ article }: ClientPoojaAudioWrapperProps) {
