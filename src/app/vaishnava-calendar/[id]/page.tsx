@@ -88,7 +88,7 @@ function resolveLocale(headersList: Headers): Locale {
 const fetchCalendarItemById = cache(async (id: string, locale: string = 'en'): Promise<SingleEventDetail | null> => {
     try {
         // First try fetching single observance by ID
-        const obsRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/${id}/?lang=${locale}`, { next: { revalidate: 3600 } });
+        const obsRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/${id}/?lang=${locale}`, { next: { revalidate: 60 } });
         if (obsRes.ok) {
             const obsData = await obsRes.json();
             return {
@@ -112,7 +112,7 @@ const fetchCalendarItemById = cache(async (id: string, locale: string = 'en'): P
         }
 
         // Fallback: try fetching day by ID (for legacy day links)
-        const dayRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/${id}/?lang=${locale}`, { next: { revalidate: 3600 } });
+        const dayRes = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/${id}/?lang=${locale}`, { next: { revalidate: 60 } });
         if (dayRes.ok) {
             const dayData = await dayRes.json();
             const mainObs = dayData.observances?.[0];
@@ -144,7 +144,7 @@ const fetchCalendarItemById = cache(async (id: string, locale: string = 'en'): P
 
 async function fetchSameDayEvents(eventDate: string, currentId: string, locale: string = 'en'): Promise<RelatedEventItem[]> {
     try {
-        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/?day__event_date=${eventDate}&lang=${locale}`, { next: { revalidate: 3600 } });
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/observances/?day__event_date=${eventDate}&lang=${locale}`, { next: { revalidate: 60 } });
         if (!res.ok) return [];
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data.results || []);
@@ -173,7 +173,7 @@ async function fetchUpcomingEvents(eventDate: string, currentId: string, locale:
         endDate.setDate(startDate.getDate() + 45);
         const endDateStr = endDate.toISOString().split('T')[0];
 
-        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/?start_date=${eventDate}&end_date=${endDateStr}&lang=${locale}`, { next: { revalidate: 3600 } });
+        const res = await fetch(`${API_BASE_URL}/vaishnava-calendar/calendar-days/?start_date=${eventDate}&end_date=${endDateStr}&lang=${locale}`, { next: { revalidate: 60 } });
         if (!res.ok) return [];
         const data = await res.json();
         const days = Array.isArray(data) ? data : (data.results || []);
