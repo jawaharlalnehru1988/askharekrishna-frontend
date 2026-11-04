@@ -7,4 +7,6 @@ export const categories = [
     "stories",
     "debate",
     "vaishnava-etiquettes",
+    "festival-insights",
+    "baby-names",
 ];

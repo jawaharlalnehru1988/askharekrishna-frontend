@@ -16,6 +16,7 @@ import {
     Compass,
     ScrollText,
     HeartHandshake,
+    Baby,
 } from 'lucide-react';
 
 interface CategoryCardData {
@@ -91,6 +92,22 @@ interface LocalizedContent {
             highlights: string[];
             actionLabel: string;
         };
+        festival: {
+            title: string;
+            subtopic: string;
+            description: string;
+            badge: string;
+            highlights: string[];
+            actionLabel: string;
+        };
+        babyNames: {
+            title: string;
+            subtopic: string;
+            description: string;
+            badge: string;
+            highlights: string[];
+            actionLabel: string;
+        };
     };
 }
 
@@ -98,7 +115,7 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
     en: {
         sectionBadge: 'Authentic Vedic Portals',
         sectionTitle: 'Topic Categories',
-        sectionSubtitle: 'Explore authoritative Vedic wisdom, time-tested spiritual practices, and scriptural resolutions across our six core learning portals — backed 100% by Shastra Pramana.',
+        sectionSubtitle: 'Explore authoritative Vedic wisdom, time-tested spiritual practices, and scriptural resolutions across our core learning portals — backed 100% by Shastra Pramana.',
         guaranteeBannerTitle: 'Our Commitment to Authenticity',
         guaranteeBannerText: 'Every topic, procedure, and analysis is strictly aligned with authentic Gaudiya Vaishnava siddhanta as taught by His Divine Grace A.C. Bhaktivedanta Swami Prabhupada.',
         cards: {
@@ -150,12 +167,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['Temple Decorum & Seva', 'Spiritual Relationships', 'Daily Dina-Caryā Protocol'],
                 actionLabel: 'Explore Etiquettes',
             },
+            festival: {
+                title: 'Festival Insights',
+                subtopic: 'Shastric Significance, Vratas & Sacred Observances',
+                description: 'Uncover the deep philosophical wisdom, scriptural origins, and authentic sadachara rules (dos & don’ts) for auspicious Vaishnava festivals.',
+                badge: '100% Shastric Festival Wisdom',
+                highlights: ['Dipavali Shastra Pramana', 'Rama & Krishna Lilas', 'Festival Dos & Don’ts'],
+                actionLabel: 'Explore Festivals',
+            },
+            babyNames: {
+                title: 'Vedic & Vaishnava Baby Names',
+                subtopic: 'Sacred Names of Krishna, Vishnu, Radha & Lakshmi',
+                description: 'Discover authentic transcendental names for newborn boys and girls derived from the Vishnu Sahasranama and Radha Sahasranama, with character prefix filters and spiritual meanings.',
+                badge: '100% Shastric Divine Names',
+                highlights: ['Vishnu & Krishna Names', 'Radha & Lakshmi Names', '1, 2 & 3 Letter Search'],
+                actionLabel: 'Find Divine Names',
+            },
         },
     },
     ta: {
         sectionBadge: 'நம்பகமான வேத வழிகாட்டல்',
         sectionTitle: 'தலைப்புப் பிரிவுகள் (Topic Categories)',
-        sectionSubtitle: 'சாஸ்திர ஆதாரங்கள் மற்றும் ஸ்ரீல பிரபுபாதரின் நேரடி போதனைகளின் அடிப்படையில் அமைந்த 6 முதன்மை தலைப்புப் பிரிவுகளை ஆராய்ந்து ஆழமான ஆன்மீக அறிவைப் பெறுங்கள்.',
+        sectionSubtitle: 'சாஸ்திர ஆதாரங்கள் மற்றும் ஸ்ரீல பிரபுபாதரின் நேரடி போதனைகளின் அடிப்படையில் அமைந்த முதன்மை தலைப்புப் பிரிவுகளை ஆராய்ந்து ஆழமான ஆன்மீக அறிவைப் பெறுங்கள்.',
         guaranteeBannerTitle: 'நம்பகத்தன்மைக்கான உறுதிமொழி',
         guaranteeBannerText: 'அனைத்துக் கட்டுரைகளும் ஆச்சாரியரான ஸ்ரீல அ.ச. பக்திவேதாந்த சுவாமி பிரபுபாதரின் அதிகாரப்பூர்வ போதனைகள் மற்றும் சாஸ்திர பிரமாணங்களின்படி தொகுக்கப்பட்டுள்ளன.',
         cards: {
@@ -207,12 +240,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['ஆலய நெறிமுறைகள்', 'பக்தர் உறவு மரியாதை', 'தினசரி தினசர்யா விதி'],
                 actionLabel: 'நெறிமுறைகளை அறிக',
             },
+            festival: {
+                title: 'பண்டிகைகளின் தாத்பரியம் (Festival Insights)',
+                subtopic: 'சாஸ்திர தாத்பரியம், விரதங்கள் & புனித வைபவங்கள்',
+                description: 'புராணங்கள் மற்றும் இதிகாசங்களின்படி புனித வைஷ்ணவ பண்டிகைகளின் ஆழ்ந்த சாஸ்திர தாத்பரியங்கள், திவ்ய லீலைகள் மற்றும் செய்ய வேண்டிய/கூடாத விரத நெறிமுறைகள்.',
+                badge: '100% சாஸ்திரப் பூர்வ உண்மை',
+                highlights: ['தீபாவளி சாஸ்திர பிரமாணம்', 'ராம & கிருஷ்ண லீலைகள்', 'விரத நெறிமுறைகள்'],
+                actionLabel: 'பண்டிகைகளை அறிக',
+            },
+            babyNames: {
+                title: 'குழந்தைகளுக்கான தெய்வீகப் பெயர்கள்',
+                subtopic: 'ஸ்ரீ கிருஷ்ணர், விஷ்ணு, ராதா & லக்ஷ்மி திருநாமங்கள்',
+                description: 'விஷ்ணு சஹஸ்ரநாமம், ராதா சஹஸ்ரநாமம் மற்றும் பாகவதத்திலிருந்து பிறந்த ஆண் மற்றும் பெண் குழந்தைகளுக்கான மங்களகரமான திருநாமங்கள், ஆன்மீக அர்த்தங்கள் மற்றும் எழுத்து வாரியான வடிகட்டிகள்.',
+                badge: '100% சாஸ்திரத் திருநாமங்கள்',
+                highlights: ['விஷ்ணு & கிருஷ்ணர் பெயர்கள்', 'ராதா & லக்ஷ்மி பெயர்கள்', '1, 2, 3 எழுத்து வடிகட்டி'],
+                actionLabel: 'பெயர்களைத் தேடுக',
+            },
         },
     },
     hi: {
         sectionBadge: 'प्रामाणिक वैदिक प्रवेशद्वार',
         sectionTitle: 'विषय श्रेणियाँ (Topic Categories)',
-        sectionSubtitle: 'शास्त्र प्रमाण और श्रील प्रभुपाद के मूल उपदेशों पर आधारित छह प्रमुख अध्यायों का अन्वेषण करें और प्रामाणिक ज्ञान प्राप्त करें।',
+        sectionSubtitle: 'शास्त्र प्रमाण और श्रील प्रभुपाद के मूल उपदेशों पर आधारित प्रमुख अध्यायों का अन्वेषण करें और प्रामाणिक ज्ञान प्राप्त करें।',
         guaranteeBannerTitle: 'प्रामाणिकता की गारंटी',
         guaranteeBannerText: 'प्रत्येक विषय और अनुष्ठान प्रामाणिक गौड़ीय वैष्णव सिद्धांत और श्रील प्रभुपाद की शिक्षाओं के 100% अनुकूल है।',
         cards: {
@@ -264,12 +313,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['मंदिर एवं विग्रह मर्यादा', 'भक्त पारस्परिक संबंध', 'दैनिक दिनचर्या नियम'],
                 actionLabel: 'सदाचार जानें',
             },
+            festival: {
+                title: 'उत्सव महिमा एवं तात्त्विक ज्ञान (Festival Insights)',
+                subtopic: 'शास्त्रीय महत्त्व, व्रत विधान एवं पावन उत्सव',
+                description: 'पुराणों एवं इतिहास के अनुसार पावन वैष्णव उत्सवों का गहरा दार्शनिक रहस्य, दिव्य कथाएँ एवं शास्त्रीय सदाचार नियम (क्या करें और क्या न करें)।',
+                badge: '100% शास्त्रसम्मत उत्सव रहस्य',
+                highlights: ['दीपावली शास्त्र प्रमाण', 'राम व कृष्ण लीलाएँ', 'उत्सव सदाचार नियम'],
+                actionLabel: 'उत्सव महिमा जानें',
+            },
+            babyNames: {
+                title: 'वैदिक एवं वैष्णव बाल नाम',
+                subtopic: 'श्री कृष्ण, विष्णु, राधा एवं लक्ष्मी के पावन नाम',
+                description: 'विष्णु सहस्रनाम, राधा सहस्रनाम और श्रीमद्भागवतम् से नवजात बालकों एवं बालिकाओं के लिए कल्याणकारी दिव्य नाम, उनके आध्यात्मिक अर्थ तथा अक्षराधारित फ़िल्टर।',
+                badge: '100% शास्त्रसम्मत पावन नाम',
+                highlights: ['विष्णु व कृष्ण नाम', 'राधा व लक्ष्मी नाम', '1, 2 व 3 अक्षर खोज'],
+                actionLabel: 'दिव्य नाम खोजें',
+            },
         },
     },
     kn: {
         sectionBadge: 'ಪ್ರಾಮಾಣಿಕ ವೈದಿಕ ಮಾರ್ಗದರ್ಶಿ',
         sectionTitle: 'ವಿಷಯ ವರ್ಗಗಳು (Topic Categories)',
-        sectionSubtitle: 'ಶಾಸ್ತ್ರ ಪ್ರಮಾಣ ಮತ್ತು ಶ್ರೀಲ ಪ್ರಭುಪಾದರ ನೇರ ಮಾರ್ಗದರ್ಶನದ ಆಧಾರದ ಮೇಲೆ ಆರು ಮುಖ್ಯ ವಿಭಾಗಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.',
+        sectionSubtitle: 'ಶಾಸ್ತ್ರ ಪ್ರಮಾಣ ಮತ್ತು ಶ್ರೀಲ ಪ್ರಭುಪಾದರ ನೇರ ಮಾರ್ಗದರ್ಶನದ ಆಧಾರದ ಮೇಲೆ ಮುಖ್ಯ ವಿಭಾಗಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.',
         guaranteeBannerTitle: 'ಪ್ರಾಮಾಣಿಕತೆಯ ಭರವಸೆ',
         guaranteeBannerText: 'ಪ್ರತಿಯೊಂದು ವಿಷಯ ಮತ್ತು ವಿಧಾನವು ಗೌಡೀಯ ವೈಷ್ಣವ ಸಿದ್ಧಾಂತಕ್ಕೆ ಸಂಪೂರ್ಣವಾಗಿ ಬದ್ಧವಾಗಿದೆ.',
         cards: {
@@ -321,12 +386,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['ಮಂದಿರ ಮರ್ಯಾದೆ & ಸೇವೆ', 'ಭಕ್ತ ಸೌಹಾರ್ದ ಸಂಬಂಧ', 'ದೈನಂದಿನ ದಿನಚರ್ಯಾ ಪಾಲನೆ'],
                 actionLabel: 'ಸದಾಚಾರ ನೋಡಿ',
             },
+            festival: {
+                title: 'ಹಬ್ಬಗಳ ತಾತ್ಪರ್ಯ (Festival Insights)',
+                subtopic: 'ಶಾಸ್ತ್ರೀಯ ಮಹತ್ವ, ವ್ರತ ನಿಯಮಗಳು & ಪವಿತ್ರ ಉತ್ಸವಗಳು',
+                description: 'ಪುರಾಣಗಳು ಮತ್ತು ಇತಿಹಾಸಗಳ ಪ್ರಕಾರ ವೈಷ್ಣವ ಹಬ್ಬಗಳ ಆಳವಾದ ತಾತ್ವಿಕ ಅರ್ಥ, ದಿವ್ಯ ಲೀಲೆಗಳು ಮತ್ತು ಆಚರಿಸಬೇಕಾದ ನಿಯಮಗಳು.',
+                badge: '100% ಶಾಸ್ತ್ರ ಪ್ರಮಾಣದ ಉತ್ಸವ ಜ್ಞಾನ',
+                highlights: ['ದೀಪಾವಳಿ ಶಾಸ್ತ್ರ ಪ್ರಮಾಣ', 'ರಾಮ & ಕೃಷ್ಣ ಲೀಲೆಗಳು', 'ವ್ರತ ನಿಯಮಗಳು'],
+                actionLabel: 'ಹಬ್ಬಗಳ ಮಾಹಿತಿ ತಿಳಿಯಿರಿ',
+            },
+            babyNames: {
+                title: 'ವೈದಿಕ ಮತ್ತು ವೈಷ್ಣವ ಶಿಶು ನಾಮಗಳು',
+                subtopic: 'ಶ್ರೀ ಕೃಷ್ಣ, ವಿಷ್ಣು, ರಾಧಾ & ಲಕ್ಷ್ಮೀ ಪವಿತ್ರ ನಾಮಗಳು',
+                description: 'ವಿಷ್ಣು ಸಹಸ್ರನಾಮ, ರಾಧಾ ಸಹಸ್ರನಾಮ ಮತ್ತು ಭಾಗವತದಿಂದ ನವಜಾತ ಗಂಡು ಮತ್ತು ಹೆಣ್ಣು ಮಕ್ಕಳಿಗೆ ಮಂಗಳಕರವಾದ ದಿವ್ಯ ನಾಮಗಳು, ಅವುಗಳ ಆಧ್ಯಾತ್ಮಿಕ ಅರ್ಥಗಳು ಮತ್ತು ಅಕ್ಷರ ಫಿಲ್ಟರ್‌ಗಳು.',
+                badge: '100% ಶಾಸ್ತ್ರೋಕ್ತ ದಿವ್ಯ ನಾಮಗಳು',
+                highlights: ['ವಿಷ್ಣು & ಕೃಷ್ಣ ನಾಮಗಳು', 'ರಾಧಾ & ಲಕ್ಷ್ಮೀ ನಾಮಗಳು', '1, 2 ಮತ್ತು 3 ಅಕ್ಷರ ಹುಡುಕಾಟ'],
+                actionLabel: 'ದಿವ್ಯ ನಾಮಗಳನ್ನು ಹುಡುಕಿ',
+            },
         },
     },
     te: {
         sectionBadge: 'ప్రామాణిక వైదిక మార్గదర్శకత్వం',
         sectionTitle: 'విషయ విభాగాలు (Topic Categories)',
-        sectionSubtitle: 'శాస్త్ర ప్రమాణాలు మరియు శ్రీల ప్రభుపాదుల వారి ప్రామాణిక బోధనల ఆధారంగా ఆరు ముఖ్య విభాగాలను అన్వేషించండి.',
+        sectionSubtitle: 'శాస్త్ర ప్రమాణాలు మరియు శ్రీల ప్రభుపాదుల వారి ప్రామాణిక బోధనల ఆధారంగా ముఖ్య విభాగాలను అన్వేషించండి.',
         guaranteeBannerTitle: 'ప్రామాణికత హామీ',
         guaranteeBannerText: 'ప్రతి అంశం గౌడీయ వైష్ణవ సిద్ధాంతానికి మరియు శ్రీల ప్రభుపాదుల బోధనలకు నూటికి నూరు శాతం అనుకూలంగా ఉంటుంది.',
         cards: {
@@ -378,12 +459,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['ఆలయ మర్యాదలు & సేవ', 'భక్తుల పరస్పర గౌరవం', 'రోజువారీ దినచర్యా విధానం'],
                 actionLabel: 'సదాచారం తెలుసుకోండి',
             },
+            festival: {
+                title: 'పండుగల తాత్పర్యం (Festival Insights)',
+                subtopic: 'శాస్త్రీయ ప్రాముఖ్యత, వ్రత నియమాలు & పవిత్ర ఉత్సవాలు',
+                description: 'పురాణాలు మరియు ఇతిహాసాల ప్రకారం వైష్ణవ పండుగల గూఢ తాత్విక రహస్యాలు, దివ్య లీలలు మరియు ఆచరించవలసిన శాస్త్రీయ నియమాలు.',
+                badge: '100% శాస్త్రీయ ఉత్సవ రహస్యం',
+                highlights: ['దీపావళి శాస్త్ర ప్రమాణం', 'రామ & కృష్ణ లీలలు', 'వ్రత నియమావళి'],
+                actionLabel: 'పండుగల వివరాలు చూడండి',
+            },
+            babyNames: {
+                title: 'వైదిక మరియు వైష్ణవ శిశు నామాలు',
+                subtopic: 'శ్రీ కృష్ణ, విష్ణు, రాధా & లక్ష్మీ దివ్య నామాలు',
+                description: 'విష్ణు సహస్రనామం, రాధా సహస్రనామం మరియు శ్రీమద్భాగవతం నుండి నవజాత బాలురు మరియు బాలికలకు శుభప్రదమైన పవిత్ర నామాలు, వాటి ఆధ్యాత్మిక అర్థాలు మరియు అక్షర ఫిల్టర్లు.',
+                badge: '100% శాస్త్రీయ దివ్య నామాలు',
+                highlights: ['విష్ణు & కృష్ణ నామాలు', 'రాధా & లక్ష్మీ నామాలు', '1, 2 & 3 అక్షర శోధన'],
+                actionLabel: 'నామాలను కనుగొనండి',
+            },
         },
     },
     ml: {
         sectionBadge: 'വിശ്വാസ്യമായ വൈദിക മാർഗ്ഗനിർദ്ദേശം',
         sectionTitle: 'വിഷയ വിഭാഗങ്ങൾ (Topic Categories)',
-        sectionSubtitle: 'ശാസ്ത്ര പ്രമാണങ്ങളുടെയും ശ്രീല പ്രഭുപാദരുടെ പ്രാമാണിക ഉപദേശങ്ങളുടെയും അടിസ്ഥാനത്തിലുള്ള ആറ് പ്രധാന അധ്യായങ്ങൾ.',
+        sectionSubtitle: 'ശാസ്ത്ര പ്രമാണങ്ങളുടെയും ശ്രീല പ്രഭുപാദരുടെ പ്രാമാണിക ഉപദേശങ്ങളുടെയും അടിസ്ഥാനത്തിലുള്ള പ്രധാന അധ്യായങ്ങൾ.',
         guaranteeBannerTitle: 'ആധികാരികതയുടെ ഉറപ്പ്',
         guaranteeBannerText: 'എല്ലാ വിഷയങ്ങളും ആധികാരിക ഗൗഡീയ വൈഷ്ണവ സിദ്ധാന്തത്തോടും ശ്രീല പ്രഭുപാദരുടെ ഉപദേശങ്ങളോടും 100% നീതി പുലർത്തുന്നു.',
         cards: {
@@ -435,12 +532,28 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 highlights: ['ക്ഷേത്ര മര്യാദകൾ', 'ഭക്ത സൗഹൃദ ബന്ധങ്ങൾ', 'ദൈനംദിന ദിനചര്യ ചട്ടങ്ങൾ'],
                 actionLabel: 'സദാചാരം പഠിക്കുക',
             },
+            festival: {
+                title: 'ഉത്സവ തത്ത്വചിന്ത (Festival Insights)',
+                subtopic: 'ശാസ്ത്രീയ പ്രാധാന്യം, വ്രതാനുഷ്ഠാനങ്ങൾ & പവിത്ര ദിനങ്ങൾ',
+                description: 'പുരാണങ്ങളുടെയും ഇതിഹാസങ്ങളുടെയും വെളിച്ചത്തിൽ വൈഷ്ണവ ഉത്സവങ്ങളുടെ ആഴത്തിലുള്ള തത്ത്വചിന്ത, ദിവ്യ ലീലകൾ, ആചാര മര്യാദകൾ.',
+                badge: '100% ശാസ്ത്രീയ ആഘോഷ വിജ്ഞാനം',
+                highlights: ['ദീപാവലി ശാസ്ത്ര പ്രമാണം', 'രാമ & കൃഷ്ണ ലീലകൾ', 'വ്രത നിഷ്ഠകൾ'],
+                actionLabel: 'ഉത്സവ വിശേഷങ്ങൾ അറിയുക',
+            },
+            babyNames: {
+                title: 'വൈദിക വൈഷ്ണവ ശിശു നാമങ്ങൾ',
+                subtopic: 'ശ്രീ കൃഷ്ണ, വിഷ്ണു, രാധാ & ലക്ഷ്മീ പുണ്യ നാമങ്ങൾ',
+                description: 'വിഷ്ണു സഹസ്രനാമം, രാധാ സഹസ്രനാമം, ഭാഗവതം എന്നിവയിൽ നിന്നുള്ള നവജാത ശിശുക്കൾക്കുള്ള മംഗളകരമായ ദിവ്യ നാമങ്ങൾ, ആത്മീയ അർത്ഥങ്ങൾ, അക്ഷരാടിസ്ഥാനത്തിലുള്ള ഫിൽട്ടറുകൾ.',
+                badge: '100% ശാസ്ത്രീയ ദിവ്യ നാമങ്ങൾ',
+                highlights: ['വിഷ്ണു & കൃഷ്ണ നാമങ്ങൾ', 'രാധാ & ലക്ഷ്മീ നാമങ്ങൾ', '1, 2 & 3 അക്ഷര തിരച്ചിൽ'],
+                actionLabel: 'നാമങ്ങൾ കണ്ടെത്തുക',
+            },
         },
     },
     bn: {
         sectionBadge: 'প্রামাণিক বৈদিক প্রবেশদ্বার',
         sectionTitle: 'বিষয় বিভাগসমূহ (Topic Categories)',
-        sectionSubtitle: 'শাস্ত্রীয় প্রমাণ এবং শ্রীল প্রভুপাদের মূল শিক্ষার ভিত্তিতে ৬টি মৌলিক অধ্যায় অন্বেষণ করুন।',
+        sectionSubtitle: 'শাস্ত্রীয় প্রমাণ এবং শ্রীল প্রভুপাদের মূল শিক্ষার ভিত্তিতে মৌলিক অধ্যায়সমূহ অন্বেষণ করুন।',
         guaranteeBannerTitle: 'প্রামাণিকতার নিশ্চয়তা',
         guaranteeBannerText: 'প্রতিটি বিষয় ও পূজা প্রণালী খাঁটি গৌড়ীয় বৈষ্ণব সিদ্ধান্তের সাথে ১০০% সামঞ্জস্যপূর্ণ।',
         cards: {
@@ -491,6 +604,22 @@ const LOCALIZED_CONTENT: Record<string, LocalizedContent> = {
                 badge: '১০০% শাস্ত্রীয় সদাচার (৬৮টি নিবন্ধ)',
                 highlights: ['মন্দির শিষ্টাচার ও সেবা', 'ভক্ত পারস্পরিক প্রীতি', 'দৈনন্দিন দিনচর্যা বিধি'],
                 actionLabel: 'সদাচার জানুন',
+            },
+            festival: {
+                title: 'উৎসব তত্ত্ব ও তাৎপর্য (Festival Insights)',
+                subtopic: 'শাস্ত্রীয় তাৎপর্য, ব্রত বিধান ও পবিত্র মহোৎসব',
+                description: 'পুরাণ ও ইতিহাস অনুসারে বৈষ্ণব মহোৎসবের গভীর দার্শনিক তত্ত্ব, অপ্রাকৃত লীলা এবং শাস্ত্রীয় করণীয় ও বর্জনীয় আচরণবিধি।',
+                badge: '১০০% শাস্ত্রীয় উৎসব তত্ত্ব',
+                highlights: ['দীপাবলি শাস্ত্র প্রমাণ', 'শ্রীরাম ও কৃষ্ণ লীলা', 'উৎসবের সদাচার বিধান'],
+                actionLabel: 'উৎসবের তথ্য জানুন',
+            },
+            babyNames: {
+                title: 'বৈদিক ও বৈষ্ণব শিশুর পবিত্র নাম',
+                subtopic: 'শ্রীকৃষ্ণ, শ্রীবিষ্ণু, শ্রীমতী রাধারাণী ও লক্ষ্মীদেবীর অপ্রাকৃত নাম',
+                description: 'বিষ্ণু সহস্রনাম, রাধা সহস্রনাম এবং শ্রীমদ্ভাগবত থেকে নবজাতক বালক ও বালিকাদের জন্য পরম কল্যাণময় পারমার্থিক নাম, তাদের শাস্ত্রীয় অর্থ ও আদ্যক্ষর ভিত্তিক ফিল্টার।',
+                badge: '১০০% শাস্ত্রীয় পরম পবিত্র নাম',
+                highlights: ['বিষ্ণু ও কৃষ্ণ নাম', 'রাধা ও লক্ষ্মী নাম', '১, ২ ও ৩ অক্ষর অনুসন্ধান'],
+                actionLabel: 'পবিত্র নাম খুঁজুন',
             },
         },
     },
@@ -603,6 +732,40 @@ export default function TopicCategoriesSection() {
             iconColor: 'text-amber-600 dark:text-amber-400',
             IconComponent: HeartHandshake,
         },
+        {
+            id: 'festival-insights',
+            number: '07',
+            title: content.cards.festival.title,
+            subtopic: content.cards.festival.subtopic,
+            description: content.cards.festival.description,
+            href: '/festival-insights',
+            badge: content.cards.festival.badge,
+            highlights: content.cards.festival.highlights,
+            actionLabel: content.cards.festival.actionLabel,
+            gradient: 'from-rose-500/[0.08] via-amber-500/[0.03] to-orange-500/[0.06] dark:from-rose-950/40 dark:via-neutral-900/90 dark:to-amber-950/20',
+            borderHover: 'hover:border-rose-500/60 dark:hover:border-rose-400/50 hover:shadow-rose-500/10',
+            badgeStyle: 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/20',
+            iconBg: 'bg-gradient-to-br from-rose-500 via-amber-500 to-orange-500 text-white shadow-rose-500/25',
+            iconColor: 'text-rose-500 dark:text-rose-400',
+            IconComponent: Sparkles,
+        },
+        {
+            id: 'baby-names',
+            number: '08',
+            title: content.cards.babyNames.title,
+            subtopic: content.cards.babyNames.subtopic,
+            description: content.cards.babyNames.description,
+            href: '/baby-names',
+            badge: content.cards.babyNames.badge,
+            highlights: content.cards.babyNames.highlights,
+            actionLabel: content.cards.babyNames.actionLabel,
+            gradient: 'from-pink-500/[0.08] via-rose-500/[0.03] to-amber-500/[0.06] dark:from-pink-950/40 dark:via-neutral-900/90 dark:to-rose-950/20',
+            borderHover: 'hover:border-pink-500/60 dark:hover:border-pink-400/50 hover:shadow-pink-500/10',
+            badgeStyle: 'bg-pink-500/15 text-pink-700 dark:text-pink-300 border-pink-500/20',
+            iconBg: 'bg-gradient-to-br from-pink-500 via-rose-500 to-amber-500 text-white shadow-pink-500/25',
+            iconColor: 'text-pink-500 dark:text-pink-400',
+            IconComponent: Baby,
+        },
     ];
 
     return (
@@ -641,8 +804,8 @@ export default function TopicCategoriesSection() {
                     </div>
                 </motion.div>
 
-                {/* Grid of 6 Category Cards: 3 columns on large screens, 2 on medium, 1 on mobile */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5 md:gap-6">
+                {/* Grid of Category Cards: 3 columns on large screens, 2 on medium, 1 on mobile — dynamic for all categories */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
                     {cards.map((card, cardIdx) => {
                         const Icon = card.IconComponent;
 
@@ -658,7 +821,7 @@ export default function TopicCategoriesSection() {
                                     ease: [0.21, 0.47, 0.32, 0.98],
                                 }}
                                 whileHover={{ y: -6, transition: { duration: 0.22, ease: 'easeOut' } }}
-                                className="lg:col-span-2 flex flex-col"
+                                className="w-full flex flex-col"
                             >
                                 <Link
                                     href={card.href}

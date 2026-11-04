@@ -14,6 +14,8 @@ import StoriesPage from "@/components/categories/StoriesPage";
 import PoojaVidhisSection from "@/components/categories/PoojaVidhisSection";
 import DebateSection from "@/components/categories/DebateSection";
 import VaishnavaEtiquettesSection from "@/components/categories/VaishnavaEtiquettesSection";
+import FestivalInsightsSection from "@/components/categories/FestivalInsightsSection";
+import BabyNamesSection from "@/components/categories/BabyNamesSection";
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { headers } from 'next/headers';
 import { getDictionary, Locale } from '@/lib/dictionaries';
@@ -111,6 +113,22 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         return (
             <Layout>
                 <VaishnavaEtiquettesSection />
+            </Layout>
+        );
+    }
+
+    if (category === 'festival-insights') {
+        return (
+            <Layout>
+                <FestivalInsightsSection />
+            </Layout>
+        );
+    }
+
+    if (category === 'baby-names') {
+        return (
+            <Layout>
+                <BabyNamesSection />
             </Layout>
         );
     }
