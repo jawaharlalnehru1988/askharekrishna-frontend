@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { FESTIVAL_ARTICLES } from '@/data/festivalInsightsData';
 
 const BASE_URL = 'https://askharekrishna.com';
 const API_BASE = 'https://api.askharekrishna.com';
@@ -23,6 +24,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
+        },
+        {
+            url: `${BASE_URL}/festival-insights`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.88,
         },
         {
             url: `${BASE_URL}/stories`,
@@ -96,5 +103,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error('Failed to generate debate sitemap:', err);
     }
 
-    return [...staticRoutes, ...debateRoutes];
+    const festivalRoutes: MetadataRoute.Sitemap = FESTIVAL_ARTICLES.map((art) => {
+        const languagesMap: Record<string, string> = {};
+        for (const lang of LOCALES) {
+            languagesMap[lang] = `${BASE_URL}/festival-insights/${art.id}?lang=${lang}`;
+        }
+        return {
+            url: `${BASE_URL}/festival-insights/${art.id}`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly' as const,
+            priority: 0.85,
+            alternates: {
+                languages: languagesMap,
+            },
+        };
+    });
+
+    return [...staticRoutes, ...debateRoutes, ...festivalRoutes];
 }

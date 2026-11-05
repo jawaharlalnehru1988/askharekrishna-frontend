@@ -279,7 +279,7 @@ export default function FestivalInsightsSection() {
                                         {/* Article Visual Painting Card */}
                                         {item.imageUrl && (
                                             <Link 
-                                                href={`/festival-insights/${item.slug}?lang=${locale}`} 
+                                                href={`/festival-insights/${item.id}?lang=${locale}`} 
                                                 className="block relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-5 bg-neutral-900 border border-amber-500/20 group-hover:border-amber-500/50 transition-colors shadow-sm"
                                             >
                                                 <img
@@ -313,7 +313,7 @@ export default function FestivalInsightsSection() {
 
                                         {/* Article Title */}
                                         <h2 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-white tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug mb-2">
-                                            <Link href={`/festival-insights/${item.slug}?lang=${locale}`}>
+                                            <Link href={`/festival-insights/${item.id}?lang=${locale}`}>
                                                 {trans.title}
                                             </Link>
                                         </h2>
@@ -359,7 +359,7 @@ export default function FestivalInsightsSection() {
                                     {/* Footer Action */}
                                     <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
                                         <Link
-                                            href={`/festival-insights/${item.slug}?lang=${locale}`}
+                                            href={`/festival-insights/${item.id}?lang=${locale}`}
                                             className="inline-flex items-center gap-2 text-sm font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors group-hover:translate-x-1 transition-transform"
                                         >
                                             <span>{l.readArticle}</span>

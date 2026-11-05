@@ -20,6 +20,9 @@ import remarkGfm from 'remark-gfm';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FESTIVAL_ARTICLES, getFestivalArticleBySlug } from '@/data/festivalInsightsData';
+import { buildArticleMetadata, toPlainExcerpt } from '@/lib/metadata';
+import { ShareButtons } from '@/components/categories/ShareButtons';
+import { FestivalArticleUrlSync } from '@/components/festival/FestivalArticleUrlSync';
 
 const VALID_LOCALES = ['en', 'ta', 'hi', 'te', 'kn', 'ml', 'bn'] as const;
 type ValidLocale = typeof VALID_LOCALES[number];
@@ -32,6 +35,8 @@ const UI_STRINGS: Record<ValidLocale, {
     previousArticle: string;
     nextArticle: string;
     exploreAll: string;
+    shareArticle: string;
+    sharePrefix: string;
 }> = {
     en: {
         home: 'Home',
@@ -41,6 +46,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'Previous Article',
         nextArticle: 'Next Article',
         exploreAll: 'Explore All Festival Topics',
+        shareArticle: 'Share this Festival Article',
+        sharePrefix: 'Check out this Festival Insights article:',
     },
     ta: {
         home: 'முகப்பு',
@@ -50,6 +57,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'முந்தைய கட்டுரை',
         nextArticle: 'அடுத்த கட்டுரை',
         exploreAll: 'அனைத்து பண்டிகைத் தலைப்புகளையும் காண்க',
+        shareArticle: 'இந்த பண்டிகைக் கட்டுரையைப் பகிரவும்',
+        sharePrefix: 'பண்டிகைகளின் தாத்பரியம் - இந்த கட்டுரையைப் படிக்கவும்:',
     },
     hi: {
         home: 'गृह',
@@ -59,6 +68,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'पिछला आलेख',
         nextArticle: 'अगला आलेख',
         exploreAll: 'समस्त पर्व आलेख देखें',
+        shareArticle: 'यह पर्व आलेख साझा करें',
+        sharePrefix: 'पर्व तात्त्विक रहस्य - यह आलेख पढ़ें:',
     },
     te: {
         home: 'గృహం',
@@ -68,6 +79,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'మునుపటి వ్యాసం',
         nextArticle: 'తరువాతి వ్యాసం',
         exploreAll: 'అన్ని పండుగలను అన్వేషించండి',
+        shareArticle: 'ఈ పండుగ వ్యాసాన్ని పంచుకోండి',
+        sharePrefix: 'పండుగల అంతరార్థం - ఈ వ్యాసాన్ని చదవండి:',
     },
     kn: {
         home: 'ಮುಖಪುಟ',
@@ -77,6 +90,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'ಹಿಂದಿನ ಲೇಖನ',
         nextArticle: 'ಮುಂದಿನ ಲೇಖನ',
         exploreAll: 'ಎಲ್ಲಾ ಹಬ್ಬದ ಲೇಖನಗಳನ್ನು ಅನ್ವೇಷಿಸಿ',
+        shareArticle: 'ಈ ಹಬ್ಬದ ಲೇಖನವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ',
+        sharePrefix: 'ಹಬ್ಬಗಳ ತಾತ್ಪರ್ಯ - ಈ ಲೇಖನವನ್ನು ಓದಿ:',
     },
     ml: {
         home: 'മുഖം',
@@ -86,6 +101,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'മുൻപത്തെ ലേഖനം',
         nextArticle: 'അടുത്ത ലേഖനം',
         exploreAll: 'എല്ലാ ഉത്സവ ലേഖനങ്ങളും കാണുക',
+        shareArticle: 'ഈ ഉത്സവ ലേഖനം പങ്കിടുക',
+        sharePrefix: 'ഉത്സവങ്ങളുടെ തത്ത്വം - ഈ ലേഖനം വായിക്കുക:',
     },
     bn: {
         home: 'মূলপাতা',
@@ -95,6 +112,8 @@ const UI_STRINGS: Record<ValidLocale, {
         previousArticle: 'পূর্ববর্তী প্রবন্ধ',
         nextArticle: 'পরবর্তী প্রবন্ধ',
         exploreAll: 'সকল উৎসবের প্রবন্ধ দেখুন',
+        shareArticle: 'এই উৎসবের প্রবন্ধটি শেয়ার করুন',
+        sharePrefix: 'উৎসবের তাৎপর্য - এই প্রবন্ধটি পড়ুন:',
     },
 };
 
@@ -118,9 +137,10 @@ function resolveLocale(queryLang?: string, host?: string, headerLocale?: string 
 }
 
 export function generateStaticParams() {
-    return FESTIVAL_ARTICLES.map((item) => ({
-        slug: item.slug,
-    }));
+    return FESTIVAL_ARTICLES.flatMap((item) => [
+        { slug: item.id.toString() },
+        { slug: item.slug },
+    ]);
 }
 
 export async function generateMetadata({
@@ -138,24 +158,22 @@ export async function generateMetadata({
     const reqLang = search?.lang || search?.language;
 
     const headersList = await headers();
-    const host = headersList.get('host') || headersList.get('x-forwarded-host') || '';
+    const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
     const headerLocale = headersList.get('x-locale');
     const locale = resolveLocale(reqLang, host, headerLocale);
 
     const trans = article.translations[locale] || article.translations.en;
+    const articleNumber = article.id || article.order;
+    const path = `/festival-insights/${articleNumber}?lang=${locale}`;
+    const description = toPlainExcerpt(trans.excerpt || trans.article);
 
-    return {
+    return buildArticleMetadata({
+        host,
+        path,
         title: `${trans.title} | AskHareKrishna Festival Insights`,
-        description: trans.excerpt,
-        openGraph: {
-            title: trans.title,
-            description: trans.excerpt,
-            url: `https://askharekrishna.com/festival-insights/${slug}`,
-            siteName: 'AskHareKrishna',
-            type: 'article',
-            images: article.imageUrl ? [{ url: `https://askharekrishna.com${article.imageUrl}` }] : undefined,
-        },
-    };
+        description,
+        imageUrl: article.imageUrl,
+    });
 }
 
 export default async function FestivalArticleDetailPage({
@@ -173,7 +191,7 @@ export default async function FestivalArticleDetailPage({
     const queryLang = search?.lang || search?.language;
 
     const headersList = await headers();
-    const host = headersList.get('host') || headersList.get('x-forwarded-host') || '';
+    const host = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
     const headerLocale = headersList.get('x-locale');
     const currentLang = resolveLocale(queryLang, host, headerLocale);
 
@@ -183,16 +201,55 @@ export default async function FestivalArticleDetailPage({
     const readTime = trans.readTime || (currentLang === 'ta' ? article.readTimeTamil : article.readTime);
     const festivalName = trans.festivalName || (currentLang === 'ta' ? article.festivalTamil : article.festival);
 
-    // Previous and Next articles
-    const currentIndex = FESTIVAL_ARTICLES.findIndex((a) => a.slug === slug);
+    const articleNumber = article.id || article.order;
+    const rawHost = headersList.get('host') || headersList.get('x-forwarded-host') || 'askharekrishna.com';
+    const cleanHost = (rawHost.includes('127.0.0.1') || rawHost.includes('localhost') || !rawHost) ? 'askharekrishna.com' : rawHost;
+    const protocol = cleanHost.includes('localhost') ? 'http' : 'https';
+    const articleUrl = `${protocol}://${cleanHost}/festival-insights/${articleNumber}?lang=${currentLang}`;
+
+    // Previous and Next articles by article ID
+    const currentIndex = FESTIVAL_ARTICLES.findIndex((a) => a.id === article.id);
     const previousArticle = currentIndex > 0 ? FESTIVAL_ARTICLES[currentIndex - 1] : null;
     const nextArticle = currentIndex < FESTIVAL_ARTICLES.length - 1 ? FESTIVAL_ARTICLES[currentIndex + 1] : null;
 
     const prevTrans = previousArticle ? (previousArticle.translations[currentLang] || previousArticle.translations.en) : null;
     const nextTrans = nextArticle ? (nextArticle.translations[currentLang] || nextArticle.translations.en) : null;
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Article",
+                "headline": trans.title,
+                "description": trans.excerpt,
+                "image": article.imageUrl?.startsWith('/') ? `https://askharekrishna.com${article.imageUrl}` : article.imageUrl,
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Ask Hare Krishna",
+                    "url": "https://askharekrishna.com",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://askharekrishna.com/askharekrishnalogo.jpg"
+                    }
+                },
+                "inLanguage": currentLang,
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": `https://askharekrishna.com/festival-insights/${articleNumber}`
+                }
+            }
+        ]
+    };
+
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden font-display bg-background-light dark:bg-background-dark text-text-main dark:text-white transition-colors duration-200">
+            <FestivalArticleUrlSync articleNumber={articleNumber} locale={currentLang} />
+            {jsonLd && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+            )}
             <Navbar />
 
             <main className="flex-1 w-full pt-6 pb-20">
@@ -316,13 +373,25 @@ export default async function FestivalArticleDetailPage({
                                 {trans.article}
                             </ReactMarkdown>
                         </article>
+
+                        {/* Share Article Section */}
+                        <div className="mt-12 pt-10 border-t border-neutral-200/90 dark:border-neutral-800 text-center">
+                            <p className="text-xs sm:text-sm font-bold text-neutral-500 dark:text-neutral-400 mb-6 uppercase tracking-[0.25em]">
+                                {ui.shareArticle}
+                            </p>
+                            <ShareButtons 
+                                articleUrl={articleUrl} 
+                                subTopic={trans.title} 
+                                messagePrefix={ui.sharePrefix}
+                            />
+                        </div>
                     </div>
 
                     {/* Navigation between Articles */}
                     <nav aria-label="Article pagination" className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
                         {previousArticle ? (
                             <Link
-                                href={`/festival-insights/${previousArticle.slug}?lang=${currentLang}`}
+                                href={`/festival-insights/${previousArticle.id}?lang=${currentLang}`}
                                 className="group p-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200/90 dark:border-neutral-800 hover:border-amber-500/50 transition-all flex items-center gap-4"
                             >
                                 <div className="size-10 rounded-xl bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:-translate-x-1 transition-transform">
@@ -343,7 +412,7 @@ export default async function FestivalArticleDetailPage({
 
                         {nextArticle && (
                             <Link
-                                href={`/festival-insights/${nextArticle.slug}?lang=${currentLang}`}
+                                href={`/festival-insights/${nextArticle.id}?lang=${currentLang}`}
                                 className="group p-5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200/90 dark:border-neutral-800 hover:border-amber-500/50 transition-all flex items-center justify-between gap-4 text-right"
                             >
                                 <div className="min-w-0 flex-1">

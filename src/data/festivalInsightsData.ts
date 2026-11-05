@@ -145,6 +145,14 @@ export const FESTIVAL_ARTICLES: FestivalArticleItem[] = [
     },
 ];
 
-export function getFestivalArticleBySlug(slug: string): FestivalArticleItem | undefined {
-    return FESTIVAL_ARTICLES.find((article) => article.slug === slug);
+export function getFestivalArticleBySlug(slugOrId: string): FestivalArticleItem | undefined {
+    if (!slugOrId) return undefined;
+    const clean = slugOrId.trim();
+    return FESTIVAL_ARTICLES.find(
+        (article) =>
+            article.slug === clean ||
+            article.id.toString() === clean ||
+            article.order.toString() === clean
+    );
 }
+

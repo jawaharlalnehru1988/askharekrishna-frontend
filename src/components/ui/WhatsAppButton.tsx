@@ -39,7 +39,9 @@ export const WhatsAppButton = () => {
   const isRitvikPage = Boolean(pathname?.startsWith('/ritvik-system/') && pathname.split('/').filter(Boolean).length >= 2);
   const isPoojaPage = Boolean(pathname?.startsWith('/pooja-vidhis/') && pathname.split('/').filter(Boolean).length >= 2);
   const isCalendarPage = Boolean(pathname?.startsWith('/vaishnava-calendar/') && pathname.split('/').filter(Boolean).length >= 2);
-  const isArticlePage = isDebatePage || isStoriesPage || isRitvikPage || isPoojaPage || isCalendarPage;
+  const isEtiquettePage = Boolean(pathname?.startsWith('/vaishnava-etiquettes/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isFestivalPage = Boolean(pathname?.startsWith('/festival-insights/') && pathname.split('/').filter(Boolean).length >= 2);
+  const isArticlePage = isDebatePage || isStoriesPage || isRitvikPage || isPoojaPage || isCalendarPage || isEtiquettePage || isFestivalPage;
 
   const effectiveLocale = hostnameLocale || locale;
   const communityChannelUrl = WHATSAPP_COMMUNITY_CHANNELS[effectiveLocale] || DEFAULT_WHATSAPP_COMMUNITY_CHANNEL;
