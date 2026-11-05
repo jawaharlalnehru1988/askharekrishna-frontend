@@ -344,16 +344,6 @@ export default async function FestivalArticleDetailPage({
                                 alt={article.imageAlt || trans.title}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                            <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-white text-xs sm:text-sm flex-wrap gap-2">
-                                <span className="bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-amber-500/30 text-amber-300 font-bold flex items-center gap-2">
-                                    <Flame size={14} className="text-amber-400 shrink-0" />
-                                    <span>{article.imageAlt}</span>
-                                </span>
-                                <span className="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-neutral-300 font-medium text-xs hidden sm:inline-block">
-                                    {festivalName}
-                                </span>
-                            </div>
                         </div>
                     )}
 
