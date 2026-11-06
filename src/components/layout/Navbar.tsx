@@ -32,6 +32,46 @@ const SUBSCRIBER_NAME_KEY = 'askharekrishna-subscriber-name';
 const SUBSCRIBER_PICTURE_KEY = 'askharekrishna-subscriber-picture';
 const SUBSCRIBER_EMAIL_KEY = 'askharekrishna-subscriber-email';
 
+const NAV_CALENDAR_LABELS: Record<string, string> = {
+  kn: 'ಕ್ಯಾಲೆಂಡರ್',
+  ta: 'நாட்காட்டி',
+  hi: 'पंचांग',
+  te: 'క్యాలెಂಡర్',
+  ml: 'കലണ്ടർ',
+  bn: 'পঞ্জিকা',
+  en: 'Calendar',
+};
+
+const NAV_DIKSHA_LABELS: Record<string, string> = {
+  kn: 'ದೀಕ್ಷಾ ವಿಧಾನ',
+  ta: 'தீட்சை முறை',
+  hi: 'दीक्षा प्रक्रिया',
+  te: 'దీక్షా విధానం',
+  ml: 'ദീക്ഷാ ക്രമം',
+  bn: 'দীক্ষা পদ্ধতি',
+  en: 'Diksha Process',
+};
+
+const NAV_MOBILE_CALENDAR_LABELS: Record<string, string> = {
+  kn: 'ವೈಷ್ಣವ ಕ್ಯಾಲೆಂಡರ್',
+  ta: 'வைஷ்ணவ நாட்காட்டி',
+  hi: 'वैष्णव पंचांग',
+  te: 'వైష్ಣవ క్యాలెండర్',
+  ml: 'വൈഷ്ണവ കലണ്ടർ',
+  bn: 'বৈষ্ণব পঞ্জিকা',
+  en: 'Vaishnava Calendar',
+};
+
+const NAV_MOBILE_DIKSHA_LABELS: Record<string, string> = {
+  kn: 'ಇಸ್ಕಾನ್ ದೀಕ್ಷಾ ವಿಧಾನ',
+  ta: 'இஸ்கானில் தீட்சை முறை',
+  hi: 'इस्कॉन दीक्षा प्रक्रिया',
+  te: 'ఇస్కాన్ దీక్షా విధానం',
+  ml: 'ഇസ്‌കോൺ ദീക്ഷാ രീതി',
+  bn: 'ইস্কন দীক্ষা পদ্ধতি',
+  en: 'The Process of Diksha',
+};
+
 export function Navbar() {
   const { dictionary, locale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
@@ -120,14 +160,14 @@ export function Navbar() {
               href="/vaishnava-calendar"
               className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
             >
-              {locale === 'ta' ? 'நாட்காட்டி' : 'Calendar'}
+              {t.calendar || NAV_CALENDAR_LABELS[locale] || 'Calendar'}
             </Link>
 
             <Link
               href="/ritvik-system"
               className="text-sm font-bold text-text-main dark:text-gray-200 hover:text-primary transition-colors cursor-pointer whitespace-nowrap"
             >
-              {locale === 'ta' ? 'தீட்சை முறை' : 'Diksha Process'}
+              {t.dikshaProcess || NAV_DIKSHA_LABELS[locale] || 'Diksha Process'}
             </Link>
 
             {locale === 'ta' && (
@@ -323,7 +363,7 @@ export function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
                 className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
               >
-                {locale === 'ta' ? 'வைஷ்ணவ நாட்காட்டி' : 'Vaishnava Calendar'}
+                {NAV_MOBILE_CALENDAR_LABELS[locale] || 'Vaishnava Calendar'}
               </Link>
 
               <Link
@@ -331,7 +371,7 @@ export function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
                 className="text-base font-bold text-text-main dark:text-gray-200 hover:text-primary"
               >
-                {locale === 'ta' ? 'இஸ்கானில் தீட்சை முறை' : 'The Process of Diksha'}
+                {NAV_MOBILE_DIKSHA_LABELS[locale] || 'The Process of Diksha'}
               </Link>
 
               {locale === 'ta' && (
